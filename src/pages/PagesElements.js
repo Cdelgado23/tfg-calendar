@@ -5,33 +5,33 @@ display: flex;
 align-items: flex-end;
 justify-content: space-around;
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1024px) {
     flex-direction: column;
     align-items: center;
   }
 `;
 
-export const Timetable = styled.div`
-  display: flex;
-  align-items: center;
-  width: 60vw;
+export const CentralMenu = styled.div`
+  width: 70vw;
   height:70vh;
   white-space: nowrap;
   background: #EFEFEF;
-  @media screen and (max-width: 768px) {
+  justify-content: stretch; 
+  @media screen and (max-width: 1024px) {
     width:100%;
     height: 100%;
+    order: -9999;
   }
 `;
 
 export const LateralMenu = styled.div`
   display: flex;
   flex-direction: column; 
-  width: 20vw;
+  width: 15vw;
   margin: 0 1vw;
   align-items: strech;
   white-space: nowrap;
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 1024px) {
     width:100%;
     height:100%;
     margin: 0 1%;
@@ -51,15 +51,17 @@ export const MenuHeader = styled.div`
 
 export const MenuBody = styled.div`
   display: flex;
+  flex-direction: column; 
   align-items: center;
   white-space: nowrap;
   padding: 10px 22px;
   height:70vh;
-  justify-content: center;
-  background: #EFEFEF;
+  justify-content: flex-start;
+  background: #FFFFFF;
   border-radius: 0 0 10px 10px;
-
-  @media screen and (max-width: 768px) {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  @media screen and (max-width: 1024px) {
     height:100%;
   }
 `;
@@ -71,7 +73,10 @@ export const FullWidthMenu = styled.div`
   padding: 10px 22px;
   width: 100vw;
   justify-content: center;
-  background: #a7e293;
+  background: #EFEFEF;
+  @media screen and (max-width: 1024px) {
+    background: #FEFEFE;
+  }
 `;
 
 export const Button = styled.button`
@@ -81,9 +86,7 @@ export const Button = styled.button`
   border-radius: 3px;
   outline: none;
   border: none;
-  /* Color the border and text with theme.main */
   background: #2DA283;
-
   &:hover {
     transition: all 0.2s ease-in-out;
     background: #6cd1b6;
