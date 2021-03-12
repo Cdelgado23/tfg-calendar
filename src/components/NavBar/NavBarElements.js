@@ -23,14 +23,14 @@ export const NavLink = styled(Link)`
   height: 100%;
   cursor: pointer;
   &.active {
-    color: #15cdfc;
+    color: #FFFFFF;
   }
 `;
 
 export const Bars = styled(FaBars)`
   display: none;
   color: #fff;
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 1024px) {
     display: block;
     position: absolute;
     top: 0;
@@ -45,7 +45,7 @@ export const NavMenu = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 1024px) {
     display: none;
   }
 `;
@@ -54,7 +54,7 @@ export const NavBtn = styled.nav`
   display: flex;
   align-items: center;
   margin: 0 1vw;
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 1024px) {
     display: none;
   }
 `;

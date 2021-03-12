@@ -15,8 +15,10 @@ export const CentralMenu = styled.div`
   width: 70vw;
   height:70vh;
   white-space: nowrap;
-  background: #EFEFEF;
+  background:  #FFFFFF;
   justify-content: stretch; 
+  overflow-y: scroll;
+  overflow-x: hidden;
   @media screen and (max-width: 1024px) {
     width:100%;
     height: 100%;
@@ -29,8 +31,10 @@ export const LateralMenu = styled.div`
   flex-direction: column; 
   width: 15vw;
   margin: 0 1vw;
-  align-items: strech;
   white-space: nowrap;
+  align-items: strech;
+  justify-content: stretch; 
+
   @media screen and (max-width: 1024px) {
     width:100%;
     height:100%;
@@ -54,13 +58,14 @@ export const MenuBody = styled.div`
   flex-direction: column; 
   align-items: center;
   white-space: nowrap;
-  padding: 10px 22px;
+  padding: 5px 10px;
   height:70vh;
   justify-content: flex-start;
   background: #FFFFFF;
   border-radius: 0 0 10px 10px;
   overflow-y: scroll;
   overflow-x: hidden;
+  width:100%;
   @media screen and (max-width: 1024px) {
     height:100%;
   }
@@ -74,6 +79,7 @@ export const FullWidthMenu = styled.div`
   width: 100vw;
   justify-content: center;
   background: #EFEFEF;
+  margin: 2px;
   @media screen and (max-width: 1024px) {
     background: #FEFEFE;
   }

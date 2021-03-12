@@ -30,7 +30,27 @@ const subject3={
 };
 const subjects=[subject1, subject2, subject3];
 
+const session1={
+  startMinute: 480,
+  duration: 60,
+  color: "#23ea51",
+  subject: "subject X",
+  group: "group n",
+  recurrent: true, 
+  day: 1
+}
 
+const session2={
+  startMinute: 560,
+  duration: 60,
+  color: "#f7eb80",
+  subject: "subject X",
+  group: "group n",
+  recurrent: true, 
+  day: 1
+}
+
+const sessions= [session1, session2];
 
 
 function ListSubjects(params) {
@@ -67,12 +87,12 @@ const Horario = () => {
 
         </LateralMenu>
         <CentralMenu>
-          <Timetable>
+          <Timetable timeStart={480} scheduleSize={720} mins_x_block={60} sessions= {sessions}>
           </Timetable>
         </CentralMenu>
         <LateralMenu>
           <MenuHeader>
-            <h2>Asignaturas</h2>
+            <h2>Sesión</h2>
           </MenuHeader>
           <MenuBody>
           <Button>
