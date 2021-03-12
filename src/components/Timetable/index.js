@@ -3,24 +3,27 @@ import {TimetableGrid, GridTimeElement, GridElement, GridLines} from './Timetabl
 
 
 
+function placeSession(session, config){
+    const row = (((session.startMinute - config.timeStart)/config.mins_x_block)>>0) + 1;
+    const column = session.day +1;
+    
+
+    const rowEnd= Math.ceil(((session.startMinute+session.duration -config.timeStart) /config.mins_x_block))+1;
+    const size = rowEnd-row;
+
+
+    const leftoverTop= (session.startMinute - (config.timeStart + ((row-1) * config.mins_x_block)) ) *100 / (config.mins_x_block*size);
+    const leftoverBot= (((config.mins_x_block*size)-session.duration) * 100 /(config.mins_x_block*size))>>0;
+
+    return(<GridElement row={row+1} column={column} color= {session.color} size={size} marginTop={leftoverTop} marginBot={leftoverBot}>{session.subject} </GridElement>
+        );
+}
+
+
 function populateGrid(params) {
     const populated=[];
     params.sessions.forEach(session => {
-        
-        const row = (((session.startMinute - params.timeStart)/params.mins_x_block)>>0) + 1;
-        const column = session.day +1;
-        
-
-        const rowEnd= Math.ceil(((session.startMinute+session.duration -params.timeStart) /params.mins_x_block))+1;
-        const size = rowEnd-row;
-
-
-        const leftoverTop= (session.startMinute - (params.timeStart + ((row-1) * params.mins_x_block)) ) *100 / (params.mins_x_block*size);
-        const leftoverBot= ((session.duration-(params.mins_x_block*size)) * 100 /(params.mins_x_block*size))>>0;
-
-
-        populated.push(<GridElement row={row+1} column={column} color= {session.color} size={size} marginTop={leftoverTop} marginBot={leftoverBot}>{session.subject} </GridElement>
-        );
+        populated.push(placeSession(session, params));
     });
     return populated;
 }
