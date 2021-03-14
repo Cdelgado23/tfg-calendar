@@ -1,5 +1,5 @@
 import React from 'react';
-import { LateralMenu, MenuHeader, MenuBody, FullWidthMenu, SpaceBetweenMenu, Button, CentralMenu} from './PagesElements';
+import { LateralMenu, MenuHeader, MenuBody, SpaceBetweenMenu, Button, CentralMenu} from './PagesElements';
 import Timetable from '../components/Timetable'
 import Subject from '../components/Subject'
 
@@ -78,17 +78,6 @@ function ListSubjects(params) {
 );
 }
 
-
-function allowDrop(ev) {
-  ev.preventDefault();
-}
-
-function drop(ev) {
-  console.log("DROP");
-  ev.preventDefault();
-  var data = ev.dataTransfer.getData("text");
-  ev.target.appendChild(document.getElementById(data));
-}
 
 
 const Horario = () => {
