@@ -13,9 +13,12 @@ const Navbar = () => {
   return (
     <>
       <Nav>
+        <div style= {{"justify-self": "flex-start"}}>
         <NavLink to='/'>
-          <img src={require('../../images/logo.png')} alt='logo' />
+          Universidad de Extremadura
         </NavLink>
+        </div>
+
         <Bars />
         <NavMenu>
           <NavBtn>
@@ -27,11 +30,9 @@ const Navbar = () => {
           <NavBtn>
             <NavBtnLinkYellow to='/Aulas'>Aulas</NavBtnLinkYellow>
           </NavBtn>
-          {/* Second Nav */}
-          {/* <NavBtnLink to='/sign-in'>Sign In</NavBtnLink> */}
         </NavMenu>
         <NavBtn>
-          <NavBtnLinkGreen to='/Usuario'>Francisco FLores Solano</NavBtnLinkGreen>
+          <NavBtnLinkGreen to='/Usuario'>Profesor Apellido1 Apellido2</NavBtnLinkGreen>
         </NavBtn>
       </Nav>
     </>
