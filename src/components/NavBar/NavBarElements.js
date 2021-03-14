@@ -4,13 +4,10 @@ import styled from 'styled-components';
 
 export const Nav = styled.nav`
   background: #EFEFEF;
-  height: 80px;
+  height: 10vh;
   display: flex;
   justify-content: space-between;
-  padding: 0.5rem calc((100vw - 1000px) / 4);
   z-index: 10;
-  /* Third Nav */
-  /* justify-content: flex-start; */
 `;
 
 export const NavLink = styled(Link)`
@@ -24,19 +21,18 @@ export const NavLink = styled(Link)`
   height: 100%;
   cursor: pointer;
   &.active {
-    color: #15cdfc;
+    color: #FFFFFF;
   }
 `;
 
 export const Bars = styled(FaBars)`
   display: none;
   color: #fff;
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 1024px) {
     display: block;
-    position: absolute;
-    top: 0;
-    right: 0;
-    transform: translate(-100%, 75%);
+    align-items: center;
+    display: flex;
+
     font-size: 1.8rem;
     cursor: pointer;
   }
@@ -44,14 +40,9 @@ export const Bars = styled(FaBars)`
 
 export const NavMenu = styled.div`
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  margin-right: -48px;
-  /* Second Nav */
-  /* margin-right: 24px; */
-  /* Third Nav */
-  /* width: 100vw;
-  white-space: nowrap; */
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 1024px) {
     display: none;
   }
 `;
@@ -59,15 +50,14 @@ export const NavMenu = styled.div`
 export const NavBtn = styled.nav`
   display: flex;
   align-items: center;
-  /* Third Nav */
-  /* justify-content: flex-end;
-  width: 100vw; */
-  @media screen and (max-width: 768px) {
+  margin: 0 1vw;
+  @media screen and (max-width: 1024px) {
     display: none;
   }
 `;
 
 export const NavBtnLinkGreen = styled(Link)`
+  justify-self: flex-end;
   border-radius: 4px;
   background: #2DA283;
   padding: 10px 22px;
@@ -77,8 +67,7 @@ export const NavBtnLinkGreen = styled(Link)`
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   text-decoration: none;
-  /* Second Nav */
-  margin-left: 24px;
+
   &:hover {
     transition: all 0.2s ease-in-out;
     background: #6cd1b6;
@@ -96,8 +85,6 @@ export const NavBtnLinkYellow = styled(Link)`
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   text-decoration: none;
-  /* Second Nav */
-  margin-left: 24px;
   &:hover {
     transition: all 0.2s ease-in-out;
     background: #d69b1b;
