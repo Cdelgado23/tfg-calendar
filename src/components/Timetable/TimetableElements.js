@@ -77,14 +77,7 @@ grid-row-end: ${props => props.row +1};
 border-top: ${props => props.row>1 && props.column>0 ? "1px solid #EFEFEF": ""} ;
 justify-self: stretch;
 
-${props => props.column>1 ? "\
-    &:hover { \
-    transition: all 0.2s ease-in-out;\
-    background: #EFEFEF;\
-    color: #010606;\
-  }"
-  :""};
-
+${props => props.column>1 ? "&:hover {transition: all 0.2s ease-in-out;background: #EFEFEF;color: #010606;}":""};
 `;
 
 export const GridDayElement = styled.div`
