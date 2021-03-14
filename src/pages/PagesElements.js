@@ -13,15 +13,11 @@ justify-content: space-around;
 
 export const CentralMenu = styled.div`
   width: 70vw;
-  height:70vh;
   white-space: nowrap;
   background:  #FFFFFF;
-  justify-content: stretch; 
-  overflow-y: scroll;
-  overflow-x: hidden;
+
   @media screen and (max-width: 1024px) {
     width:100%;
-    height: 100%;
     order: -9999;
   }
 `;
@@ -47,6 +43,8 @@ export const MenuHeader = styled.div`
   align-items: center;
   white-space: nowrap;
   background: #F5AB00;
+  color: #fff;
+
   margin: 0.5vh 0;
   border-radius: 10px 10px 0 0;
   justify-content: center;

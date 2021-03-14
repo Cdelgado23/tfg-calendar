@@ -4,27 +4,35 @@ import Timetable from '../components/Timetable'
 import Subject from '../components/Subject'
 
 const group1 = {
-  name: "group 1",
-  color: "#ffef66"
+  type:"group",
+  subjectName:"subject X",
+  groupName: "Lab",
+  color: "#ffef66",
+  length: 60,
+  id:"asdasd-aergeryter-112424tfdsasa"
 };
 const group2 = {
-  name: "group 2",
-  color: "#ff4451"
+  type:"group",
+  subjectName:"subject X",
+  groupName: "Teoría GG",
+  color: "#ff4451",
+  length: 45,
+  id:"asdasd-q2341245rwefqwrf24-112424tfdsasa"
 };
 const groups= [group1, group2];
 
 const subject1={
-  name: "subject 1 large text",
+  subjectName: "subject 1 large text",
   groups: groups,
   color: "#1f67e2"
 };
 const subject2={
-  name: "subject 2 very very very large text",
+  subjectName: "subject 2 very very very large text",
   groups: groups,
   color: "#db80f7"
 };
 const subject3={
-  name: "subject 3",
+  subjectName: "subject 3",
   groups: groups,
   color: "#23ea51"
 };
@@ -32,20 +40,20 @@ const subjects=[subject1, subject2, subject3];
 
 const session1={
   startMinute: 480,
-  duration: 60,
+  length: 60,
   color: "#23ea51",
-  subject: "subject X",
-  group: "group n",
+  subjectName: "subject X",
+  groupName: "group n",
   recurrent: true, 
   day: 1
 }
 
 const session2={
   startMinute: 540,
-  duration: 60,
+  length: 60,
   color: "#f7eb80",
-  subject: "subject X",
-  group: "group n",
+  subjectName: "subject X",
+  groupName: "group n",
   recurrent: true, 
   day: 1
 }
@@ -55,8 +63,8 @@ const session3={
   startMinute: 780,
   duration:40,
   color: "#db80f8",
-  subject: "subject Testing",
-  group: "Fantastic 4s",
+  subjectName: "subject Testing",
+  groupName: "Fantastic 4s",
   recurrent: true, 
   day: 1
 }
@@ -71,6 +79,17 @@ function ListSubjects(params) {
 }
 
 
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+function drop(ev) {
+  console.log("DROP");
+  ev.preventDefault();
+  var data = ev.dataTransfer.getData("text");
+  ev.target.appendChild(document.getElementById(data));
+}
+
 
 const Horario = () => {
   return (
@@ -81,9 +100,6 @@ const Horario = () => {
       justifyContent: 'flex-end'
     }}
   >
-    <FullWidthMenu>
-      ASdasdasdasddddfcx
-    </FullWidthMenu>
       <SpaceBetweenMenu>
         <LateralMenu>
           <MenuHeader>

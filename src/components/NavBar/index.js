@@ -32,7 +32,7 @@ const Navbar = () => {
           </NavBtn>
         </NavMenu>
         <NavBtn>
-          <NavBtnLinkGreen to='/Usuario'>Francisco FLores Solano</NavBtnLinkGreen>
+          <NavBtnLinkGreen to='/Usuario'>Profesor Apellido1 Apellido2</NavBtnLinkGreen>
         </NavBtn>
       </Nav>
     </>

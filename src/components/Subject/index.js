@@ -1,10 +1,15 @@
 import React from 'react'
 import {SubjectMain, SubjectTitle, SubjectGroupsList, GroupElement, AddGroupButton} from './SubjectElements';
 
+function drag(ev, group) {
+  ev.dataTransfer.setData("text",JSON.stringify(group));
+}
+
+
 
 function ListGroups(params) {
     return  params.map((group) =>
-    <GroupElement group={group}>{group.name}</GroupElement>
+    <GroupElement group={group} draggable="true" onDragStart={event=>drag(event, group)} id={group.id}>{group.groupName}</GroupElement>
   );
 }
 
@@ -29,7 +34,7 @@ export default class Subject extends React.Component {
     return (
         <SubjectMain>
         <SubjectTitle onClick={this.handleSubjectTitleClick} ButtonCornersRadius= {!this.state.showGroups} color = {this.state.subject.color}>
-        {this.state.subject.name}
+        {this.state.subject.subjectName}
         </SubjectTitle>
         <SubjectGroupsList show={this.state.showGroups}>
             {ListGroups(this.state.subject.groups)}
