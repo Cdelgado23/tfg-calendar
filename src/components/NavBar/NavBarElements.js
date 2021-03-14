@@ -4,12 +4,10 @@ import styled from 'styled-components';
 
 export const Nav = styled.nav`
   background: #EFEFEF;
-  height: 80px;
+  height: 10vh;
   display: flex;
   justify-content: space-between;
   z-index: 10;
-  /* Third Nav */
-  /* justify-content: flex-start; */
 `;
 
 export const NavLink = styled(Link)`
@@ -32,10 +30,9 @@ export const Bars = styled(FaBars)`
   color: #fff;
   @media screen and (max-width: 1024px) {
     display: block;
-    position: absolute;
-    top: 0;
-    right: 0;
-    transform: translate(-100%, 75%);
+    align-items: center;
+    display: flex;
+
     font-size: 1.8rem;
     cursor: pointer;
   }

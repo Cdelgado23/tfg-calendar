@@ -34,16 +34,12 @@ function placeSession(session, config){
 
 
 function populateGrid(params) {
-    console.log("populating with: ");
-    console.log(params.sessions);
-
     const populated=[];
     params.sessions.forEach(session => {
         populated.push(placeSession(session, params));
     });
     return populated;
 }
-
 
 function populateTimeColumn(params){
     const startHour= (params.timeStart/60)>>0 ;
@@ -120,15 +116,32 @@ function getWeekFromDay(current){
 return week;
 }
 
+function getWeekNumberFromDay(date){
+  
+  //find the year of the entered date  
+   var oneJan =  new Date(date.getFullYear(), 0, 1);   
+
+   // calculating number of days in given year before the given date   
+   var numberOfDays =  Math.floor((date - oneJan) / (24 * 60 * 60 * 1000));   
+
+   // adding 1 since to current date and returns value starting from 0   
+   var result = Math.ceil(( date.getDay() + 1 + numberOfDays) / 7)-1; 
+   return result;
+}
+
+
 export default class Timetable extends React.Component {
     constructor(props) {
         super(props);
 
+        var todayDate= new Date();
+        console.log(""+todayDate.getFullYear()+"-W"+getWeekNumberFromDay(todayDate));
         this.state = {mins_x_block: props.mins_x_block,
                       divisions: props.scheduleSize/props.mins_x_block,
                       timeStart: props.timeStart,
                       sessions: props.sessions,
-                      week: getWeekFromDay(getDateOfISOWeek(11,2021))
+                      selectedWeek: ""+todayDate.getFullYear()+"-W"+getWeekNumberFromDay(todayDate),
+                      week: getWeekFromDay(getDateOfISOWeek(getWeekNumberFromDay(todayDate),todayDate.getFullYear()))
                       };
         this.drop = this.drop.bind(this);
         this.handleWeekChange= this.handleWeekChange.bind(this);
@@ -168,6 +181,7 @@ export default class Timetable extends React.Component {
       console.log(current);
 
     this.setState({
+      selectedWeek:event.target.value,
       week: getWeekFromDay(current)
     });
     }
@@ -177,7 +191,7 @@ export default class Timetable extends React.Component {
         <div>
         <WeekDataBlock>
           <WeekPicker>
-            <input type="week" name="week" id="select-week"required onChange={event => this.handleWeekChange(event)}></input>
+            <input type="week" name="week" id="select-week" value={this.state.selectedWeek} required onChange={event => this.handleWeekChange(event)}></input>
           </WeekPicker>
         </WeekDataBlock>
         <TimetableGrid divisions= {this.state.divisions}>
