@@ -42,8 +42,8 @@ export const MenuHeader = styled.div`
   display: flex;
   align-items: center;
   white-space: nowrap;
-  background: #F5AB00;
-  color: #fff;
+  background: #EFEFEF;
+  color: #00000;
 
   margin: 0.5vh 0;
   border-radius: 10px 10px 0 0;

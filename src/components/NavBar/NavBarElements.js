@@ -57,7 +57,6 @@ export const NavBtn = styled.nav`
 `;
 
 export const NavBtnLinkGreen = styled(Link)`
-  justify-self: flex-end;
   border-radius: 4px;
   background: #2DA283;
   padding: 10px 22px;

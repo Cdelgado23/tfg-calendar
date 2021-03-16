@@ -26,12 +26,17 @@ export const GridTimeElement = styled.div`
   grid-row-start: ${props => props.row};
 
   grid-column-end: ${props => props.column +1};
-  grid-row-end: ${props => props.row +1};
+  grid-row-end: ${props => props.row + props.size};
   justify-self: stretch;
-  height: 4rem;
   display: flex;
   justify-content: center;
   align-items: center;
+  background: #FFF;
+
+  min-height: 3rem;
+
+  border-top: 1px solid #EFEFEF;
+
 
 `;
 
@@ -52,9 +57,9 @@ export const GridElement = styled.button`
 
   outline: none;
   border: none;
-
-  margin-top:${props => props.marginTop}%;
-  margin-bottom:${props => props.marginBot}%;
+  
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   &:hover {
     transition: all 0.2s ease-in-out;
@@ -77,6 +82,8 @@ grid-row-end: ${props => props.row +1};
 border-top: ${props => props.row>1 && props.column>0 ? "1px solid #EFEFEF": ""} ;
 justify-self: stretch;
 
+min-height: 1rem;
+
 ${props => props.column>1 ? "&:hover {transition: all 0.2s ease-in-out;background: #EFEFEF;color: #010606;}":""};
 `;
 
@@ -93,6 +100,7 @@ export const GridDayElement = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center; 
 
   position: -webkit-sticky; /* Safari */
   position: sticky;

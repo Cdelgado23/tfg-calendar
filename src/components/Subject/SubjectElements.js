@@ -16,7 +16,7 @@ export const SubjectTitle = styled.button`
     justify-content: center;
     
     border-radius: ${props => props.ButtonCornersRadius? "4px 4px 4px 4px":"4px 4px 0 0"}; 
-    padding: 0.5rem;
+    padding: 0.4em;
     outline: none;
     border: none;
     overflow: hidden;
@@ -41,7 +41,7 @@ export const GroupElement = styled.button`
 
     background: ${props => props.group.color || "#FEFEFE"};
     justify-content: center;
-    padding: 0.4rem;
+    padding: 0.1em;
     outline: none;
     border: none;
     margin: 0.5vh;
