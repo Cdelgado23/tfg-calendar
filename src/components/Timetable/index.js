@@ -50,7 +50,6 @@ function populateGrid(params, handleSessionClick) {
 
 function populateTimeColumn(params){
     const startHour= (params.timeStart/60)>>0 ;
-    const startMinute= params.timeStart%60;
     const hourSize= Math.ceil(60/params.mins_x_block);
     return Array.from(Array(params.divisions/hourSize).keys())
     .map((n) =>

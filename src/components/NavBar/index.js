@@ -2,7 +2,6 @@
 import {
   Nav,
   NavLink,
-  Bars,
   NavMenu,
   NavBtn,
   NavBtnLinkGreen,
