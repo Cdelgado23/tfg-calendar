@@ -1,5 +1,7 @@
 import React from 'react';
-import {TimetableGrid, GridTimeElement, GridElement, GridLines, GridDayElement, WeekDataBlock, WeekPicker} from './TimetableElements';
+import {TimetableGrid, GridTimeElement, GridElement, GridLines, GridDayElement, WeekDataBlock, WeekPicker, SelectedWeek} from './TimetableElements';
+
+
 
 import {v4 as uuidv4} from 'uuid';
 
@@ -151,6 +153,7 @@ export default class Timetable extends React.Component {
         this.getScheduleInformation = this.getScheduleInformation.bind(this);
         
         this.handleSessionClick= this.handleSessionClick.bind(this);
+        this.changeWeek = this.changeWeek.bind(this);
       }
     
     handleSessionClick(session) {
@@ -220,14 +223,36 @@ export default class Timetable extends React.Component {
     });
     }
 
+    changeWeek(changeAmount){
+      var splitted = this.state.selectedWeek.split("-W");
+      var week = parseInt(splitted[1]) + changeAmount;
+      var current = getDateOfISOWeek(week,splitted[0]);
+      
+      console.log(current);
+      this.setState({
+        selectedWeek: splitted[0]+"-W"+week,
+        week: getWeekFromDay( current)
+      });
+    }
+
     render() {
       return (
         <div>
         <WeekDataBlock>
-          <WeekPicker>
-            <input type="week" name="week" id="select-week" value={this.state.selectedWeek} required onChange={event => this.handleWeekChange(event)}></input>
-          </WeekPicker>
+          <SelectedWeek>
+          <button onClick= {()=>{this.changeWeek(-1)}}> {"<"} </button>
+          <p>{formatDate(this.state.week[0]) + " - " + formatDate(this.state.week[6])}</p>
+          <button onClick= {()=>{this.changeWeek(+1)}}> {">"} </button>
+          </SelectedWeek>
         </WeekDataBlock>
+        <WeekDataBlock>
+        <WeekPicker>
+            <input type="week" name="week" id="select-week" value={this.state.selectedWeek} required onChange={event => this.handleWeekChange(event)}></input>
+        </WeekPicker>
+
+        </WeekDataBlock>
+
+
         <TimetableGrid divisions= {this.state.divisions}>
               {drawRowLines(this.state, this.drop)}
               {populateDaysRow(this.state.week)}

@@ -116,19 +116,24 @@ export const GridDayElement = styled.div`
 
 export const WeekDataBlock= styled.div`
   display: flex;
-  flex-direction: column; 
+  flex-direction: row; 
   justify-content: center;
   align-items: center;
+  
   width: 100%;
-  height: 10vh;
+  height: 5vh;
 `;
 
 export const WeekPicker = styled.div`
-  align-self: flex-end;
   margin-right: 5vw;
-
+  margin-left: auto;
 `;
 export const SelectedWeek= styled.div`
-  
-
+    
+  display: flex;
+  flex-direction: row; 
+  justify-content: center;
+  align-items: center;
+  justify-self: center;
+  margin-right: 3%;
 `;

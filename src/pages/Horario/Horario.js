@@ -119,7 +119,7 @@ export default class Horario extends React.Component {
 
   render() {
     return (
-      <div
+      <div 
       style={{
         display: 'flex',
         flexDirection: 'column',

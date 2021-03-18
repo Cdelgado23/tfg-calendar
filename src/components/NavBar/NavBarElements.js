@@ -35,7 +35,24 @@ export const Bars = styled(FaBars)`
 
     font-size: 1.8rem;
     cursor: pointer;
+    justify-self:center;
   }
+`;
+
+export const SelectRouter=styled.select`
+display: none;
+color: #fff;
+@media screen and (max-width: 1024px) {
+  display: block;
+  align-items: center;
+  display: flex;
+
+  font-size: 1.8rem;
+  cursor: pointer;
+  justify-self:center;
+  background: #2DA283;
+}
+
 `;
 
 export const NavMenu = styled.div`

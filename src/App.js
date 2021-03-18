@@ -8,18 +8,22 @@ import Asignaturas from './pages/Asignaturas';
 import Aulas from './pages/Aulas';
 import Usuario from './pages/Usuario';
 
+import { useHistory } from "react-router-dom";
+
 
 function App() {
+  let history = useHistory();
   return (
-    <Router>
-      <Navbar />
-      <Switch>
+    <Router id="App">
+      <Navbar hist={history}/>
+      <Switch id="page-wrap">
         <Route path='/Horario' exact component={Horario} />
         <Route path='/Asignaturas' component={Asignaturas} />
         <Route path='/Aulas' component={Aulas} />
         <Route path='/Usuario' component={Usuario} />
       </Switch>
     </Router>
+    
   );
 }
 

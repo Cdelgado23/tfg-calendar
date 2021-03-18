@@ -1,4 +1,4 @@
-import React from 'react';
+
 import {
   Nav,
   NavLink,
@@ -6,10 +6,22 @@ import {
   NavMenu,
   NavBtn,
   NavBtnLinkGreen,
-  NavBtnLinkYellow
+  NavBtnLinkYellow,
+  SelectRouter
 } from './NavBarElements';
 
-const Navbar = () => {
+import React from 'react';
+import { useHistory,useLocation } from "react-router-dom";
+
+
+function handleRouteChange(event, history, location) {
+  history.push("/"+event.target.value);
+  location= event.target.value;
+}
+
+const Navbar = (props) => {
+  let history = useHistory();
+  let location = useLocation();
   return (
     <>
       <Nav>
@@ -19,7 +31,13 @@ const Navbar = () => {
         </NavLink>
         </div>
 
-        <Bars />
+          <SelectRouter name="rooms" id="rooms" onChange={event =>{handleRouteChange(event, history, location)}}>
+          <option value={"Horario"}>Horario</option>
+          <option value={"Asignaturas"}>Asignaturas</option>
+          <option value={"Aulas"}>Aulas</option>
+
+          </SelectRouter>
+
         <NavMenu>
           <NavBtn>
             <NavBtnLinkYellow to='/Horario'>Horario</NavBtnLinkYellow>

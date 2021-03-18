@@ -1,12 +1,12 @@
 import React from 'react';
-import {FlexForm} from './SessionFormElements'
+import {FlexForm, NotificationsButtonsContainer, NotificationButton} from './SessionFormElements'
 
 function showRooms(rooms){
     const listRooms = rooms.map((room) =>
     <option value={room}>{room}</option>
   );
   return (
-    <select name="cars" id="cars">
+    <select name="rooms" id="rooms">
         {listRooms}
     </select>
   );
@@ -61,6 +61,7 @@ export default class SessionForm extends React.Component {
         if (this.state.id){
 
         return (
+            <div>
             <FlexForm>
                 <label>
                     Subject
@@ -90,8 +91,19 @@ export default class SessionForm extends React.Component {
                     Room
                 </label>
                 {showRooms(this.props.getAvalibleRooms(this.props.selectedSession))}
-                <input type="submit" value="Change" />
+                <br/>
+                <input type="submit" value="Update"/>
             </FlexForm>
+            <h4 style={{textAlign: "center"}}>Notificaciones</h4>
+            <NotificationsButtonsContainer>
+            <NotificationButton>
+                ver
+            </NotificationButton>
+            <NotificationButton>
+                añadir
+            </NotificationButton>
+            </NotificationsButtonsContainer>
+            </div>
         );
         }else{
             return <div></div>;
