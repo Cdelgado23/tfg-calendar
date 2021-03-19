@@ -1,5 +1,5 @@
 import React from 'react';
-import {TimetableGrid, GridTimeElement, GridElement, GridLines, GridDayElement, WeekDataBlock, WeekPicker, SelectedWeek} from './TimetableElements';
+import {TimetableGrid, GridTimeElement, GridElement, GridLines, GridDayElement, WeekDataBlock, WeekPicker, SelectedWeek, GridLinesComponent} from './TimetableElements';
 
 
 
@@ -87,7 +87,7 @@ function drawRowLines(params, dropFunction){
 
     return Array.from(Array(divs).keys())
     .map((n) =>
-    <GridLines row={((n/8)>>0) +1} column={n%8 +1} onDrop={event => dropFunction(event, n, params)} onDragOver={event =>allowDrop(event)}></GridLines>
+    <GridLinesComponent row={((n/8)>>0) +1} column={n%8 +1} onDrop={event => dropFunction(event, n, params)} onDragOver={event =>allowDrop(event)}/>
   );
 }
 

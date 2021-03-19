@@ -88,13 +88,6 @@ export default class SessionForm extends React.Component {
                 </label>
                 <input type="text" name="length"  value={this.state.length}  onChange= {event => {this.onChangeField(event,"length")}}/>
                 <label>
-<<<<<<< Updated upstream
-                <input type="checkbox" name="recurrent"  checked={this.state.recurrent} value={this.state.recurrent}  onChange= {() => {this.onChangeCheckbox("recurrent")}}/>
-                    Recurrent
-                </label>
-                <label>
-=======
->>>>>>> Stashed changes
                     Room
                 </label>
                 {showRooms(this.props.getAvalibleRooms(this.props.selectedSession))}
