@@ -29,7 +29,7 @@ function dragSession(ev, session) {
 function placeSession(session, config, handleSessionClick){
     const row = (((session.startMinute - config.timeStart)/config.mins_x_block)>>0) + 1;
     const column = session.day +1;
-    
+
 
     const rowEnd= Math.ceil(((session.startMinute+session.length -config.timeStart) /config.mins_x_block))+1;
     const size = rowEnd-row;
@@ -66,13 +66,13 @@ const days={
     6:"Sábado",
     7:"Domingo"
 };
+
 function populateDaysRow(currentWeek){
     return Array.from(Array(7).keys())
     .map((n) =>
     <GridDayElement row={1} column={n+2}>{days[n+1]}<br/>{formatDate(currentWeek[n])}</GridDayElement>
   );
 }
-
 
 
 function allowDrop(ev) {
@@ -176,8 +176,8 @@ export default class Timetable extends React.Component {
         schedulable: conflictSessions.length===0,
         startMinute: start
       };
+      
       return information;
-
     }
 
 
