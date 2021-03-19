@@ -26,9 +26,9 @@ export const NotificationsButtonsContainer= styled.div`
 
 `;
 
-export const NotificationButton = styled.button`
+export const FormButton = styled.button`
   border-radius: 4px;
-  background: #2DA283;
+  background: ${props => props.color || "#EFEFEF"};
   padding: 5% 10%;
   color: #FFFF;
   outline: none;
@@ -41,4 +41,23 @@ export const NotificationButton = styled.button`
     background: #6cd1b6;
     color: #010606;
   }
+`;
+
+
+export const FormSubmit = styled.input`
+border-radius: 4px;
+background: ${props => props.color || "#EFEFEF"};
+padding: 5% 10%;
+color: #FFFF;
+outline: none;
+border: none;
+cursor: pointer;
+transition: all 0.2s ease-in-out;
+text-decoration: none;
+&:hover {
+  transition: all 0.2s ease-in-out;
+  background: #6cd1b6;
+  color: #010606;
+}
+
 `;

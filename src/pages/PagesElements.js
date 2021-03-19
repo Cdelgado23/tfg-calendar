@@ -64,6 +64,8 @@ export const MenuBody = styled.div`
   overflow-y: scroll;
   overflow-x: hidden;
   width:100%;
+  border: 1px solid #EFEFEF;
+
   @media screen and (max-width: 1024px) {
     height:100%;
   }
