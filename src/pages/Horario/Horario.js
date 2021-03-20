@@ -11,7 +11,6 @@ const group1 = {
   groupName: "Lab",
   color: "#ffef66",
   length: 60,
-  id:"asdasd-aergeryter-112424tfdsasa"
 };
 const group2 = {
   type:"group",
@@ -19,7 +18,6 @@ const group2 = {
   groupName: "Teoría GG",
   color: "#ff4451",
   length: 45,
-  id:"asdasd-q2341245rwefqwrf24-112424tfdsasa"
 };
 const groups= [group1, group2];
 

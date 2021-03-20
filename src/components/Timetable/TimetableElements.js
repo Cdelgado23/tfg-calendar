@@ -72,20 +72,21 @@ export const GridElement = styled.button`
 
 `;
 
-export const GridLines= styled.div`
-
-grid-column-start: ${props => props.column};
-grid-row-start: ${props => props.row};
-
-grid-column-end: ${props => props.column +1};
-grid-row-end: ${props => props.row +1};
-border-top: ${props => props.row>1 && props.column>0 ? "1px solid #EFEFEF": ""} ;
-justify-self: stretch;
-
+export const GridLinesComponent = styled.div.attrs(props => ({
+  style: {
+    background: props.background,
+    gridColumnStart: props.column,
+    gridRowStart: props.row,
+    gridColumnEnd: props.column +1,
+    gridRowEnd: props.row +1,
+    borderTop: props.row>1 && props.column>0 ? "1px solid #EFEFEF": ""
+  },
+}))
+`justify-self: stretch;
 min-height: 1rem;
-
 ${props => props.column>1 ? "&:hover {transition: all 0.2s ease-in-out;background: #EFEFEF;color: #010606;}":""};
 `;
+
 
 export const GridDayElement = styled.div`
   grid-column-start: ${props => props.column};

@@ -56,7 +56,7 @@ export const MenuBody = styled.div`
   flex-direction: column; 
   align-items: center;
   white-space: nowrap;
-  padding: 5px 10px;
+  padding: 2% 1%;
   height:70vh;
   justify-content: flex-start;
   background: #FFFFFF;
@@ -64,6 +64,8 @@ export const MenuBody = styled.div`
   overflow-y: scroll;
   overflow-x: hidden;
   width:100%;
+  border: 1px solid #EFEFEF;
+
   @media screen and (max-width: 1024px) {
     height:100%;
   }

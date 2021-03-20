@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlexForm, NotificationsButtonsContainer, NotificationButton} from './SessionFormElements'
+import {FlexForm, NotificationsButtonsContainer, FormButton, FormSubmit} from './SessionFormElements'
 
 function showRooms(rooms){
     const listRooms = rooms.map((room) =>
@@ -66,15 +66,19 @@ export default class SessionForm extends React.Component {
                 <label>
                     Subject
                 </label>
-                <input type="text" name="subject" value={this.state.subjectName} onChange= {event => {this.onChangeField(event,"subjectName")}}/>
+                <input disabled type="text" name="subject" value={this.state.subjectName} onChange= {event => {this.onChangeField(event,"subjectName")}}/>
                 <label>
                     Group
                 </label>
-                <input type="text" name="group" value={this.state.groupName}  onChange= {event => {this.onChangeField(event,"groupName")}}/>
+                <input disabled type="text" name="group" value={this.state.groupName}  onChange= {event => {this.onChangeField(event,"groupName")}}/>
                 <label>
                     Day
                 </label>
                 <input type={this.state.recurrent===true? "text":"date"} name="day"  value={this.state.day}  onChange= {event => {this.onChangeField(event,"day")}}/>
+                <label>
+                <input type="checkbox" name="recurrent"  checked={this.state.recurrent} value={this.state.recurrent}  onChange= {event => {this.onChangeCheckbox("recurrent")}}/>
+                    Recurrent
+                </label>
                 <label>
                     Start Time
                 </label>
@@ -84,24 +88,20 @@ export default class SessionForm extends React.Component {
                 </label>
                 <input type="text" name="length"  value={this.state.length}  onChange= {event => {this.onChangeField(event,"length")}}/>
                 <label>
-                <input type="checkbox" name="recurrent"  checked={this.state.recurrent} value={this.state.recurrent}  onChange= {event => {this.onChangeCheckbox("recurrent")}}/>
-                    Recurrent
-                </label>
-                <label>
                     Room
                 </label>
                 {showRooms(this.props.getAvalibleRooms(this.props.selectedSession))}
                 <br/>
-                <input type="submit" value="Update"/>
+                <FormSubmit color = "#2DA283" type="submit" value="Update"/>
             </FlexForm>
             <h4 style={{textAlign: "center"}}>Notificaciones</h4>
             <NotificationsButtonsContainer>
-            <NotificationButton>
+            <FormButton color = "#2DA283">
                 ver
-            </NotificationButton>
-            <NotificationButton>
+            </FormButton>
+            <FormButton color = "#2DA283">
                 añadir
-            </NotificationButton>
+            </FormButton>
             </NotificationsButtonsContainer>
             </div>
         );
