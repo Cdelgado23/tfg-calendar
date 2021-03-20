@@ -1,5 +1,5 @@
 import React from 'react';
-import {TimetableGrid, GridTimeElement, GridElement, GridLines, GridDayElement, WeekDataBlock, WeekPicker, SelectedWeek, GridLinesComponent} from './TimetableElements';
+import {TimetableGrid, GridTimeElement, GridElement, GridDayElement, WeekDataBlock, WeekPicker, SelectedWeek, GridLinesComponent} from './TimetableElements';
 
 
 
