@@ -66,11 +66,11 @@ export default class SessionForm extends React.Component {
                 <label>
                     Subject
                 </label>
-                <input type="text" name="subject" value={this.state.subjectName} onChange= {event => {this.onChangeField(event,"subjectName")}}/>
+                <input disabled type="text" name="subject" value={this.state.subjectName} onChange= {event => {this.onChangeField(event,"subjectName")}}/>
                 <label>
                     Group
                 </label>
-                <input type="text" name="group" value={this.state.groupName}  onChange= {event => {this.onChangeField(event,"groupName")}}/>
+                <input disabled type="text" name="group" value={this.state.groupName}  onChange= {event => {this.onChangeField(event,"groupName")}}/>
                 <label>
                     Day
                 </label>

@@ -6,7 +6,7 @@ export const FlexForm= styled.div`
   flex-direction: column; 
   width: 100%;
   justify-content: space-around;
-  margin-bottom: 5vh;
+  margin-bottom: 2vh;
 `;
 
 export const sessionInput= styled.input`
@@ -48,6 +48,7 @@ export const FormSubmit = styled.input`
 border-radius: 4px;
 background: ${props => props.color || "#EFEFEF"};
 padding: 5% 10%;
+margin:0;
 color: #FFFF;
 outline: none;
 border: none;

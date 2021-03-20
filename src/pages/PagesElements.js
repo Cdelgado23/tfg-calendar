@@ -56,7 +56,7 @@ export const MenuBody = styled.div`
   flex-direction: column; 
   align-items: center;
   white-space: nowrap;
-  padding: 5px 10px;
+  padding: 2% 1%;
   height:70vh;
   justify-content: flex-start;
   background: #FFFFFF;
