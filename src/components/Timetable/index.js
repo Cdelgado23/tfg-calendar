@@ -187,7 +187,7 @@ function getNumberOfWeeksOfYear(y) {
 
   //check for a Jan 1 that's a Thursday or a leap year that has a 
   //Wednesday jan 1. Otherwise it's 52
-  return d.getDay() === 4 || isLeap && d.getDay() === 3 ? 53 : 52
+  return (d.getDay() === 4 || isLeap) && d.getDay() === 3 ? 53 : 52
 }
 
 export default class Timetable extends React.Component {
@@ -304,7 +304,7 @@ export default class Timetable extends React.Component {
       week = week<1? lastWeek: week;
 
       //increase year
-      var year = week>lastWeek? year+1: year;
+      year = week>lastWeek? year+1: year;
 
       lastWeek = getNumberOfWeeksOfYear(year);
 
