@@ -29,6 +29,7 @@ export default class SessionForm extends React.Component {
                 startMinute: this.props.selectedSession.startMinute,
                 length: this.props.selectedSession.length,
                 day: this.props.selectedSession.day,
+                executionDate: this.props.selectedSession.executionDate,
                 recurrent: this.props.selectedSession.recurrent
             }
         }
@@ -74,7 +75,11 @@ export default class SessionForm extends React.Component {
                 <label>
                     Day
                 </label>
-                <input type={this.state.recurrent===true? "text":"date"} name="day"  value={this.state.day}  onChange= {event => {this.onChangeField(event,"day")}}/>
+                {this.state.recurrent===true? 
+                <input type="text" name="day"  value={this.state.day}  onChange= {event => {this.onChangeField(event,"day")}}/>
+                :
+                <input type="date" name="day"  value={this.state.executionDate}  onChange= {event => {this.onChangeField(event,"executionDate")}}/>
+                }
                 <label>
                 <input type="checkbox" name="recurrent"  checked={this.state.recurrent} value={this.state.recurrent}  onChange= {event => {this.onChangeCheckbox("recurrent")}}/>
                     Recurrent

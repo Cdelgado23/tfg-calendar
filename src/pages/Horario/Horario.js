@@ -46,7 +46,9 @@ const session1={
   subjectName: "subject X",
   groupName: "group n",
   recurrent: true, 
+  recurrencePeriod: 1,
   day: 1,
+  startFrom: "2021-W01",
   room:"Sala 1"
 }
 const session2={
@@ -56,8 +58,10 @@ const session2={
   color: "#f7eb80",
   subjectName: "subject X",
   groupName: "group n",
-  recurrent: true, 
+  recurrent: true,
+  recurrencePeriod: 2,
   day: 1,
+  startFrom: "2021-W01",
   room:"Sala Grande"
 }
 const session3={
@@ -68,7 +72,7 @@ const session3={
   subjectName: "subject Testing asdasd asdas dasd ",
   groupName: "Fantastic 4s",
   recurrent: false, 
-  day: 1,
+  executionDate: "2021-04-02",
   room:"Sala 1"
 }
 

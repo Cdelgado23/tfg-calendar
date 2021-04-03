@@ -5,13 +5,19 @@ import {TimetableGrid, GridTimeElement, GridElement, GridDayElement, WeekDataBlo
 
 import {v4 as uuidv4} from 'uuid';
 
+function formatDate(d){
+  var month = '' + (d.getMonth() + 1);
+  var day = '' + d.getDate();
+  var year = d.getFullYear();
 
-function formatDate(toFormat){
-  var month = toFormat.getUTCMonth() + 1; //months from 1-12
-  var day = toFormat.getUTCDate();
-  var year = toFormat.getUTCFullYear();
-  return day + "/" + month + "/" + year;
+  if (month.length < 2) 
+    month = '0' + month;
+  if (day.length < 2) 
+    day = '0' + day;
+
+  return [year, month, day].join('-');
 }
+
 
 function sessionToString(session){
   return <p style={{overflow: "hidden",
@@ -26,10 +32,42 @@ function dragSession(ev, session) {
   ev.dataTransfer.setData("text",JSON.stringify(session));
 }
 
-function placeSession(session, config, handleSessionClick){
-    const row = (((session.startMinute - config.timeStart)/config.mins_x_block)>>0) + 1;
-    const column = session.day +1;
+function sessionIsInWeek(session, config){
 
+  if (session.recurrent){
+    const sessionWeekData = getYearAndWeekNumberFromInputText(session.startFrom);
+    const weekToCheckData = getYearAndWeekNumberFromInputText(config.selectedWeek);
+    return sessionWeekData[0]=== weekToCheckData[0] && ((weekToCheckData[1] -sessionWeekData[1])%session.recurrencePeriod)===0;
+  }else{
+    const sessionDate = new Date(session.executionDate);
+    console.log(sessionDate);
+    sessionDate.setHours(0,0,0,0);
+    var n=1;
+    var found=false; 
+    config.week.forEach(day =>{
+      if (sessionDate.getTime() === day.getTime())
+      {
+        session.day=n; 
+
+        found= true;
+      }
+      n++;
+    });
+  }
+  return found;
+}
+
+
+function placeSession(session, config, handleSessionClick){
+    if (!sessionIsInWeek(session, config))
+    {
+      console.log(session);
+      return;
+    }
+
+    const row = (((session.startMinute - config.timeStart)/config.mins_x_block)>>0) + 1;
+
+    var column=session.day+1;
 
     const rowEnd= Math.ceil(((session.startMinute+session.length -config.timeStart) /config.mins_x_block))+1;
     const size = rowEnd-row;
@@ -37,6 +75,12 @@ function placeSession(session, config, handleSessionClick){
 
     return(<GridElement key={uuidv4()} draggable="true" onDragStart={event=>dragSession(event, session)} row={row+1} column={column} color= {session.color} size={size}  onClick={() => { handleSessionClick(session) }}>{sessionToString(session)}</GridElement>
         );
+}
+
+//get week number from string formatted like : YYYY-Wnn (2021-W01)
+function getYearAndWeekNumberFromInputText(text){
+  var splitted = text.split("-W");
+  return splitted;
 }
 
 
@@ -109,11 +153,12 @@ function getDateOfISOWeek(w, y) {
 
 function getWeekFromDay(current){
   var week=[];
-  current.setDate(current.getDate() +1);
-
+  current.setDate(current.getDate());
   for (var i = 0; i < 7; i++) {
+    var d = new Date(current);
+    d.setHours(0,0,0,0);
     week.push(
-        new Date(current)
+        d
     ); 
     current.setDate(current.getDate() +1);
 }
@@ -129,8 +174,8 @@ function getWeekNumberFromDay(date){
    var numberOfDays =  Math.floor((date - oneJan) / (24 * 60 * 60 * 1000));   
 
    // adding 1 since to current date and returns value starting from 0   
-   var result = Math.ceil(( date.getDay() + 1 + numberOfDays) / 7); 
-   return result;
+   var result = Math.ceil(( date.getDay()  + numberOfDays) / 7); 
+   return result-1;
 }
 
 
@@ -184,8 +229,11 @@ export default class Timetable extends React.Component {
     drop(ev, id, config) {
       ev.preventDefault();
       var data = JSON.parse(ev.dataTransfer.getData("text"));
-          
-      const session={
+      
+      var day= config.week[id%8 -1];
+      const date = formatDate(day);
+
+      var session={
         id: data.id? data.id : uuidv4(),
         origin: "dinamic",
         startMinute: (((id/8)>>0)-1) *config.mins_x_block + config.timeStart,
@@ -193,12 +241,21 @@ export default class Timetable extends React.Component {
         color: data.color,
         subjectName: data.subjectName,
         groupName: data.groupName,
-        recurrent: true, 
-        day: id%8
+        recurrent: data.recurrent, 
+
       };
+      if (data.recurrent){
+        session["day"]=id%8;
+        session["recurrencePeriod"]= data.recurrencePeriod;
+        session["startFrom"]= data.startFrom;
+      }else{
+        session["executionDate"]= date;
+      }
 
+
+      console.log(session);
       var schedulableInformation= this.getScheduleInformation(session, id);
-
+      
       if (schedulableInformation.schedulable===true){
         session.startMinute= schedulableInformation.startMinute;
         this.setState({
