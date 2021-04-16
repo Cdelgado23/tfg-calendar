@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import LoadingOverlay from 'react-loading-overlay';
 
 export const SpaceBetweenMenu= styled.div`
 display: flex;
@@ -54,7 +55,7 @@ export const MenuHeader = styled.div`
 export const MenuBody = styled.div`
   display: flex;
   flex-direction: column; 
-  align-items: center;
+  align-items: stretch;
   white-space: nowrap;
   padding: 2% 1%;
   height:70vh;
@@ -99,3 +100,29 @@ export const Button = styled.button`
     color: #010606;
   }
 `;
+
+export const Footer = styled.div`
+  margin-top: 4vh;
+  height: 6vh;
+  @media screen and (max-width: 1024px) {
+    display: none
+  }
+`;
+
+const StyledLoader = styled(LoadingOverlay)`
+  height: 200%;
+
+`
+ 
+export function MyLoader({ active, children }) {
+  return (
+    <StyledLoader
+      active={active}
+      classNamePrefix='MyLoader_'
+      spinner
+      text='Loading your content...'
+    >
+      {children}
+    </StyledLoader>
+  )
+}

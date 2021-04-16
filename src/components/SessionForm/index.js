@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlexForm, NotificationsButtonsContainer, FormButton, FormSubmit} from './SessionFormElements'
+import {FlexForm, NotificationsButtonsContainer, FormButton, FormSubmit, SessionInput} from './SessionFormElements'
 
 function showRooms(rooms){
     const listRooms = rooms.map((room) =>
@@ -67,18 +67,18 @@ export default class SessionForm extends React.Component {
                 <label>
                     Subject
                 </label>
-                <input disabled type="text" name="subject" value={this.state.subjectName} onChange= {event => {this.onChangeField(event,"subjectName")}}/>
+                <SessionInput disabled type="text" name="subject" value={this.state.subjectName} onChange= {event => {this.onChangeField(event,"subjectName")}}/>
                 <label>
                     Group
                 </label>
-                <input disabled type="text" name="group" value={this.state.groupName}  onChange= {event => {this.onChangeField(event,"groupName")}}/>
+                <SessionInput disabled type="text" name="group" value={this.state.groupName}  onChange= {event => {this.onChangeField(event,"groupName")}}/>
                 <label>
                     Day
                 </label>
                 {this.state.recurrent===true? 
-                <input type="text" name="day"  value={this.state.day}  onChange= {event => {this.onChangeField(event,"day")}}/>
+                <SessionInput type="text" name="day"  value={this.state.day}  onChange= {event => {this.onChangeField(event,"day")}}/>
                 :
-                <input type="date" name="day"  value={this.state.executionDate}  onChange= {event => {this.onChangeField(event,"executionDate")}}/>
+                <SessionInput type="date" name="day"  value={this.state.executionDate}  onChange= {event => {this.onChangeField(event,"executionDate")}}/>
                 }
                 <label>
                 <input type="checkbox" name="recurrent"  checked={this.state.recurrent} value={this.state.recurrent}  onChange= {event => {this.onChangeCheckbox("recurrent")}}/>
@@ -87,11 +87,11 @@ export default class SessionForm extends React.Component {
                 <label>
                     Start Time
                 </label>
-                <input type="text" name="startTime" value={this.state.startMinute}  onChange= {event => {this.onChangeField(event,"startMinute")}}/>
+                <SessionInput type="text" name="startTime" value={this.state.startMinute}  onChange= {event => {this.onChangeField(event,"startMinute")}}/>
                 <label>
                     Duration
                 </label>
-                <input type="text" name="length"  value={this.state.length}  onChange= {event => {this.onChangeField(event,"length")}}/>
+                <SessionInput type="text" name="length"  value={this.state.length}  onChange= {event => {this.onChangeField(event,"length")}}/>
                 <label>
                     Room
                 </label>

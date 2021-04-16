@@ -1,9 +1,14 @@
 import React from 'react';
-import { LateralMenu, MenuHeader, MenuBody, SpaceBetweenMenu, Button, CentralMenu} from '../PagesElements';
+import { LateralMenu, MenuHeader, MenuBody, SpaceBetweenMenu, Button, CentralMenu, Footer} from '../PagesElements';
 import Timetable from '../../components/Timetable'
 import Subject from '../../components/Subject'
 import SessionForm from '../../components/SessionForm';
 import {v4 as uuidv4} from 'uuid';
+
+import {RepositoryContext} from '../../context/RepositoryContext';
+import prodData from '../../repository/prodData';
+
+import {MyLoader} from '../PagesElements.js';
 
 const group1 = {
   type:"group",
@@ -76,10 +81,12 @@ const session3={
   room:"Sala 1"
 }
 
+
 const sessions= [session1, session2, session3];
 
 
 const rooms=["Sala 1", "Sala Grande", "Salón de actos"];
+
 
 function getAvalibleRooms(session){
   var daySessions = sessions.filter (s => s.day===session.day);
@@ -102,14 +109,19 @@ function ListSubjects(params) {
 }
 
 
-
 export default class Horario extends React.Component {
-
+  static contextType = RepositoryContext;
 
   constructor(props) {
     super(props);
     this.handleSessionClick = this.handleSessionClick.bind(this);
-    this.state={};
+    this.state={loading: false};
+
+    this.setLoading = this.setLoading.bind(this);
+
+    console.log("context");
+    console.log(this.context);
+
   }
   
   handleSessionClick(clickedSession){
@@ -117,10 +129,28 @@ export default class Horario extends React.Component {
       selectedSession: clickedSession});
       console.log(clickedSession);
   }
+  
+  setLoading(_loading){
+    this.setState({loading: _loading});
+  }
 
+
+  componentDidMount() {
+    console.log("test prod");
+    console.log(this.context);
+    var dataSource= new prodData(this.context.db, this.setLoading);
+    console.log("comp search");
+    dataSource.getSessionsOfRoom("Big Room");
+
+  }
 
   render() {
     return (
+      <MyLoader
+      active={this.state.loading}
+      spinner
+      text='Loading your content...'
+      >
       <div 
       style={{
         display: 'flex',
@@ -157,7 +187,9 @@ export default class Horario extends React.Component {
   
           </LateralMenu>     
         </SpaceBetweenMenu>
+        <Footer></Footer>
       </div>
+      </MyLoader>
     );
   };
   

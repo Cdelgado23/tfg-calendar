@@ -4,15 +4,14 @@ import styled from 'styled-components';
 export const FlexForm= styled.div`
   display: flex;
   flex-direction: column; 
-  width: 100%;
   justify-content: space-around;
-  margin-bottom: 2vh;
-`;
 
-export const sessionInput= styled.input`
+  margin: 0 0.5em 2vh 0.5em;
+  `;
 
-  background: #EFEFEF;
-
+export const SessionInput= styled.input`
+  width:100%;
+  margin-bottom: 0.5em;
 `;
 
 
