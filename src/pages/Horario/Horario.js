@@ -15,14 +15,32 @@ const group1 = {
   subjectName:"subject X",
   groupName: "Lab",
   color: "#ffef66",
-  length: 60,
+  defaultSessionValues: {
+    color: "#ffef66",
+    endAt: "2021-W52",
+    length: 45,
+    recurrencePeriod: "1",
+    recurrent: true,
+    room: "sin asignar",
+    startFrom: "2021-W1",
+    teacher: "teacher Z",
+  }
 };
 const group2 = {
   type:"group",
   subjectName:"subject X",
   groupName: "Teoría GG",
   color: "#ff4451",
-  length: 45,
+  defaultSessionValues: {
+    color: "#ff4451",
+    endAt: "2021-W52",
+    length: 45,
+    recurrencePeriod: "1",
+    recurrent: true,
+    room: "sin asignar",
+    startFrom: "2021-W1",
+    teacher: "teacher Z"
+  }
 };
 const groups= [group1, group2];
 
@@ -109,18 +127,26 @@ function ListSubjects(params) {
 }
 
 
+
 export default class Horario extends React.Component {
   static contextType = RepositoryContext;
 
   constructor(props) {
     super(props);
     this.handleSessionClick = this.handleSessionClick.bind(this);
-    this.state={loading: false};
+    this.state={
+      loading: false,
+      sessions: [],
+      subjects: []
+    
+    };
 
     this.setLoading = this.setLoading.bind(this);
+    this.setSessions = this.setSessions.bind(this);
+    this.updateSession = this.updateSession.bind(this);
+    this.createSession = this.createSession.bind(this);
 
-    console.log("context");
-    console.log(this.context);
+    this.setSubjects = this.setSubjects.bind(this);
 
   }
   
@@ -133,15 +159,35 @@ export default class Horario extends React.Component {
   setLoading(_loading){
     this.setState({loading: _loading});
   }
+  setSessions(_sessions){
+    this.setState({sessions: _sessions});
+  }
+  updateSession(session){
+    this.context.updateSession(session, ()=> {
+      this.setState((prevState) =>(
+        {sessions: [...prevState.sessions.filter(s => s.id!==session.id), session]}
+      ));
+    }
+  );
+  }
+  createSession(session){
+    this.context.createSession(session, ()=> {
+        this.setState((prevState) =>(
+          {sessions: [...prevState.sessions, session]}
+        ));
+      }
+    );
+  }
 
+  setSubjects(_subjects){
+    this.setState({subjects: _subjects});
+  }
 
   componentDidMount() {
-    console.log("test prod");
-    console.log(this.context);
-    var dataSource= new prodData(this.context.db, this.setLoading);
-    console.log("comp search");
-    dataSource.getSessionsOfRoom("Big Room");
-
+    this.context.setLoadingCallback(this.setLoading);
+    
+    this.context.loadSubjectsOfTeacher("teacher Z", this.setSubjects);
+    this.context.loadSessionsOfTeacher("teacher Z", this.setSessions);
   }
 
   render() {
@@ -157,38 +203,43 @@ export default class Horario extends React.Component {
         flexDirection: 'column',
         justifyContent: 'flex-end'
       }}
-    >
-        <SpaceBetweenMenu>
-          <LateralMenu>
-            <MenuHeader>
-              <h2>Asignaturas</h2>
-            </MenuHeader>
-            <MenuBody>
-              {ListSubjects(subjects)}
-              <Button>
-                +
-              </Button>
-            </MenuBody>
-  
-          </LateralMenu>
-          <CentralMenu>
-            <Timetable timeStart={480} scheduleSize={720} mins_x_block={15} sessions= {sessions} handleSessionClick={this.handleSessionClick}>
-            </Timetable>
-          </CentralMenu>
-          <LateralMenu>
-            <MenuHeader>
-              <h2>Sesión</h2>
-            </MenuHeader>
-            <MenuBody>
-              <SessionForm getAvalibleRooms = {getAvalibleRooms} key ={this.state.selectedSession? this.state.selectedSession.id:"-"} id ={this.state.selectedSession? this.state.selectedSession.id:null} selectedSession={this.state.selectedSession}>
-              </SessionForm>
-
-            </MenuBody>
-  
-          </LateralMenu>     
-        </SpaceBetweenMenu>
-        <Footer></Footer>
-      </div>
+      >
+          <SpaceBetweenMenu>
+            <LateralMenu>
+              <MenuHeader>
+                <h2>Asignaturas</h2>
+              </MenuHeader>
+              <MenuBody>
+                {ListSubjects(this.state.subjects)}
+                <Button>
+                  +
+                </Button>
+              </MenuBody>
+            </LateralMenu>
+            <CentralMenu>
+              <Timetable timeStart={480} scheduleSize={720} mins_x_block={15} 
+                          sessions= {this.state.sessions} setSessions= {this.setSessions} 
+                          handleSessionClick={this.handleSessionClick}
+                          updateSession={this.updateSession}
+                          createSession = {this.createSession}>
+              </Timetable>
+            </CentralMenu>
+            <LateralMenu>
+              <MenuHeader>
+                <h2>Sesión</h2>
+              </MenuHeader>
+              <MenuBody>
+                <SessionForm getAvalibleRooms = {getAvalibleRooms} 
+                              key ={this.state.selectedSession? this.state.selectedSession.id:"-"} 
+                              id ={this.state.selectedSession? this.state.selectedSession.id:null} 
+                              selectedSession={this.state.selectedSession}
+                              updateSession = {this.updateSession}>
+                </SessionForm>
+              </MenuBody>
+            </LateralMenu>     
+          </SpaceBetweenMenu>
+          <Footer></Footer>
+        </div>
       </MyLoader>
     );
   };

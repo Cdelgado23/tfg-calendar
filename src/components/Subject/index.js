@@ -38,9 +38,6 @@ export default class Subject extends React.Component {
         </SubjectTitle>
         <SubjectGroupsList show={this.state.showGroups}>
             {ListGroups(this.state.subject.groups)}
-        <AddGroupButton>
-          +
-        </AddGroupButton>
         </SubjectGroupsList>
       </SubjectMain>
     )
