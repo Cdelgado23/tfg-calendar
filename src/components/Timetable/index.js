@@ -204,7 +204,6 @@ function generateSessionFromDrop(data){
     recurrent: data.recurrent, 
     endAt: data.endAt,
     room: data.room,
-    subjectName: data.subjectName,
     teacher: data.teacher
   };
   return session;

@@ -18,7 +18,6 @@ export default class SessionForm extends React.Component {
     constructor(props) {
         super(props);
         this.state={};
-        this.updateStateFromSession= this.updateStateFromSession.bind(this);
         this.onChangeField= this.onChangeField.bind(this);
         this.onChangeCheckbox= this.onChangeCheckbox.bind(this);
 
@@ -99,20 +98,6 @@ export default class SessionForm extends React.Component {
         this.props.updateSession(session);
         this.setState({
             id: null
-        });
-    }
-
-    updateStateFromSession(session){
-        this.setState({
-            id: session.id,
-            subjectName: session.subjectName,
-            groupName: session.groupName,
-            startMinute: session.startMinute,
-            length: session.length,
-            day: session.day,
-            recurrent: session.recurrent,
-            startFrom: session.startFrom,
-            endAt: session.endAt
         });
     }
 

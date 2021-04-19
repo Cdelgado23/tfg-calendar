@@ -6,60 +6,9 @@ import SessionForm from '../../components/SessionForm';
 import {v4 as uuidv4} from 'uuid';
 
 import {RepositoryContext} from '../../context/RepositoryContext';
-import prodData from '../../repository/prodData';
 
 import {MyLoader} from '../PagesElements.js';
 
-const group1 = {
-  type:"group",
-  subjectName:"subject X",
-  groupName: "Lab",
-  color: "#ffef66",
-  defaultSessionValues: {
-    color: "#ffef66",
-    endAt: "2021-W52",
-    length: 45,
-    recurrencePeriod: "1",
-    recurrent: true,
-    room: "sin asignar",
-    startFrom: "2021-W1",
-    teacher: "teacher Z",
-  }
-};
-const group2 = {
-  type:"group",
-  subjectName:"subject X",
-  groupName: "Teoría GG",
-  color: "#ff4451",
-  defaultSessionValues: {
-    color: "#ff4451",
-    endAt: "2021-W52",
-    length: 45,
-    recurrencePeriod: "1",
-    recurrent: true,
-    room: "sin asignar",
-    startFrom: "2021-W1",
-    teacher: "teacher Z"
-  }
-};
-const groups= [group1, group2];
-
-const subject1={
-  subjectName: "subject 1 large text",
-  groups: groups,
-  color: "#1f67e2"
-};
-const subject2={
-  subjectName: "subject 2 very very very large text",
-  groups: groups,
-  color: "#db80f7"
-};
-const subject3={
-  subjectName: "subject 3",
-  groups: groups,
-  color: "#23ea51"
-};
-const subjects=[subject1, subject2, subject3];
 
 const session1={
   id:uuidv4(),

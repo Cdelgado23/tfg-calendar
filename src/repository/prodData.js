@@ -1,5 +1,3 @@
-import {v4 as uuidv4} from 'uuid';
-
 // Required for side-effects
 require("firebase/firestore");
 
