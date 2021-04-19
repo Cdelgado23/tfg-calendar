@@ -1,5 +1,5 @@
 import React from 'react'
-import {SubjectMain, SubjectTitle, SubjectGroupsList, GroupElement, AddGroupButton} from './SubjectElements';
+import {SubjectMain, SubjectTitle, SubjectGroupsList, GroupElement} from './SubjectElements';
 
 function drag(ev, group) {
   ev.dataTransfer.setData("text",JSON.stringify(group));
@@ -38,9 +38,6 @@ export default class Subject extends React.Component {
         </SubjectTitle>
         <SubjectGroupsList show={this.state.showGroups}>
             {ListGroups(this.state.subject.groups)}
-        <AddGroupButton>
-          +
-        </AddGroupButton>
         </SubjectGroupsList>
       </SubjectMain>
     )

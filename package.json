@@ -27,7 +27,9 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "sh -ac '. ./.env.${REACT_APP_ENV}; react-scripts build'",
+    "build:dev": "REACT_APP_ENV=dev npm run build",
+    "build:pro": "REACT_APP_ENV=pro npm run build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

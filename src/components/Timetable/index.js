@@ -1,5 +1,6 @@
 import React from 'react';
 import {TimetableGrid, GridTimeElement, GridElement, GridDayElement, WeekDataBlock, WeekPicker, SelectedWeek, GridLinesComponent} from './TimetableElements';
+import {RepositoryContext} from '../../context/RepositoryContext';
 
 
 
@@ -84,9 +85,9 @@ function getYearAndWeekNumberFromInputText(text){
 }
 
 
-function populateGrid(params, handleSessionClick) {
+function populateGrid(params, sessions, handleSessionClick) {
     const populated=[];
-    params.sessions.forEach(session => {
+    sessions.forEach(session => {
         populated.push(placeSession(session, params, handleSessionClick));
     });
     return populated;
@@ -190,7 +191,34 @@ function getNumberOfWeeksOfYear(y) {
   return (d.getDay() === 4 || isLeap) && d.getDay() === 3 ? 53 : 52
 }
 
+function generateSessionFromDrop(data){
+
+  var session={
+    type: "session",
+    id: data.id,
+    origin: "drag&drop - session",
+    length: data.length,
+    color: data.color,
+    subjectName: data.subjectName,
+    groupName: data.groupName,
+    recurrent: data.recurrent, 
+    endAt: data.endAt,
+    room: data.room,
+    teacher: data.teacher
+  };
+  return session;
+}
+
+function FormatGroupData(data){
+  var defaultData= data.defaultSessionValues;
+  defaultData["groupName"]= data.groupName;
+  defaultData["subjectName"] = data.subjectName;
+  defaultData["type"] = "group";
+  return defaultData;
+}
+
 export default class Timetable extends React.Component {
+  static contextType = RepositoryContext;
     constructor(props) {
         super(props);
 
@@ -199,7 +227,6 @@ export default class Timetable extends React.Component {
         this.state = {mins_x_block: props.mins_x_block,
                       divisions: props.scheduleSize/props.mins_x_block,
                       timeStart: props.timeStart,
-                      sessions: props.sessions,
                       selectedWeek: ""+todayDate.getFullYear()+"-W"+getWeekNumberFromDay(todayDate),
                       week: getWeekFromDay(getDateOfISOWeek(getWeekNumberFromDay(todayDate),todayDate.getFullYear()))
                       };
@@ -223,7 +250,7 @@ export default class Timetable extends React.Component {
 
       const end=  start + session.length;
 
-      var daySessions= this.state.sessions.filter(s => (day === s.day && !compareSessions(s, session)));
+      var daySessions= this.props.sessions.filter(s => (day === s.day && !compareSessions(s, session)));
       console.log(daySessions);
       var conflictSessions= daySessions.filter(s => (s.startMinute > start && s.startMinute <end));
 
@@ -243,18 +270,14 @@ export default class Timetable extends React.Component {
       
       var day= config.week[id%8 -1];
       const date = formatDate(day);
+  
+      if(data.type === "group"){
+        data = FormatGroupData(data);
+        data["type"] = "group";
+      }
 
-      var session={
-        id: data.id? data.id : uuidv4(),
-        origin: "dinamic",
-        startMinute: (((id/8)>>0)-1) *config.mins_x_block + config.timeStart,
-        length: data.length,
-        color: data.color,
-        subjectName: data.subjectName,
-        groupName: data.groupName,
-        recurrent: data.recurrent, 
-
-      };
+      var session = generateSessionFromDrop(data);
+      session["startMinute"] = (((id/8)>>0)-1) *config.mins_x_block + config.timeStart;
       if (data.recurrent){
         session["day"]=id%8;
         session["recurrencePeriod"]= data.recurrencePeriod;
@@ -263,17 +286,18 @@ export default class Timetable extends React.Component {
         session["executionDate"]= date;
       }
 
+      var schedulableInformation= this.getScheduleInformation(session, id);      
 
-      console.log(session);
-      var schedulableInformation= this.getScheduleInformation(session, id);
-      
       if (schedulableInformation.schedulable===true){
         session.startMinute= schedulableInformation.startMinute;
-        this.setState({
-          sessions: [...this.state.sessions.filter(item => !compareSessions(item, data)), session]
-        });
-      }
 
+        if (data.type ==="session"){  
+          this.props.updateSession(session);
+        }else if(data.type === "group"){
+          this.props.createSession(session);
+        }
+
+      }
 
     }
 
@@ -327,6 +351,7 @@ export default class Timetable extends React.Component {
     }
 
     render() {
+      console.log(this.context.sessions);
       return (
         <div>
         <WeekDataBlock>
@@ -338,17 +363,15 @@ export default class Timetable extends React.Component {
         </WeekDataBlock>
         <WeekDataBlock>
         <WeekPicker>
-            <input type="week" name="week" id="select-week" value={this.state.selectedWeek} required onChange={event => this.handleWeekChange(event)}></input>
+          <input type="week" name="week" id="select-week" value={this.state.selectedWeek} required onChange={event => this.handleWeekChange(event)}></input>
         </WeekPicker>
-
         </WeekDataBlock>
-
 
         <TimetableGrid divisions= {this.state.divisions}>
               {drawRowLines(this.state, this.drop)}
               {populateDaysRow(this.state.week)}
               {populateTimeColumn(this.state)}
-              {populateGrid(this.state, this.handleSessionClick)}
+              {populateGrid(this.state, this.props.sessions, this.handleSessionClick)}
         </TimetableGrid>
         </div>
       );
