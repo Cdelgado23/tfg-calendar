@@ -19,7 +19,7 @@ export const CentralMenu = styled.div`
 
   @media screen and (max-width: 1024px) {
     width:100%;
- //   order: -9999;
+    order: -9999;
   }
 `;
 
@@ -35,7 +35,7 @@ export const LateralMenu = styled.div`
   @media screen and (max-width: 1024px) {
     width:100%;
     height:100%;
-    margin: 1vh 1%;
+    margin: 0 1%;
   }
 `;
 
@@ -46,7 +46,7 @@ export const MenuHeader = styled.div`
   background: #EFEFEF;
   color: #00000;
 
-  margin: 0 0 0.5vh 0;
+  margin: 0.5vh 0;
   border-radius: 10px 10px 0 0;
   justify-content: center;
   padding: 5px 11px;

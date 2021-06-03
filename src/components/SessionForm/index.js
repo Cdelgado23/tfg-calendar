@@ -46,7 +46,7 @@ export default class SessionForm extends React.Component {
         this.updateStateFromSession = this.updateStateFromSession.bind(this);
     }
     updateStateFromSession(session){
-        this.setState({
+        this.state.setState({
                 id: session.id,
                 subjectName: session.subjectName,
                 groupName: session.groupName,
@@ -126,10 +126,6 @@ export default class SessionForm extends React.Component {
                     Group
                 </label>
                 <SessionInput disabled type="text" name="group" value={this.state.groupName}  onChange= {event => {this.onChangeField(event,"groupName")}}/>
-                <label>
-                    Color
-                </label>
-                <SessionInput type="color" name="color" value={this.state.color}  onChange= {event => {this.onChangeField(event,"color")}}/>
                 
                 <label>
                 <input type="checkbox" name="recurrent"  checked={this.state.recurrent} value={this.state.recurrent}  onChange= {event => {this.onChangeCheckbox("recurrent")}}/>

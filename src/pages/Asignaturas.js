@@ -1,6 +1,7 @@
 import React from 'react';
 
-const Aulas = () => {
+
+const Asignaturas = () => {
   return (
     <div
       style={{
@@ -10,9 +11,9 @@ const Aulas = () => {
         height: '80vh'
       }}
     >
-      <h1>Aulas</h1>
+      <h1>Asignaturas</h1>
     </div>
   );
 };
 
-export default Aulas;
+export default Asignaturas;
