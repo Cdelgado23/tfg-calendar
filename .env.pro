@@ -1,5 +1,4 @@
-REACT_APP_BACKEND_BASE_URL=http://localhost:8080/rest/TFG-Calendar-REST/1.0.0/
-
+REACT_APP_ENVIROMENT=pro
 REACT_APP_FIREBASE_API_KEY=AIzaSyA5bTwCX8vqJfTYpf-4mg7UCaLdPSxfpdg
 REACT_APP_FIREBASE_AUTH_DOMAIN=tfg-calendar-dev.firebaseapp.com
 REACT_APP_FIREBASE_PROJECT_ID=tfg-calendar-dev
