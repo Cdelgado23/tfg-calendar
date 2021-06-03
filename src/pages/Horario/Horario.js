@@ -1,62 +1,25 @@
 import React from 'react';
-import { LateralMenu, MenuHeader, MenuBody, SpaceBetweenMenu, Button, CentralMenu, Footer} from '../PagesElements';
+import { LateralMenu, MenuHeader, MenuBody, SpaceBetweenMenu, CentralMenu, Footer} from '../PagesElements';
 import Timetable from '../../components/Timetable'
 import Subject from '../../components/Subject'
 import SessionForm from '../../components/SessionForm';
-import {v4 as uuidv4} from 'uuid';
 
 import {RepositoryContext} from '../../context/RepositoryContext';
 
 import {MyLoader} from '../PagesElements.js';
 
 
-const session1={
-  id:uuidv4(),
-  startMinute: 480,
-  length: 60,
-  color: "#23ea51",
-  subjectName: "subject X",
-  groupName: "group n",
-  recurrent: true, 
-  recurrencePeriod: 1,
-  day: 1,
-  startFrom: "2021-W01",
-  room:"Sala 1"
-}
-const session2={
-  id:uuidv4(),
-  startMinute: 540,
-  length: 60,
-  color: "#f7eb80",
-  subjectName: "subject X",
-  groupName: "group n",
-  recurrent: true,
-  recurrencePeriod: 2,
-  day: 1,
-  startFrom: "2021-W01",
-  room:"Sala Grande"
-}
-const session3={
-  id:uuidv4(),
-  startMinute: 780,
-  length:40,
-  color: "#db80f8",
-  subjectName: "subject Testing asdasd asdas dasd ",
-  groupName: "Fantastic 4s",
-  recurrent: false, 
-  executionDate: "2021-04-02",
-  room:"Sala 1"
-}
-
-
-const sessions= [session1, session2, session3];
-
 
 const rooms=["Sala 1", "Sala Grande", "Salón de actos"];
 
+function getRooms(session){
+  return rooms; 
+}
 
+
+/*
 function getAvalibleRooms(session){
-  var daySessions = sessions.filter (s => s.day===session.day);
+  var daySessions = this.sessions.filter (s => s.day===session.day);
 
   var start = session.startMinute;
   var end= session.startMinute + session.length;
@@ -67,6 +30,7 @@ function getAvalibleRooms(session){
 
   return rooms.filter(r=> !conflictRooms.has(r));
 }
+*/
 
 
 function ListSubjects(params) {
@@ -160,9 +124,6 @@ export default class Horario extends React.Component {
               </MenuHeader>
               <MenuBody>
                 {ListSubjects(this.state.subjects)}
-                <Button>
-                  +
-                </Button>
               </MenuBody>
             </LateralMenu>
             <CentralMenu>
@@ -178,7 +139,7 @@ export default class Horario extends React.Component {
                 <h2>Sesión</h2>
               </MenuHeader>
               <MenuBody>
-                <SessionForm getAvalibleRooms = {getAvalibleRooms} 
+                <SessionForm getAvalibleRooms = {getRooms} 
                               key ={this.state.selectedSession? this.state.selectedSession.id:"-"} 
                               id ={this.state.selectedSession? this.state.selectedSession.id:null} 
                               selectedSession={this.state.selectedSession}
