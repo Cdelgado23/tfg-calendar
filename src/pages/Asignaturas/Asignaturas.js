@@ -1,6 +1,5 @@
 import React from 'react';
 import { LateralMenu, MenuHeader, MenuBody, SpaceBetweenMenu, Button, CentralMenu, Footer} from '../PagesElements';
-import Subject from '../../components/Subject'
 import SessionForm from '../../components/SessionForm';
 
 import {RepositoryContext} from '../../context/RepositoryContext';
@@ -247,7 +246,7 @@ export default class Horario extends React.Component {
 
     this.onSelectSubject  =    this.onSelectSubject.bind(this);
     this.onSelectGroup    =    this.onSelectGroup.bind(this);
-    this.onSelectSession  =    this. onSelectSession.bind(this);
+    this.onSelectSession  =    this.onSelectSession.bind(this);
     this.onChangeField    =    this.onChangeField.bind(this);
     this.onChangeCheckBox =    this.onChangeCheckBox.bind(this);
 
@@ -270,9 +269,11 @@ export default class Horario extends React.Component {
         return createGroupForm(selectedSubject, this.state.newGroup, this.onChangeField, this.onChangeCheckBox, this.createGroup, this.showModal);
       case "session":
         return createSessionForm(selectedGroup, this.state.newSession, this.onChangeField, this.onChangeCheckBox, this.createSession, this.showModal);
+      default:
+        return "";
     }
-    return "";
   }
+  
   showModal(modalForm){
     this.setState((prevState) =>(
       {showModal: !prevState.showModal,

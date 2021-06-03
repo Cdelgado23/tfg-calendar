@@ -1,6 +1,5 @@
 import React from 'react';
 import Modal from '../components/Modal';
-import { ColorButton, FormBody, FormElementGroup, StyledInput, StyledLabel } from '../components/SubjectForm/SubjectFormElements';
 import { Button } from './PagesElements';
 
 

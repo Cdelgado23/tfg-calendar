@@ -1,9 +1,8 @@
 import React from 'react';
-import { LateralMenu, MenuHeader, MenuBody, SpaceBetweenMenu, Button, CentralMenu, Footer} from '../PagesElements';
+import { LateralMenu, MenuHeader, MenuBody, SpaceBetweenMenu, CentralMenu, Footer} from '../PagesElements';
 import Timetable from '../../components/Timetable'
 import Subject from '../../components/Subject'
 import SessionForm from '../../components/SessionForm';
-import {v4 as uuidv4} from 'uuid';
 
 import {RepositoryContext} from '../../context/RepositoryContext';
 
@@ -18,6 +17,7 @@ function getRooms(session){
 }
 
 
+/*
 function getAvalibleRooms(session){
   var daySessions = this.sessions.filter (s => s.day===session.day);
 
@@ -30,6 +30,7 @@ function getAvalibleRooms(session){
 
   return rooms.filter(r=> !conflictRooms.has(r));
 }
+*/
 
 
 function ListSubjects(params) {

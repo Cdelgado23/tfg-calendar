@@ -1,8 +1,6 @@
 import React from 'react'
 
-import {FullBody, Header, FormBody, EmptySpace, FormGroup, StyledInput, RowBody, ColorButton, StyledInputButton, StyledLabel, FormElementGroup} from './SubjectFormElements';
-
-import Subject from '../Subject'
+import {FullBody, Header, FormBody, FormGroup, StyledInput, ColorButton, StyledLabel, FormElementGroup} from './SubjectFormElements';
 
 const group1= {
     groupName: "Group N",
@@ -53,41 +51,6 @@ const subject ={
     groups:groups
 }
 
-const session1= {
-    "recurrent": true,
-    "subjectName": "Subject X",
-    "recurrencePeriod": 2,
-    "type": "session",
-    "color": "#ff4451",
-    "length": 45,
-    "teacher": "teacher Z",
-    "groupName": "Lab N",
-    "startMinute": 555,
-    "endAt": "2021-W52",
-    "day": 5,
-    "startFrom": "2021-W01",
-    "room": "sin asignar",
-    "id": "0jWGAwzVgochXylb74sh"
-};
-
-const session2= {
-    "recurrent": true,
-    "subjectName": "Subject X",
-    "recurrencePeriod": 2,
-    "type": "session",
-    "color": "#ff4451",
-    "length": 45,
-    "teacher": "teacher Z",
-    "groupName": "Lab N",
-    "startMinute": 555,
-    "endAt": "2021-W52",
-    "day": 5,
-    "startFrom": "2021-W01",
-    "room": "sin asignar",
-    "id": "0jWGAwzVgochXylb74sh"
-};
-
-const _sessions = [session1, session2, session2, session2, session2, session2,session2];
 
 function GroupButtonList(subject, onSelectGroup){
     return subject.groups
