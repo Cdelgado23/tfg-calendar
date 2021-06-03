@@ -11,8 +11,11 @@ import {MyLoader} from '../PagesElements.js';
 
 
 
-
 const rooms=["Sala 1", "Sala Grande", "Salón de actos"];
+
+function getRooms(session){
+  return rooms; 
+}
 
 
 function getAvalibleRooms(session){
@@ -120,9 +123,6 @@ export default class Horario extends React.Component {
               </MenuHeader>
               <MenuBody>
                 {ListSubjects(this.state.subjects)}
-                <Button>
-                  +
-                </Button>
               </MenuBody>
             </LateralMenu>
             <CentralMenu>
@@ -138,7 +138,7 @@ export default class Horario extends React.Component {
                 <h2>Sesión</h2>
               </MenuHeader>
               <MenuBody>
-                <SessionForm getAvalibleRooms = {getAvalibleRooms} 
+                <SessionForm getAvalibleRooms = {getRooms} 
                               key ={this.state.selectedSession? this.state.selectedSession.id:"-"} 
                               id ={this.state.selectedSession? this.state.selectedSession.id:null} 
                               selectedSession={this.state.selectedSession}

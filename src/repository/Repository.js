@@ -1,8 +1,7 @@
-import firebase from 'firebase';
 import prodData from './prodData';
+import testData from './testData';
 
-// Required for side-effects
-require("firebase/firestore");
+
 
  
 
@@ -10,21 +9,28 @@ require("firebase/firestore");
 export default class Repository{
 
     constructor() {
-        if (this.db == null){
-        console.log("init repo");
-        var firebaseConfig = {
-            apiKey:             process.env.REACT_APP_FIREBASE_API_KEY,
-            authDomain:         process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-            projectId:          process.env.REACT_APP_FIREBASE_PROJECT_ID,
-            storageBucket:      process.env.REACT_APP_FIREBASE_STORAGEBUCKET,
-            messagingSenderId:  process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-            appId:              process.env.REACT_APP_FIREBASE_APP_ID
-          };
 
-        firebase.initializeApp(firebaseConfig);
-        this.db = firebase.firestore();
+        var env = process.env.REACT_APP_ENVIROMENT.trimEnd();
+        console.log(env.length);
+        console.log(env ==="local");
+        switch(env){
+            case "local":
+                this.dataSource = new testData(process.env.REACT_APP_BACKEND_BASE_URL);
+                break;
+            case "dev":
+            case "pro":
+                this.dataSource= new prodData();
+                break;
+            default:
+                console.warn("NO DATA SOURCE");
         }
-        this.dataSource= new prodData(this.db);
+
+        this.authenticationData={
+            teacher:{
+                name: "teacher Z"
+            }
+        };
+
     }
 
     setLoadingCallback(callback){
@@ -43,11 +49,24 @@ export default class Repository{
     
     }
 
+    createSubject(subject, callback){
+        this.dataSource.createSubject(subject, this.authenticationData.teacher.name, callback);
+    
+    }
+
     loadSubjectsOfTeacher(teacher, callback){
         this.dataSource.getSubjectsOfTeacher(teacher, callback);
     }
 
-    updateSubject(subject){
+    updateSubject(subject, callback){
+        this.dataSource.updateSubject(subject, callback);
     }
 
+    loadSessionsOfSubjectGroup(subject, group, callback){
+        this.dataSource.getSessionsOfSubjectGroup(subject, group, callback);
+    }
+
+    updateSubjectName(subject, oldSubjectName, callback){
+        this.dataSource.updateSubjectName(subject, oldSubjectName, callback);
+    }
 }
