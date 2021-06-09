@@ -33,15 +33,58 @@ export default class Repository{
 
     }
 
+
     setLoadingCallback(callback){
         this.dataSource.setLoadingCallback(callback);
     }
+
+    getRooms(callback){
+        this.dataSource.getRooms(callback);
+    }
+
+    createRoom(room, callback){
+        this.dataSource.createRoom(room, callback);
+    }
+
+    deleteRoom(room, callback){
+        this.dataSource.deleteRoom(room, callback);
+    }
+
+    getAvailableRooms(semester, day, timeBlocks, callback){
+        this.dataSource.getAvailableRooms(semester, day, timeBlocks, callback);
+    }
+
+    getSessionOfRoomInDay(room, day, semester, callback){
+        this.dataSource.getSessionOfRoomInDay(room, day, semester, callback);
+    }
+
+    loadTitles(callBack){
+        this.dataSource.loadTitles(callBack);
+    }
+    loadSubjectsOfTitle(title, callback){
+        this.dataSource.loadSubjectsOfTitle(title, callback);
+    }
+    loadSessionsOfSubjects(subjectNames, callback){
+        this.dataSource.loadSessionsOfSubjects(subjectNames, callback);
+    }
+
 
     loadSessionsOfTeacher(teacher, callback){
         this.dataSource.getSessionsOfTeacher(teacher, callback);
     }
 
     updateSession(session, callback){
+
+        var time = session.startTime.split(":");
+        var startMinute= parseInt(time[0])*60 + parseInt(time[1]);
+        const rowStart = (((startMinute - 480)/15)>>0) + 1;      
+        const rowEnd= Math.ceil(((startMinute+session.length - 480) /15))+1;
+
+        session.timeBlocks= Array.from({length: rowEnd-rowStart}, (_, i) => i + rowStart)
+        console.log(rowStart);
+        console.log(rowEnd);
+        console.log(session.timeBlocks);
+
         this.dataSource.updateSession(session, callback);
     }
     createSession(session, callback){

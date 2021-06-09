@@ -5,8 +5,9 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import Horario from './pages/Horario/Horario';
 import Asignaturas from './pages/Asignaturas/Asignaturas';
-import Aulas from './pages/Aulas';
+import Aulas from './pages/Aulas/Aulas';
 import Usuario from './pages/Usuario';
+import Profesores from './pages/Profesores/Profesores';
 
 
 import Repository from './repository/Repository';
@@ -28,6 +29,7 @@ export default class AppWrapper extends React.Component
           <Route path='/Horario' render={()=><Horario/>}/>
           <Route path='/Asignaturas' component={Asignaturas} />
           <Route path='/Aulas' component={Aulas} />
+          <Route path='/Profesores' component={Profesores} />
           <Route path='/Usuario' component={Usuario} />
         </Switch>
       </Router>

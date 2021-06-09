@@ -60,22 +60,19 @@ function sessionIsInWeek(session, config){
 
 
 function placeSession(session, config, handleSessionClick){
-    if (!sessionIsInWeek(session, config))
-    {
-      console.log(session);
-      return;
-    }
 
-    const row = (((session.startMinute - config.timeStart)/config.mins_x_block)>>0) + 1;
+  var time = session.startTime.split(":");
+  var startMinute= parseInt(time[0])*60 + parseInt(time[1]);
+  const row = (((startMinute - config.timeStart)/config.mins_x_block)>>0) + 1;
 
-    var column=session.day+1;
+  var column=session.day+1;
 
-    const rowEnd= Math.ceil(((session.startMinute+session.length -config.timeStart) /config.mins_x_block))+1;
-    const size = rowEnd-row;
+  const rowEnd= Math.ceil(((startMinute+session.length -config.timeStart) /config.mins_x_block))+1;
+  const size = rowEnd-row;
 
 
-    return(<GridElement key={uuidv4()} draggable="true" onDragStart={event=>dragSession(event, session)} row={row+1} column={column} color= {session.color} size={size}  onClick={() => { handleSessionClick(session) }}>{sessionToString(session)}</GridElement>
-        );
+  return(<GridElement key={uuidv4()} draggable="true" onDragStart={event=>dragSession(event, session)} row={row+1} column={column} color= {session.color} size={size}  onClick={() => { handleSessionClick(session) }}>{sessionToString(session)}</GridElement>
+      );
 }
 
 //get week number from string formatted like : YYYY-Wnn (2021-W01)
@@ -115,7 +112,7 @@ const days={
 function populateDaysRow(currentWeek){
     return Array.from(Array(7).keys())
     .map((n) =>
-    <GridDayElement row={1} column={n+2}>{days[n+1]}<br/>{formatDate(currentWeek[n])}</GridDayElement>
+    <GridDayElement row={1} column={n+2}>{days[n+1]}</GridDayElement>
   );
 }
 
@@ -201,8 +198,6 @@ function generateSessionFromDrop(data){
     color: data.color,
     subjectName: data.subjectName,
     groupName: data.groupName,
-    recurrent: data.recurrent, 
-    endAt: data.endAt,
     room: data.room,
     teacher: data.teacher
   };
@@ -277,14 +272,19 @@ export default class Timetable extends React.Component {
       }
 
       var session = generateSessionFromDrop(data);
-      session["startMinute"] = (((id/8)>>0)-1) *config.mins_x_block + config.timeStart;
-      if (data.recurrent){
-        session["day"]=id%8;
-        session["recurrencePeriod"]= data.recurrencePeriod;
-        session["startFrom"]= data.startFrom;
-      }else{
-        session["executionDate"]= date;
-      }
+      var startMinute= (((id/8)>>0)-1) *config.mins_x_block + config.timeStart;
+
+      var hours= Math.floor(startMinute/60);
+      var minutes= startMinute%60;
+
+      hours= hours>10? hours: "0"+hours;
+      minutes= minutes>10? minutes: "0"+minutes;
+
+      var startTime =  hours+ ":" + minutes;
+      
+      session["startMinute"] = startMinute;
+      session["startTime"] = startTime;
+      session["day"]=id%8;
 
       var schedulableInformation= this.getScheduleInformation(session, id);      
 
@@ -354,19 +354,6 @@ export default class Timetable extends React.Component {
       console.log(this.context.sessions);
       return (
         <div>
-        <WeekDataBlock>
-          <SelectedWeek>
-          <button onClick= {()=>{this.changeWeek(-1)}}> {"<"} </button>
-          <p>{formatDate(this.state.week[0]) + " - " + formatDate(this.state.week[6])}</p>
-          <button onClick= {()=>{this.changeWeek(+1)}}> {">"} </button>
-          </SelectedWeek>
-        </WeekDataBlock>
-        <WeekDataBlock>
-        <WeekPicker>
-          <input type="week" name="week" id="select-week" value={this.state.selectedWeek} required onChange={event => this.handleWeekChange(event)}></input>
-        </WeekPicker>
-        </WeekDataBlock>
-
         <TimetableGrid divisions= {this.state.divisions}>
               {drawRowLines(this.state, this.drop)}
               {populateDaysRow(this.state.week)}

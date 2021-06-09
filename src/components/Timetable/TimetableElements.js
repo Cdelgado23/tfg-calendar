@@ -61,6 +61,7 @@ export const GridElement = styled.button`
   overflow: hidden;
   text-overflow: ellipsis;
 
+  color: white; 
   &:hover {
     transition: all 0.2s ease-in-out;
     filter: brightness(85%);

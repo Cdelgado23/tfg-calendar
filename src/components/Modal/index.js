@@ -5,13 +5,19 @@ import { ModalBase, ModalContent } from "./ModalElements";
 
 
 export default class Modal extends React.Component {
+
+  constructor(props) {
+    super(props);
+  }
+
+
   render() {
       if(!this.props.show){
           return null;
       }
       return (
         <ModalBase>
-            <ModalContent>
+            <ModalContent width= {this.props.width}>
             <div>
                 <Button
                 onClick={this.props.onClose}

@@ -47,6 +47,9 @@ const Navbar = (props) => {
           <NavBtn>
             <NavBtnLinkYellow to='/Aulas'>Aulas</NavBtnLinkYellow>
           </NavBtn>
+          <NavBtn>
+            <NavBtnLinkYellow to='/Profesores'>Profesores</NavBtnLinkYellow>
+          </NavBtn>
         </NavMenu>
         <NavBtn>
           <NavBtnLinkGreen to='/Usuario'>Profesor Apellido1 Apellido2</NavBtnLinkGreen>

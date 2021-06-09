@@ -13,7 +13,7 @@ export const ModalBase= styled.div`
 export const ModalContent= styled.div`
   position:fixed;
   background: white;
-  width: 40%;
+  width: ${props => props.width? props.width: "40%"};
   height: auto;
   top:50%;
   left:50%;

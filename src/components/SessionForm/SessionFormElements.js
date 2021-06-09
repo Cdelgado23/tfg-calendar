@@ -28,7 +28,7 @@ export const NotificationsButtonsContainer= styled.div`
 export const FormButton = styled.button`
   border-radius: 4px;
   background: ${props => props.color || "#EFEFEF"};
-  padding: 0.5rem 10%;
+  padding: 0.5rem 5%;
   color: #FFFF;
   outline: none;
   border: none;

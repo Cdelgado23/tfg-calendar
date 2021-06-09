@@ -24,6 +24,158 @@ export default class prodData{
         this.loadingCallback= callback;
     }
 
+    getRooms(callback){
+        this.loadingCallback(true);
+        this.db.collection("rooms").get().then((querySnapshot) => {
+            this.loadingCallback(false);
+            var data = [];
+            querySnapshot.forEach((doc) => {
+                var room= doc.data();
+                data.push(room);
+            });
+            this.loadingCallback(false);
+            console.log(data);
+            callback(data);
+        });
+    }
+
+    getAvailableRooms(semester, day, timeBlocks, callback){
+        this.loadingCallback(true);
+        this.db.collection('roomsOcupancy').doc(semester+"-"+day).get().then((doc) => {
+            var rooms;
+            console.log(semester + " - " + day + "- doc -" + timeBlocks);
+            console.log(doc.data());
+            if (timeBlocks.length>0){
+                rooms=(doc.data()[timeBlocks[0]]);
+                
+                var index;
+                for (index=1; index<timeBlocks.length; index++){
+                    rooms = rooms.filter(r=>(doc.data()[timeBlocks[index]].includes(r)));
+                }
+                timeBlocks.forEach(t=>{
+                });
+            }else{
+                rooms=[];
+            }
+            console.log(rooms);
+            this.loadingCallback(false);
+            callback(rooms);
+        });
+    }
+
+    createRoom(room, callback){
+        this.loadingCallback(true);
+        
+        
+        // Get a new write batch
+        var batch = this.db.batch();
+
+        var roomRef = this.db.collection('rooms').doc(room.roomName);
+        batch.set(roomRef, room);
+
+        var roomOcupancyRef= this.db.collection('roomsOcupancy');
+        var ocupancy={};
+
+        var timeBlock;
+        for (timeBlock = 1; timeBlock < 48; timeBlock++) {
+            ocupancy[timeBlock]= firebase.firestore.FieldValue.arrayUnion(room.roomName);
+        }
+
+        var semester;
+        for (semester = 1; semester < 3; semester++) {
+            var day;
+            for (day = 1; day < 6; day++) {
+                console.log(ocupancy);
+                batch.update(roomOcupancyRef.doc(semester+"-"+day), ocupancy);
+            }
+        }        
+        
+        // Commit the batch
+        batch.commit().then(() => {
+            this.loadingCallback(false);
+            callback();
+        });
+
+    }
+
+    deleteRoom(room, callback){
+
+        this.loadingCallback(true);
+        
+        
+        // Get a new write batch
+        var batch = this.db.batch();
+
+        var roomRef = this.db.collection('rooms').doc(room.roomName);
+        batch.delete(roomRef);
+
+        var roomOcupancyRef= this.db.collection('roomsOcupancy');
+        var ocupancy={};
+
+        var timeBlock;
+        for (timeBlock = 1; timeBlock < 48; timeBlock++) {
+            ocupancy[timeBlock]= firebase.firestore.FieldValue.arrayRemove(room.roomName);
+        }
+
+        var semester;
+        for (semester = 1; semester < 3; semester++) {
+            var day;
+            for (day = 1; day < 6; day++) {
+                console.log(ocupancy);
+                batch.update(roomOcupancyRef.doc(semester+"-"+day), ocupancy);
+            }
+        }        
+        
+        // Commit the batch
+        batch.commit().then(() => {
+            this.loadingCallback(false);
+            callback();
+        });
+    }
+    
+    loadTitles(callback){
+        this.loadingCallback(true);
+        this.db.collection("titles").get().then((querySnapshot) => {
+            this.loadingCallback(false);
+            var data = [];
+            querySnapshot.forEach((doc) => {
+                var session= doc.data();
+                data.push(session);
+            });
+            console.log(data);
+            callback(data);
+        });
+    }
+
+    loadSubjectsOfTitle(title, callback){
+
+
+        this.loadingCallback(true);
+        this.db.collection("subjects").where("titles", "array-contains", title).get().then((querySnapshot) => {
+            this.loadingCallback(false);
+            var data = [];
+            querySnapshot.forEach((doc) => {
+                var session= doc.data();
+                session["id"]= doc.id;
+                data.push(session);
+            });
+            callback(data);
+        });    }
+
+    loadSessionsOfSubjects(subjectNames, callback){
+        this.loadingCallback(true);
+        this.db.collection("sessions").where("subjectName", "in", subjectNames).get().then((querySnapshot) => {
+            this.loadingCallback(false);
+            var data = [];
+            querySnapshot.forEach((doc) => {
+                var session= doc.data();
+                session["id"]= doc.id;
+                data.push(session);
+            });
+            callback(data);
+        });
+    }
+
     getSessionsOfTeacher(teacher, callback){
         this.loadingCallback(true);
         this.db.collection("sessions").where("teacher", "==", teacher).get().then((querySnapshot) => {
@@ -72,18 +224,15 @@ export default class prodData{
         loading(true);
 
         this.db.collection("sessions").doc(session.id).update({
-            day: session.day,
-            endAt: session.endAt,
+            day: parseInt(session.day),
             groupName: session.groupName,
-            length: session.length,
-            recurrencePeriod: session.recurrencePeriod,
-            recurrent: session.recurrent,
+            length: parseInt(session.length),
             room: session.room,
-            startFrom: session.startFrom,
-            startMinute: session.startMinute,
+            startTime: session.startTime,
             subjectName: session.subjectName,
             teacher: session.teacher,
-            color: session.color
+            color: session.color,
+            timeBlocks: session.timeBlocks
           }).then(function() {
             loading(false);
             callback(session);
@@ -94,30 +243,13 @@ export default class prodData{
         console.log("creating");
         console.log(session);
         this.db.collection("sessions").add(
-            session.recurrent? 
             {
             type: "session",
             day: parseInt(session.day),
-            recurrencePeriod: parseInt(session.recurrencePeriod),
-            startFrom: session.startFrom,
-            endAt: session.endAt,
             groupName: session.groupName,
             length: parseInt(session.length),
-            recurrent: session.recurrent,
             room: session.room,
-            startMinute: parseInt(session.length),
-            subjectName: session.subjectName,
-            teacher: session.teacher,
-            color: session.color
-            }:
-            {
-            type: "session",
-            executionDate: session.executionDate,
-            groupName: session.groupName,
-            length: parseInt(session.length),
-            recurrent: session.recurrent,
-            room: session.room,
-            startMinute: parseInt(session.startMinute),
+            startTime: session.startTime,
             subjectName: session.subjectName,
             teacher: session.teacher,
             color: session.color
@@ -156,7 +288,8 @@ export default class prodData{
             color: subject.color,
             groups: subject.groups,
             subjectName: subject.subjectName,
-            teachers: subject.teachers
+            teachers: subject.teachers,
+            titles: subject.titles
           }).then(() => {
             this.loadingCallback(false);
             callback(subject);

@@ -1,4 +1,5 @@
 import React from 'react'
+import Modal from '../Modal';
 
 import {FullBody, Header, FormBody, FormGroup, StyledInput, ColorButton, StyledLabel, FormElementGroup} from './SubjectFormElements';
 
@@ -73,12 +74,12 @@ function SessionButtonList(sessions, onSelectSession){
   );
 }
 
-function SubjectFormGroup(subject, onChangeField, onSelectGroup, updateSubject, showModal){
+function SubjectFormGroup(subject, onChangeField, onSelectGroup, updateSubject, showModal, showTitles){
     return (<FormGroup width="25vw" height="74vh">
                 <Header>
                     <h2>SUBJECT</h2>
                 </Header>
-                    <FormBody height="25vh"  style={{"border": "1px solid #EFEFEF","border-radius": "0 0 10px 10px"}}>
+                    <FormBody height="36vh" overflowy= "auto" style={{"border": "1px solid #EFEFEF","border-radius": "0 0 10px 10px"}}>
                         <FormElementGroup>
                             <StyledLabel margin= "0 0.5vw 0 0.5vw">Subject Name</StyledLabel>
                             <StyledInput margin= "0 0.5vw 0 0.5vw"  type="text" name="subject" value={subject.subjectName} onChange= {event => {onChangeField(event,"subjectName", "selectedSubject")}}/>
@@ -88,8 +89,19 @@ function SubjectFormGroup(subject, onChangeField, onSelectGroup, updateSubject, 
                             <StyledLabel margin= "0 0.5vw 0 0.5vw">color</StyledLabel>
                             <StyledInput margin= "0 0.5vw 0 0.5vw" type="color" name="color" value={subject.color} onChange= {event => {onChangeField(event,"color", "selectedSubject")}}/>
                         </FormElementGroup>
+                        <FormElementGroup>
+                            <StyledLabel margin= "0 0.5vw 0 0.5vw">Semester</StyledLabel>
+                            <select name="semesters" defaultValue={subject.semester} onChange={(e)=>{onChangeField(e,"semester", "selectedSubject"); onChangeField({target:{value: []}}, "titles", "selectedSubject")}}>
+                                    <option value={1}>1</option>
+                                    <option value={2}>2</option>
+                            </select>
+                        </FormElementGroup>
+                        <FormElementGroup>
+                            <ColorButton color = "#2DA283" margin= "0 0.5vw 0 0.5vw" padding="0.5rem 1rem" width="fit-content"
+                                             onClick= {event => {event.preventDefault(); showTitles()}}>Related titles</ColorButton>                        </FormElementGroup>
 
-                    <div style ={{display: "flex", flexDirection: "row", justifyContent: "center", margin: "auto"}}>
+
+                    <div style ={{display: "flex", flexDirection: "row", justifyContent: "center", margin: "1vh 0 0.5vh 0"}}>
                         <ColorButton color = "#db3f3f" margin="0 1vw" padding="0.5rem 1rem"   width="fit-content">Delete</ColorButton>
                         <ColorButton color = "#2DA283" margin="0 1vw" padding="0.5rem 1rem" width="fit-content"
                                              onClick= {event => {event.preventDefault(); updateSubject(subject)}}>Modify</ColorButton>
@@ -99,7 +111,7 @@ function SubjectFormGroup(subject, onChangeField, onSelectGroup, updateSubject, 
                     <Header>
                         <h2>GROUPS</h2>
                     </Header>
-                    <FormBody height="38.5vh" overflow="scroll" overflowy="scroll" margin="0.5vh 0 0 0" border="1px solid #EFEFEF">
+                    <FormBody height="27.5vh" overflow="scroll" overflowy="scroll" margin="0.5vh 0 0 0" border="1px solid #EFEFEF">
                         {GroupButtonList(subject, onSelectGroup)}
                         <ColorButton color = "#2DA283" padding="1vh" margin="2%" onClick={(e)=> {e.preventDefault(); showModal("group")}}>+</ColorButton>
                     </FormBody>
@@ -125,38 +137,10 @@ function GroupFormGroup(group, sessions, onChangeField, onSelectSession, onChang
                     
                     <StyledLabel margin= "0 0.5vw 0 0.5vw"> <b>Sessions default values</b></StyledLabel>
                     <FormElementGroup>
-                        <StyledLabel margin= "0 0.5vw 0 0.5vw">Sssion color</StyledLabel>
+                        <StyledLabel margin= "0 0.5vw 0 0.5vw">Session color</StyledLabel>
                         <StyledInput margin= "0 0.5vw 0 0.5vw" type="color" name="color" value={group.defaultSessionValues.color} onChange= {event => {onChangeField(event,"color", "selectedGroup", "defaultSessionValues")}}/>
                     </FormElementGroup>
 
-                    <FormElementGroup>
-                        <StyledLabel margin= "0 0.5vw 0 0.5vw">Recurrent</StyledLabel>
-                        <StyledInput margin= "0 0.5vw 0 0.5vw"  type="checkbox" name="recurrent" checked={group.defaultSessionValues.recurrent} value={group.defaultSessionValues.recurrent} onChange={event => {onChangeCheckBox("defaultSessionValues", group.defaultSessionValues, "recurrent")}}/>
-                    </FormElementGroup>
-
-                    {group.defaultSessionValues.recurrent===true? 
-                    <React.Fragment> 
-                        <FormElementGroup>
-                            <StyledLabel margin= "0 0.5vw 0 0.5vw">Recurrence Period</StyledLabel>
-                            <StyledInput margin= "0 0.5vw 0 0.5vw" type="number" name="recurrencePeriod" value={group.defaultSessionValues.recurrencePeriod} onChange= {event => {onChangeField(event,"recurrencePeriod", "selectedGroup", "defaultSessionValues")}}/>
-                        </FormElementGroup>
-                        <FormElementGroup>
-                            <StyledLabel margin= "0 0.5vw 0 0.5vw">Starts From</StyledLabel>
-                            <StyledInput margin= "0 0.5vw 0 0.5vw" type="week" name="startFrom" value={group.defaultSessionValues.startFrom} onChange= {event => {onChangeField(event,"startFrom", "selectedGroup", "defaultSessionValues")}}/>
-                        </FormElementGroup>
-                        <FormElementGroup>
-                            <StyledLabel margin= "0 0.5vw 0 0.5vw">Ends At</StyledLabel>
-                            <StyledInput margin= "0 0.5vw 0 0.5vw" type="week" name="endAt" value={group.defaultSessionValues.endAt} onChange= {event => {onChangeField(event,"endAt", "selectedGroup", "defaultSessionValues")}}/>
-                        </FormElementGroup>
-                    </React.Fragment>
-                    :
-                    <React.Fragment>
-                        <FormElementGroup>
-                            <StyledLabel margin= "0 0.5vw 0 0.5vw">Execution Date</StyledLabel>
-                            <StyledInput margin= "0 0.5vw 0 0.5vw" type="date" name="day" value={group.defaultSessionValues.executionDay} onChange= {event => {onChangeField(event,"executionDate", "selectedGroup", "defaultSessionValues")}}/>
-                        </FormElementGroup>
-                    </React.Fragment>
-                    }
                     
                     <FormElementGroup>
                         <StyledLabel margin= "0 0.5vw 0 0.5vw">Room</StyledLabel>
@@ -185,6 +169,49 @@ function GroupFormGroup(group, sessions, onChangeField, onSelectSession, onChang
             </FormGroup>);
 }
 
+//checkbox -> select title + semester 1
+//semester -> title is selected, select semester
+function TitleInSelectedTitles(title, inSubject, onChangeCheckBox, semester){
+    var selectTitle={titleName: title.titleName, semester: parseInt(title.semester)}
+
+    return(
+            <FormElementGroup style={{flexDirection: "row"}}>
+                <StyledInput margin= "0.5vh 0.5vw 0 0"  type="checkbox" checked={inSubject} value={inSubject} onChange={event => {onChangeCheckBox(selectTitle, true)}}/>
+                <StyledLabel margin= "0 0.5vw 0 0.5vw" style={{maxWidth: "90%"}}>
+                <p style={{overflow: "hidden", textOverflow: "ellipsis"}}>
+                    {title.titleName}
+                </p> 
+                </StyledLabel>
+                {inSubject?
+                <React.Fragment>
+                <p> - Semester: </p>
+                <select name="semesters" defaultValue={semester} onChange={(e)=>{onChangeCheckBox({titleName: title.titleName, semester: parseInt(e.target.value)}, false);}}>
+                    {Array.from(new Array(title.semesters), (x, i) => i + 1).map((sem) =>
+                        (parseInt(sem)%2) == parseInt(semester)%2? <option value={sem}>{sem}</option>: ""
+                    )}
+                </select>
+                </React.Fragment>
+                :""
+                }
+            </FormElementGroup>
+    );
+}
+
+
+function selectedTitlesOfSubject(titles, selectedTitles, onChangeCheckBox, semester){
+    var selectedTitlesNames = selectedTitles.map( t => t.titleName);
+    return (
+        <FormBody overflowy="auto">
+            <h2>Selected Titles</h2>
+            {titles.map(t =>TitleInSelectedTitles(t, selectedTitlesNames.includes(t.titleName),
+                                                onChangeCheckBox, 
+                                                selectedTitlesNames.includes(t.titleName)? 
+                                                selectedTitles[selectedTitlesNames.indexOf(t.titleName)].semester:
+                                                0, 
+                                                semester))}
+        </FormBody>
+    );
+}
 
 
 
@@ -195,19 +222,44 @@ export default class SubjectForm extends React.Component {
         this.state={
             subjectName: subject.subjectName,
             color: subject.color,
-            groups: subject.groups
+            groups: subject.groups,
+            showTitles: false
         };
 
+        this.showTitles= this.showTitles.bind(this);
     }
+
+    showTitles(modalContent){
+        this.setState((prevState) =>(
+          {showTitles: !prevState.showTitles,
+          modalContent: modalContent}
+        ));
+      }
 
 
     render(){
         return(
             <React.Fragment>
                 <FullBody>
-                    {this.props.selectedSubject? SubjectFormGroup(this.props.selectedSubject, this.props.onChangeField, this.props.onSelectGroup, this.props.updateSubject, this.props.showModal): ""}
-                    {this.props.selectedGroup? GroupFormGroup(this.props.selectedGroup, this.props.sessions, this.props.onChangeField, this.props.onSelectSession, this.props.onChangeCheckBox, this.props.showModal):""}
+                    {this.props.selectedSubject? SubjectFormGroup(this.props.selectedSubject, 
+                                                                    this.props.onChangeField,
+                                                                    this.props.onSelectGroup, 
+                                                                    this.props.updateSubject, 
+                                                                    this.props.showModal,
+                                                                    this.showTitles)
+                                                : ""}
+                    {this.props.selectedGroup? GroupFormGroup(this.props.selectedGroup, 
+                                                            this.props.sessions, 
+                                                            this.props.onChangeField, 
+                                                            this.props.onSelectSession, 
+                                                            this.props.onChangeCheckBox, 
+                                                            this.props.showModal):""}
                 </FullBody>
+                <Modal width= "70%" onClose={this.showTitles} show={this.state.showTitles}>
+                    {this.props.selectedSubject? 
+                    selectedTitlesOfSubject(this.props.titles, this.props.selectedSubject.titles, this.props.onSelectTitle, this.props.selectedSubject.semester)
+                    :""}
+                </Modal>
             </React.Fragment>
         )
     }

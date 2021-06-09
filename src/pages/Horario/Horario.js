@@ -1,5 +1,5 @@
 import React from 'react';
-import { LateralMenu, MenuHeader, MenuBody, SpaceBetweenMenu, CentralMenu, Footer} from '../PagesElements';
+import { LateralMenu, MenuHeader, MenuBody, SpaceBetweenMenu, CentralMenu, Footer, PageHeader} from '../PagesElements';
 import Timetable from '../../components/Timetable'
 import Subject from '../../components/Subject'
 import SessionForm from '../../components/SessionForm';
@@ -7,6 +7,7 @@ import SessionForm from '../../components/SessionForm';
 import {RepositoryContext} from '../../context/RepositoryContext';
 
 import {MyLoader} from '../PagesElements.js';
+import { EmptySpace, Header } from '../../components/SubjectForm/SubjectFormElements';
 
 
 
@@ -17,21 +18,6 @@ function getRooms(session){
 }
 
 
-/*
-function getAvalibleRooms(session){
-  var daySessions = this.sessions.filter (s => s.day===session.day);
-
-  var start = session.startMinute;
-  var end= session.startMinute + session.length;
-
-  var conflictSessions= daySessions.filter(s => (s.startMinute > start && s.startMinute <end));
-  var conflictRooms= new Set(conflictSessions.map(s => s.room));
-
-
-  return rooms.filter(r=> !conflictRooms.has(r));
-}
-*/
-
 
 function ListSubjects(params) {
   return  params.map((subject) =>
@@ -39,7 +25,40 @@ function ListSubjects(params) {
 );
 }
 
+function TitlesDropdown(titles, onChange){
+  return(  
+  <React.Fragment>
 
+    <select name="titles" id="titles" onChange={(e)=>{onChange(e.target.value);}}>
+      <option value={null}>Select a title</option>
+      {
+          titles.map((title) =>
+          <option value={JSON.stringify(title)}>{title.titleName}</option>
+          )
+      }
+    </select>
+  </React.Fragment>
+  );
+
+}
+
+
+function SemesterDropdown(semesters, onChange){
+  return(  
+  <React.Fragment>
+
+    <select name="semesters" id="semesters" onChange={(e)=>{onChange(e.target.value);}}>
+      <option value="0">Select a semester</option>
+      {
+          Array.from(new Array(semesters), (x, i) => i + 1).map((sem) =>
+          <option value={sem}>{sem}</option>
+          )
+      }
+    </select>
+  </React.Fragment>
+  );
+
+}
 
 export default class Horario extends React.Component {
   static contextType = RepositoryContext;
@@ -50,7 +69,8 @@ export default class Horario extends React.Component {
     this.state={
       loading: false,
       sessions: [],
-      subjects: []
+      subjects: [],
+      titles:[]
     
     };
 
@@ -61,6 +81,11 @@ export default class Horario extends React.Component {
 
     this.setSubjects = this.setSubjects.bind(this);
 
+    this.setTitles = this.setTitles.bind(this);
+    this.selectTitle = this.selectTitle.bind(this);
+    this.selectSemester = this.selectSemester.bind(this);
+
+    this.getRooms = this.getRooms.bind(this);
   }
   
   handleSessionClick(clickedSession){
@@ -77,9 +102,7 @@ export default class Horario extends React.Component {
   }
   updateSession(session){
     this.context.updateSession(session, ()=> {
-      this.setState((prevState) =>(
-        {sessions: [...prevState.sessions.filter(s => s.id!==session.id), session]}
-      ));
+      this.context.loadSessionsOfSubjects(this.state.subjects.map(s=> s.subjectName), this.setSessions);
     }
   );
   }
@@ -94,13 +117,73 @@ export default class Horario extends React.Component {
 
   setSubjects(_subjects){
     this.setState({subjects: _subjects});
+
+    var subjectNames= _subjects.map((subject)=> subject.subjectName);
+    
+    if (_subjects.length>0){
+      this.context.loadSessionsOfSubjects(subjectNames, this.setSessions);
+    }
+    
+  }
+
+  setTitles(_titles){
+    this.setState({titles: _titles});
+  }
+  selectTitle(_title){
+    try {
+      console.log("title " + _title)
+      var parsed = JSON.parse(_title);
+
+      this.setState(
+        {selectedTitle: parsed,
+          selectedSemester: 0,
+          subjects: [],
+          sessions: [],
+          selectedSession:{}
+        });
+  
+      var search= {titleName: parsed.titleName, semester: 0};
+  
+      this.context.loadSubjectsOfTitle(search, this.setSubjects);
+    } catch(e) {
+      this.setState(
+        {selectedTitle: null,
+          selectedSemester: 0,
+          subjects: [],
+          sessions: [],
+          selectedSession:{}
+        });
+    }
+  }
+
+  selectSemester(semester){
+    this.setState(
+      {
+        selectedSemester: semester,
+        subjects: [],
+        sessions: [],
+        selectedSession:{}
+      });
+
+      var search= {titleName: this.state.selectedTitle.titleName, semester: parseInt(semester)};
+      console.log(search);
+      this.context.loadSubjectsOfTitle(search, this.setSubjects);
+  }
+
+
+  getRooms(){
+    this.context.getRooms((rooms)=>{
+      this.setState({
+        rooms: rooms
+      });
+    })
   }
 
   componentDidMount() {
     this.context.setLoadingCallback(this.setLoading);
-    
-    this.context.loadSubjectsOfTeacher("teacher Z", this.setSubjects);
-    this.context.loadSessionsOfTeacher("teacher Z", this.setSessions);
+
+    this.context.loadTitles(this.setTitles);
+
   }
 
   render() {
@@ -117,6 +200,10 @@ export default class Horario extends React.Component {
         justifyContent: 'flex-end'
       }}
       >
+        <PageHeader>
+          {TitlesDropdown(this.state.titles, this.selectTitle)}
+          {this.state.selectedTitle? SemesterDropdown(this.state.selectedTitle.semesters, this.selectSemester): ""}
+        </PageHeader>
           <SpaceBetweenMenu>
             <LateralMenu>
               <MenuHeader>
@@ -127,7 +214,7 @@ export default class Horario extends React.Component {
               </MenuBody>
             </LateralMenu>
             <CentralMenu>
-              <Timetable timeStart={480} scheduleSize={720} mins_x_block={15} 
+              <Timetable timeStart={480} scheduleSize={780} mins_x_block={15} 
                           sessions= {this.state.sessions} setSessions= {this.setSessions} 
                           handleSessionClick={this.handleSessionClick}
                           updateSession={this.updateSession}

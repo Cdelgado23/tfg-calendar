@@ -21,6 +21,7 @@ export const SubjectTitle = styled.button`
     border: none;
     overflow: hidden;
     text-overflow: ellipsis;
+    color: white;
     &:hover {
         transition: all 0.2s ease-in-out;
         background: #6cd1b6;

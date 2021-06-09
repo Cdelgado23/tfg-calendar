@@ -12,10 +12,32 @@ import Modal from '../../components/Modal';
 
 const rooms=["Sala 1", "Sala Grande", "Salón de actos"];
 
+function showRooms(rooms, handleChange){
+  const listRooms = rooms.map((room) =>
+  <option value={room}>{room}</option>
+);
 
-function getAvalibleRooms(session){
-  return rooms;
+
+
+return (
+  <select name="rooms" id="rooms" onChange={handleChange} style={{margin: "0 0.5vw 0 0.5vw"}}>
+      {listRooms}
+  </select>
+);
 }
+
+const week=["", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+function showWeekdays(selectedDay, handleChange){
+  const listDays = Array.from(new Array(7), (x, i) => i+1).map((day) =>
+                      <option value={parseInt(day)}>{week[day]}</option>
+              );
+return (
+  <select name="days" id="days" defaultValue={selectedDay} onChange={(event)=>{handleChange(event,"day", "newSession")}} style={{margin: "0 0.5vw 0 0.5vw"}}>
+      {listDays}
+  </select>
+);
+}
+
 
 function createEmptyGroup(){
   return {defaultSessionValues:{color: ""}};
@@ -26,16 +48,8 @@ function createDefaultSession(group){
     subjectName: group.subjectName,
     groupName: group.groupName,
     color: group.defaultSessionValues.color,
-    recurrent: group.defaultSessionValues.recurrent,
     teacher: group.defaultSessionValues.teacher
   };
-  if (session.recurrent){
-    session.recurrencePeriod= group.defaultSessionValues.recurrencePeriod;
-    session.startFrom= group.defaultSessionValues.startFrom;
-    session.endAt= group.defaultSessionValues.endAt;
-  }else{
-
-  }
 
   return session;
 }
@@ -70,8 +84,8 @@ function createSubjectForm(subject, onChangeField, createSubject, showModal){
   }
 
 function createGroupForm(selectedSubject, group, onChangeField,onChangeCheckBox, createGroup, showModal){
-  console.log("group");
-  console.log(group);
+
+  
 return (
   <React.Fragment>
       <h2>Create Group</h2>
@@ -88,43 +102,13 @@ return (
                     
                     <StyledLabel margin= "0 0.5vw 0 0.5vw"> <b>Sessions default values</b></StyledLabel>
                     <FormElementGroup>
-                        <StyledLabel margin= "0 0.5vw 0 0.5vw">Sssion color</StyledLabel>
+                        <StyledLabel margin= "0 0.5vw 0 0.5vw">Session color</StyledLabel>
                         <StyledInput margin= "0 0.5vw 0 0.5vw" type="color" name="color" value={group.defaultSessionValues.color} onChange= {event => {onChangeField(event,"color", "newGroup", "defaultSessionValues")}}/>
                     </FormElementGroup>
-
-                    <FormElementGroup>
-                        <StyledLabel margin= "0 0.5vw 0 0.5vw">Recurrent</StyledLabel>
-                        <StyledInput margin= "0 0.5vw 0 0.5vw"  type="checkbox" name="recurrent" checked={group.defaultSessionValues.recurrent} value={group.defaultSessionValues.recurrent} onChange={event => {onChangeCheckBox("defaultSessionValues", group.defaultSessionValues, "recurrent")}}/>
-                    </FormElementGroup>
-
-                    {group.defaultSessionValues.recurrent===true? 
-                    <React.Fragment> 
-                        <FormElementGroup>
-                            <StyledLabel margin= "0 0.5vw 0 0.5vw">Recurrence Period</StyledLabel>
-                            <StyledInput margin= "0 0.5vw 0 0.5vw" type="number" name="recurrencePeriod" value={group.defaultSessionValues.recurrencePeriod} onChange= {event => {onChangeField(event,"recurrencePeriod", "newGroup", "defaultSessionValues")}}/>
-                        </FormElementGroup>
-                        <FormElementGroup>
-                            <StyledLabel margin= "0 0.5vw 0 0.5vw">Starts From</StyledLabel>
-                            <StyledInput margin= "0 0.5vw 0 0.5vw" type="week" name="startFrom" value={group.defaultSessionValues.startFrom} onChange= {event => {onChangeField(event,"startFrom", "newGroup", "defaultSessionValues")}}/>
-                        </FormElementGroup>
-                        <FormElementGroup>
-                            <StyledLabel margin= "0 0.5vw 0 0.5vw">Ends At</StyledLabel>
-                            <StyledInput margin= "0 0.5vw 0 0.5vw" type="week" name="endAt" value={group.defaultSessionValues.endAt} onChange= {event => {onChangeField(event,"endAt", "newGroup", "defaultSessionValues")}}/>
-                        </FormElementGroup>
-                        
-                    </React.Fragment>
-                    :
-                    <React.Fragment>
-                        <FormElementGroup>
-                            <StyledLabel margin= "0 0.5vw 0 0.5vw">Execution Date</StyledLabel>
-                            <StyledInput margin= "0 0.5vw 0 0.5vw" type="date" name="day" value={group.defaultSessionValues.executionDay} onChange= {event => {onChangeField(event,"executionDate", "newGroup", "defaultSessionValues")}}/>
-                        </FormElementGroup>
-                    </React.Fragment>
-                    }
                     
                     <FormElementGroup>
                         <StyledLabel margin= "0 0.5vw 0 0.5vw">Room</StyledLabel>
-                        <StyledInput margin= "0 0.5vw 0 0.5vw" type="text" name="room" value={group.defaultSessionValues.room} onChange= {event => {onChangeField(event,"room", "newGroup", "defaultSessionValues")}}/>
+                        {showRooms(rooms)}
                     </FormElementGroup>
 
                     <FormElementGroup>
@@ -161,48 +145,21 @@ function createSessionForm( selectedGroup, session, onChangeField, onChangeCheck
         </FormElementGroup>
 
         <FormElementGroup>
-            <StyledLabel margin= "0 0.5vw 0 0.5vw">Recurrent</StyledLabel>
-            <StyledInput margin= "0 0.5vw 0 0.5vw"  type="checkbox" name="recurrent" checked={session.recurrent} value={session.recurrent} onChange={event => {onChangeCheckBox("newSession", session, "recurrent")}}/>
-        </FormElementGroup>
-
-        {session.recurrent===true? 
-        <React.Fragment> 
-            <FormElementGroup>
-                <StyledLabel margin= "0 0.5vw 0 0.5vw">Recurrence Period</StyledLabel>
-                <StyledInput margin= "0 0.5vw 0 0.5vw" type="number" name="recurrencePeriod" value={session.recurrencePeriod} onChange= {event => {onChangeField(event,"recurrencePeriod", "newSession")}}/>
-            </FormElementGroup>
-            <FormElementGroup>
-                <StyledLabel margin= "0 0.5vw 0 0.5vw">Starts From</StyledLabel>
-                <StyledInput margin= "0 0.5vw 0 0.5vw" type="week" name="startFrom" value={session.startFrom} onChange= {event => {onChangeField(event,"startFrom", "newSession")}}/>
-            </FormElementGroup>
-            <FormElementGroup>
-                <StyledLabel margin= "0 0.5vw 0 0.5vw">Ends At</StyledLabel>
-                <StyledInput margin= "0 0.5vw 0 0.5vw" type="week" name="endAt" value={session.endAt} onChange= {event => {onChangeField(event,"endAt", "newSession")}}/>
-            </FormElementGroup>
-        </React.Fragment>
-        :
-        <React.Fragment>
-            <FormElementGroup>
-                <StyledLabel margin= "0 0.5vw 0 0.5vw">Execution Date</StyledLabel>
-                <StyledInput margin= "0 0.5vw 0 0.5vw" type="date" name="day" value={session.executionDay} onChange= {event => {onChangeField(event,"executionDate", "newSession")}}/>
-            </FormElementGroup>
-        </React.Fragment>
-        }
-        <FormElementGroup>
-            <StyledLabel margin= "0 0.5vw 0 0.5vw">start Time</StyledLabel>
-            <StyledInput margin= "0 0.5vw 0 0.5vw" type="number" name="day" value={session.startMinute} onChange= {event => {onChangeField(event,"startMinute", "newSession")}}/>
+            <StyledLabel margin= "0 0.5vw 0 0.5vw">Start Time</StyledLabel>
+            <StyledInput margin= "0 0.5vw 0 0.5vw" type="time" name="startTime" value={session.startTime} onChange= {event => {onChangeField(event,"startTime", "newSession")}}/>
         </FormElementGroup>
         <FormElementGroup>
             <StyledLabel margin= "0 0.5vw 0 0.5vw">Day</StyledLabel>
-            <StyledInput margin= "0 0.5vw 0 0.5vw" type="number" name="endAt" value={session.day} onChange= {event => {onChangeField(event,"day", "newSession")}}/>
+            {showWeekdays(session.day, onChangeField)}
         </FormElementGroup>
+
         <FormElementGroup>
                 <StyledLabel margin= "0 0.5vw 0 0.5vw">Duration</StyledLabel>
                 <StyledInput margin= "0 0.5vw 0 0.5vw" type="number" name="day" value={session.length} onChange= {event => {onChangeField(event,"length", "newSession")}}/>
         </FormElementGroup>
         <FormElementGroup>
             <StyledLabel margin= "0 0.5vw 0 0.5vw">Room</StyledLabel>
-            <StyledInput margin= "0 0.5vw 0 0.5vw" type="text" name="room" value={session.room} onChange= {event => {onChangeField(event,"room", "newSession")}}/>
+            {showRooms(rooms)}
         </FormElementGroup>
 
         <FormElementGroup>
@@ -220,7 +177,7 @@ function createSessionForm( selectedGroup, session, onChangeField, onChangeCheck
 }
 
 
-export default class Horario extends React.Component {
+export default class Asignaturas extends React.Component {
   static contextType = RepositoryContext;
 
   constructor(props) {
@@ -230,10 +187,12 @@ export default class Horario extends React.Component {
       loading: false,
       sessions: [],
       subjects: [],
+      titles: [],
+      rooms: [],
 
       showModal: false,
       modalForm: " ",
-      newSubject: {},
+      newSubject: {titles:[]},
       newGroup: createEmptyGroup(), 
       newSession: {}
     };
@@ -259,7 +218,35 @@ export default class Horario extends React.Component {
 
     this.showModal = this.showModal.bind(this);
     this.chooseCreateForm= this.chooseCreateForm.bind(this);
+
+    this.SelectTitleOfSubject= this.SelectTitleOfSubject.bind(this);
+
+    this.getRooms = this.getRooms.bind(this);
+    this.setRooms = this.setRooms.bind(this);
+    this.getTimeBlocksOfSession = this.getTimeBlocksOfSession.bind(this);
   }
+
+  getRooms(){
+    this.context.getRooms((rooms)=> {
+      this.setState(
+        {rooms: rooms}
+      );
+    }
+  );
+  }
+
+  getTimeBlocksOfSession(session){
+    var time = session.startTime.split(":");
+    var startMinute= parseInt(time[0])*60 + parseInt(time[1]);
+    const row = (((startMinute - 480)/15)>>0) + 1;
+    const rowEnd= Math.ceil(((startMinute+session.length -480) /15))+1;
+
+    console.log("time " + time + " - startMinute" + startMinute + " - row " + row + "- rowend " + rowEnd);
+  
+    console.log( Array.from(new Array(rowEnd-row), (x, i) => i+row));
+    return Array.from(new Array(rowEnd-row), (x, i) => i+row);
+  }
+
 
   chooseCreateForm(form,selectedSubject, selectedGroup){
     switch(form){
@@ -273,7 +260,7 @@ export default class Horario extends React.Component {
         return "";
     }
   }
-  
+
   showModal(modalForm){
     this.setState((prevState) =>(
       {showModal: !prevState.showModal,
@@ -282,6 +269,7 @@ export default class Horario extends React.Component {
   }
 
   onChangeField(event, field, object, rootField){
+
     console.log(event.target.value);
 
     var o = this.state[object];
@@ -333,7 +321,8 @@ export default class Horario extends React.Component {
 
   onSelectSession(session){
     this.setState({
-      selectedSession: JSON.parse(JSON.stringify(session))
+      selectedSession: JSON.parse(JSON.stringify(session)),
+      rooms: [session.room]
     });
   }
 
@@ -360,6 +349,7 @@ export default class Horario extends React.Component {
   );
   }
   createSession(session){
+    session["semester"]= this.state.selectedSubject.semester;
     this.context.createSession(session, ()=> {
         this.setState((prevState) =>(
           {sessions: [...prevState.sessions, session]}
@@ -369,6 +359,7 @@ export default class Horario extends React.Component {
   }
 
   createSubject(subject){
+    subject.semester= 1;
     this.context.createSubject(subject, ()=> {
       this.setState((prevState) =>(
         {subjects: [...prevState.subjects, subject]}
@@ -392,7 +383,9 @@ export default class Horario extends React.Component {
   setSubjects(_subjects){
     this.setState({subjects: _subjects});
   }
-
+  setRooms(_rooms){
+    this.setState({rooms: _rooms});
+  }
 
   updateSubject(subject){
     console.log("update subject");
@@ -416,11 +409,42 @@ export default class Horario extends React.Component {
     this.context.updateSubjectName(subject, oldSubjectname, callback);
   }
 
+  SelectTitleOfSubject(title, checkBoxBehaviour){
+    var titles= this.state.selectedSubject.titles;
+    var titlesNames= titles.map(t=> t.titleName);
+    console.log(titles);
+    console.log(titlesNames);
+    const index = titlesNames.indexOf(title.titleName);
+    console.log(title);
+    console.log(index);
+    if (index > -1) {
+      if (checkBoxBehaviour){
+        titles.splice(index, 1);
+      }else{
+        titles[index]= title;
+      }
+    }else{
+      title["semester"]=this.state.selectedSubject.semester;
+      titles.push(title);
+    }
+
+    var subject = this.state.selectedSubject;
+    subject.titles= titles;
+
+    this.setState({
+      selectedSubject: subject
+    })
+  }
+
+
+
   componentDidMount() {
     this.context.setLoadingCallback(this.setLoading);
     
     this.context.loadSubjectsOfTeacher("teacher Z", this.setSubjects);
     this.context.loadSessionsOfTeacher("teacher Z", this.setSessions);
+    this.context.loadTitles( (titles)=>{this.setState({titles: titles})});
+//    this.context.getRooms((rooms)=>{this.setState({rooms: rooms})});
   }
 
   render() {
@@ -455,13 +479,17 @@ export default class Horario extends React.Component {
               <SubjectForm 
                 showModal = {this.showModal}
                 selectedSubject={this.state.selectedSubject}
+                newSubject={this.state.newSubject}
                 selectedGroup={this.state.selectedGroup}
                 sessions={this.state.sessions}
                 onSelectGroup={this.onSelectGroup} 
                 onSelectSession={this.onSelectSession}
                 onChangeField={this.onChangeField}
                 onChangeCheckBox={this.onChangeCheckBox}
-                updateSubject={this.updateSubject}>
+                updateSubject={this.updateSubject}
+                titles= {this.state.titles}
+                onSelectTitle={this.SelectTitleOfSubject}
+                >
 
               </SubjectForm>
             </CentralMenu>
@@ -472,11 +500,15 @@ export default class Horario extends React.Component {
               <MenuBody>
                 {
                   this.state.selectedSession!=null?
-                  <SessionForm getAvalibleRooms = {getAvalibleRooms} 
+                  <SessionForm getAvalibleRooms = {(session)=>{this.context.getAvailableRooms(this.state.selectedSubject.semester,
+                                                                                      session.day, 
+                                                                                      this.getTimeBlocksOfSession(session), 
+                                                                                      this.setRooms);}} 
                   key ={this.state.selectedSession.id} 
                   id ={this.state.selectedSession.id} 
                   selectedSession={this.state.selectedSession}
-                  updateSession = {this.updateSession}>
+                  updateSession = {this.updateSession}
+                  rooms = {this.state.rooms}>
                   </SessionForm>:
                   ""
                 }
@@ -486,7 +518,7 @@ export default class Horario extends React.Component {
           </SpaceBetweenMenu>
           <Footer></Footer>
         </div>
-        <Modal onClose={this.showModal} show={this.state.showModal}>
+        <Modal width="60%" onClose={this.showModal} show={this.state.showModal}>
           {this.chooseCreateForm(this.state.modalForm, this.state.selectedSubject, this.state.selectedGroup)}
         </Modal>
       </MyLoader>

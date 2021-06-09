@@ -88,12 +88,13 @@ export const FullWidthMenu = styled.div`
 
 export const Button = styled.button`
   font-size: 1em;
-  margin: 1em;
-  padding: 0.25em 1em;
+  margin: 0.5em;
+  padding: 0.25em 0.5em;
   border-radius: 3px;
   outline: none;
   border: none;
-  background: #2DA283;
+  background: ${props=> props.background? props.background: "#2DA283"};
+  color: white;
   &:hover {
     transition: all 0.2s ease-in-out;
     background: #6cd1b6;
@@ -124,5 +125,22 @@ export function MyLoader({ active, children }) {
     >
       {children}
     </StyledLoader>
+  )
+}
+
+export const StyledHeader = styled.div`
+  height: 5.6vh;
+  margin: 1vh 0 0 0;
+  display: flex;
+  justify-content: center; 
+  @media screen and (max-width: 1024px) {
+      
+    }
+`;
+export function PageHeader({children }) {
+  return (
+    <StyledHeader>
+      {children}
+    </StyledHeader>
   )
 }
