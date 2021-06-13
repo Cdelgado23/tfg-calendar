@@ -13,9 +13,6 @@ import { EmptySpace, Header } from '../../components/SubjectForm/SubjectFormElem
 
 const rooms=["Sala 1", "Sala Grande", "Salón de actos"];
 
-function getRooms(session){
-  return rooms; 
-}
 
 
 
@@ -43,21 +40,34 @@ function TitlesDropdown(titles, onChange){
 }
 
 
-function SemesterDropdown(semesters, onChange){
+function SemesterDropdown(semesters, onChange, defaultValue){
   return(  
   <React.Fragment>
 
-    <select name="semesters" id="semesters" onChange={(e)=>{onChange(e.target.value);}}>
-      <option value="0">Select a semester</option>
+    <select name="semesters" id="semesters" defaultValue={parseInt(defaultValue)} onChange={(e)=>{onChange(e.target.value);}}>
+      <option value={0}>Select a semester</option>
       {
           Array.from(new Array(semesters), (x, i) => i + 1).map((sem) =>
-          <option value={sem}>{sem}</option>
+          <option value={parseInt(sem)}>{sem}</option>
           )
       }
     </select>
   </React.Fragment>
   );
 
+}
+
+function chooseColor(type){
+  switch(type){
+    case "error":
+      return "#bf1e1e";
+    case "warning":
+      return "#ccb406";
+    case "success":
+      return "#2ca062";
+    default:
+      return "#000000";
+  }
 }
 
 export default class Horario extends React.Component {
@@ -70,14 +80,22 @@ export default class Horario extends React.Component {
       loading: false,
       sessions: [],
       subjects: [],
-      titles:[]
+      titles:[],
+      rooms:[],
+      teachers:[],
+      selectedSession:{},
+      footerMsg: {type: "success", msgs: [], header: ""},
+      selectedSemester: 0
     
     };
+    this.setFooterMsg= this.setFooterMsg.bind(this);
 
     this.setLoading = this.setLoading.bind(this);
     this.setSessions = this.setSessions.bind(this);
     this.updateSession = this.updateSession.bind(this);
     this.createSession = this.createSession.bind(this);
+
+    this.updateDroppedSession = this.updateDroppedSession.bind(this);
 
     this.setSubjects = this.setSubjects.bind(this);
 
@@ -86,11 +104,17 @@ export default class Horario extends React.Component {
     this.selectSemester = this.selectSemester.bind(this);
 
     this.getRooms = this.getRooms.bind(this);
+    this.setRooms= this.setRooms.bind(this);
+
+    this.setTeachers= this.setTeachers.bind(this);
+    this.getTimeBlocksOfSession= this.getTimeBlocksOfSession.bind(this);
   }
   
   handleSessionClick(clickedSession){
     this.setState({ 
-      selectedSession: clickedSession});
+      selectedSession: clickedSession,
+      rooms: [clickedSession.room],
+      teachers: [clickedSession.teacher]});
       console.log(clickedSession);
   }
   
@@ -98,19 +122,55 @@ export default class Horario extends React.Component {
     this.setState({loading: _loading});
   }
   setSessions(_sessions){
-    this.setState({sessions: _sessions});
+    this.setState({sessions: _sessions,
+                   selectedSession: null});
   }
-  updateSession(session){
+  
+  async updateDroppedSession(session){
+    this.context.checkDisponibilityForSession(session, this.state.selectedSemester, (availability)=>{
+      
+      var unavailableResource={name: "Sin Asignar", checkConcurrency: false};
+      var footerMsg= {
+        header: "Sesión de " + session.subjectName + " - " + session.groupName,
+        msgs:[],
+        type: "success"
+      }
+
+      console.log(availability);
+
+      if(!availability.teacher || !availability.room){
+        footerMsg.header = footerMsg.header + " actualizada con colisiones.";
+        footerMsg.type= "warning";
+
+        if (!availability.room){
+          footerMsg.msgs.push("Aula: " + session.room.name + " -> " + unavailableResource.name + ".");
+          session.room = unavailableResource;
+        }
+        if(!availability.teacher){
+          footerMsg.msgs.push("Profesor: " + session.teacher.name + " -> " + unavailableResource.name + ".");
+          session.teacher= unavailableResource;
+        }
+      }else{
+        footerMsg.header = footerMsg.header + " actualizada sin colisiones";
+      }
+      this.updateSession(session, this.setFooterMsg(footerMsg));
+    });
+  }
+  updateSession(session, callback){
     this.context.updateSession(session, ()=> {
+      if (callback){
+        callback();
+      }
       this.context.loadSessionsOfSubjects(this.state.subjects.map(s=> s.subjectName), this.setSessions);
-    }
+    }, this.state.selectedSemester
   );
   }
   createSession(session){
     this.context.createSession(session, ()=> {
-        this.setState((prevState) =>(
-          {sessions: [...prevState.sessions, session]}
-        ));
+      if (this.state.subjects.length>0){
+        var subjectNames= this.state.subjects.map((subject)=> subject.subjectName);
+        this.context.loadSessionsOfSubjects(subjectNames, this.setSessions);
+      }
       }
     );
   }
@@ -136,14 +196,14 @@ export default class Horario extends React.Component {
 
       this.setState(
         {selectedTitle: parsed,
-          selectedSemester: 0,
           subjects: [],
           sessions: [],
           selectedSession:{}
         });
   
-      var search= {titleName: parsed.titleName, semester: 0};
-  
+      var search= {titleName: parsed.titleName, semester: parseInt(this.state.selectedSemester)};
+
+      console.log(search);
       this.context.loadSubjectsOfTitle(search, this.setSubjects);
     } catch(e) {
       this.setState(
@@ -178,6 +238,43 @@ export default class Horario extends React.Component {
       });
     })
   }
+  setFooterMsg(msg){
+    this.setState({
+      footerMsg: msg
+    });
+  }
+  setRooms(_rooms){
+    if (this.state.selectedSession){
+      const index = _rooms.map(r=>(r.name)).indexOf(this.state.selectedSession.room.name);
+      if (index < 0) {
+        _rooms=[..._rooms, this.state.selectedSession.room];
+      }
+    }
+    this.setState({rooms: _rooms});
+  }
+  setTeachers(_teachers){
+    if (this.state.selectedSession){
+      const index = _teachers.map(r=>(r.name)).indexOf(this.state.selectedSession.teacher.name);
+      if (index < 0) {
+        _teachers=[..._teachers, this.state.selectedSession.teacher];
+      }
+    }
+    this.setState({teachers: _teachers});
+  }
+  getTimeBlocksOfSession(session){
+    console.log("getTimeBlocks");
+    console.log(session);
+
+    var time = session.startTime.split(":");
+    var startMinute= parseInt(time[0])*60 + parseInt(time[1]);
+    const row = (((startMinute - 480)/15)>>0) + 1;
+    const rowEnd= Math.ceil(((startMinute+ parseInt(session.length) -480) /15))+1;
+
+  
+    console.log( Array.from(new Array(rowEnd-row), (x, i) => i+row));
+    return Array.from(new Array(rowEnd-row), (x, i) => i+row);
+  }
+
 
   componentDidMount() {
     this.context.setLoadingCallback(this.setLoading);
@@ -202,7 +299,7 @@ export default class Horario extends React.Component {
       >
         <PageHeader>
           {TitlesDropdown(this.state.titles, this.selectTitle)}
-          {this.state.selectedTitle? SemesterDropdown(this.state.selectedTitle.semesters, this.selectSemester): ""}
+          {this.state.selectedTitle? SemesterDropdown(this.state.selectedTitle.semesters, this.selectSemester, this.state.selectedSemester): ""}
         </PageHeader>
           <SpaceBetweenMenu>
             <LateralMenu>
@@ -217,7 +314,7 @@ export default class Horario extends React.Component {
               <Timetable timeStart={480} scheduleSize={780} mins_x_block={15} 
                           sessions= {this.state.sessions} setSessions= {this.setSessions} 
                           handleSessionClick={this.handleSessionClick}
-                          updateSession={this.updateSession}
+                          updateSession={this.updateDroppedSession}
                           createSession = {this.createSession}>
               </Timetable>
             </CentralMenu>
@@ -226,16 +323,33 @@ export default class Horario extends React.Component {
                 <h2>Sesión</h2>
               </MenuHeader>
               <MenuBody>
-                <SessionForm getAvalibleRooms = {getRooms} 
+                <SessionForm 
                               key ={this.state.selectedSession? this.state.selectedSession.id:"-"} 
                               id ={this.state.selectedSession? this.state.selectedSession.id:null} 
                               selectedSession={this.state.selectedSession}
-                              updateSession = {this.updateSession}>
+                              updateSession = {this.updateSession}
+                              rooms={this.state.rooms}
+                              teachers={this.state.teachers}
+                              checkAvailability={(session)=>{this.context.getAvailableRooms(this.state.selectedSemester,
+                                                                                            session.day, 
+                                                                                            this.getTimeBlocksOfSession(session), 
+                                                                                            this.setRooms);
+                                                          this.context.getAvailableTeachers(this.state.selectedSemester,
+                                                                                            session.day, 
+                                                                                            this.getTimeBlocksOfSession(session), 
+                                                                                            this.setTeachers);}}>
                 </SessionForm>
               </MenuBody>
             </LateralMenu>     
           </SpaceBetweenMenu>
-          <Footer></Footer>
+          <Footer style={{color: chooseColor(this.state.footerMsg.type)}}> 
+          <b>{this.state.footerMsg.header}</b>
+          {
+            this.state.footerMsg.msgs.map(msg=>
+              <p>{msg}</p>
+            )
+          }
+          </Footer>
         </div>
       </MyLoader>
     );

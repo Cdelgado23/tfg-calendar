@@ -97,14 +97,17 @@ export const Button = styled.button`
   color: white;
   &:hover {
     transition: all 0.2s ease-in-out;
-    background: #6cd1b6;
+    filter: brightness(125%);
     color: #010606;
   }
 `;
 
 export const Footer = styled.div`
-  margin-top: 4vh;
-  height: 6vh;
+  margin-top: 0.5vh;
+  min-height: 7vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   @media screen and (max-width: 1024px) {
     display: none
   }

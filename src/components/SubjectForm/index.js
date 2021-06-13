@@ -63,18 +63,21 @@ function GroupButtonList(subject, onSelectGroup){
 function sessionToString(session){
     return <p style={{overflow: "hidden",
                      textOverflow: "ellipsis"}}>
-           {session.groupName} | {""+ session.length + " mins"} | {session.room}
+           {session.groupName} | {""+ session.length + " mins"} | {session.room.name}
     </p>;
   }
-function SessionButtonList(sessions, onSelectSession){
+function SessionButtonList(sessions, onSelectSession, onDelete){
     return Array.from(sessions)
     .map((session) =>
-    <ColorButton color = {session.color} padding="0.5vh" margin="1%" onClick={(event)=>{event.preventDefault(); onSelectSession(session)}}>{sessionToString(session)}</ColorButton>
+    <div style={{display: "flex", flexDirection: "row", justifyContent: "space-around"}}>
+        <ColorButton color = {session.color} style={{width: "100%"}} padding="0.5vh" margin="1%" onClick={(event)=>{event.preventDefault(); onSelectSession(session)}}>{sessionToString(session)}</ColorButton>
+        <ColorButton color = {"#c94242"} padding="0.5vh" margin="1%" onClick={(event)=>{event.preventDefault(); onDelete(session)}}>Delete</ColorButton>
+    </div>
     
   );
 }
 
-function SubjectFormGroup(subject, onChangeField, onSelectGroup, updateSubject, showModal, showTitles){
+function SubjectFormGroup(subject, onChangeField, onSelectGroup, updateSubject, showModal, showTitles, deleteSubject){
     return (<FormGroup width="25vw" height="74vh">
                 <Header>
                     <h2>SUBJECT</h2>
@@ -102,7 +105,8 @@ function SubjectFormGroup(subject, onChangeField, onSelectGroup, updateSubject, 
 
 
                     <div style ={{display: "flex", flexDirection: "row", justifyContent: "center", margin: "1vh 0 0.5vh 0"}}>
-                        <ColorButton color = "#db3f3f" margin="0 1vw" padding="0.5rem 1rem"   width="fit-content">Delete</ColorButton>
+                        <ColorButton color = "#db3f3f" margin="0 1vw" padding="0.5rem 1rem"   width="fit-content"
+                                            onClick={event=>{event.preventDefault(); deleteSubject(subject);}}>Delete</ColorButton>
                         <ColorButton color = "#2DA283" margin="0 1vw" padding="0.5rem 1rem" width="fit-content"
                                              onClick= {event => {event.preventDefault(); updateSubject(subject)}}>Modify</ColorButton>
                     </div>
@@ -118,7 +122,7 @@ function SubjectFormGroup(subject, onChangeField, onSelectGroup, updateSubject, 
             </FormGroup>);
 }
 
-function GroupFormGroup(group, sessions, onChangeField, onSelectSession, onChangeCheckBox, showModal){
+function GroupFormGroup(group, sessions, onChangeField, onSelectSession, onChangeCheckBox, showModal, onDeleteSession, onDeleteGroup, subject){
     return (<FormGroup width="40vw" margin="0 0 0 1.5vw">
 
                 <Header>
@@ -141,19 +145,8 @@ function GroupFormGroup(group, sessions, onChangeField, onSelectSession, onChang
                         <StyledInput margin= "0 0.5vw 0 0.5vw" type="color" name="color" value={group.defaultSessionValues.color} onChange= {event => {onChangeField(event,"color", "selectedGroup", "defaultSessionValues")}}/>
                     </FormElementGroup>
 
-                    
-                    <FormElementGroup>
-                        <StyledLabel margin= "0 0.5vw 0 0.5vw">Room</StyledLabel>
-                        <StyledInput margin= "0 0.5vw 0 0.5vw" type="text" name="room" value={group.defaultSessionValues.room} onChange= {event => {onChangeField(event,"subjectName", "selectedGroup", "defaultSessionValues")}}/>
-                    </FormElementGroup>
-
-                    <FormElementGroup>
-                        <StyledLabel margin= "0 0.5vw 0 0.5vw">Teacher</StyledLabel>
-                        <StyledInput margin= "0 0.5vw 0 0.5vw" type="text" name="room" value={group.defaultSessionValues.teacher} onChange= {event => {onChangeField(event,"subjectName", "selectedGroup", "defaultSessionValues")}}/>
-                    </FormElementGroup> 
-
                     <div style ={{display: "flex", flexDirection: "row", justifyContent: "center", margin: "0 0 1vh 0"}}>
-                        <ColorButton color = "#db3f3f" margin="0 1vw" padding="0.5rem 1rem"   width="fit-content">Delete</ColorButton>
+                        <ColorButton color = "#db3f3f" margin="0 1vw" padding="0.5rem 1rem"   width="fit-content" onClick={(e)=>{e.preventDefault(); onDeleteGroup(subject, group)}}>Delete</ColorButton>
                         <ColorButton color = "#2DA283" margin="0 1vw" padding="0.5rem 1rem" width="fit-content">Modify</ColorButton>
                     </div>
                 </FormBody>
@@ -161,7 +154,7 @@ function GroupFormGroup(group, sessions, onChangeField, onSelectSession, onChang
                     <h2>SESSIONS</h2>
                 </Header>
                 <FormBody height="27.5vh" overflowy="auto" margin="0.5vh 0 0 0" style={{    "border": "1px solid #EFEFEF","border-radius": "0 0 10px 10px"}}>
-                    {SessionButtonList(sessions, onSelectSession)}
+                    {SessionButtonList(sessions, onSelectSession, onDeleteSession)}
                     <ColorButton color = "#2DA283" padding="1vh" margin="2%" onClick={(e)=> {e.preventDefault(); showModal("session")}}>+</ColorButton>
 
                 </FormBody>
@@ -187,7 +180,7 @@ function TitleInSelectedTitles(title, inSubject, onChangeCheckBox, semester){
                 <p> - Semester: </p>
                 <select name="semesters" defaultValue={semester} onChange={(e)=>{onChangeCheckBox({titleName: title.titleName, semester: parseInt(e.target.value)}, false);}}>
                     {Array.from(new Array(title.semesters), (x, i) => i + 1).map((sem) =>
-                        (parseInt(sem)%2) == parseInt(semester)%2? <option value={sem}>{sem}</option>: ""
+                        (parseInt(sem)%2) == parseInt(semester)%2? <option value={parseInt(sem)}>{sem}</option>: ""
                     )}
                 </select>
                 </React.Fragment>
@@ -237,6 +230,7 @@ export default class SubjectForm extends React.Component {
       }
 
 
+
     render(){
         return(
             <React.Fragment>
@@ -246,14 +240,18 @@ export default class SubjectForm extends React.Component {
                                                                     this.props.onSelectGroup, 
                                                                     this.props.updateSubject, 
                                                                     this.props.showModal,
-                                                                    this.showTitles)
+                                                                    this.showTitles,
+                                                                    this.props.deleteSubject)
                                                 : ""}
                     {this.props.selectedGroup? GroupFormGroup(this.props.selectedGroup, 
                                                             this.props.sessions, 
                                                             this.props.onChangeField, 
                                                             this.props.onSelectSession, 
                                                             this.props.onChangeCheckBox, 
-                                                            this.props.showModal):""}
+                                                            this.props.showModal,
+                                                            this.props.onDeleteSession, 
+                                                            this.props.onDeleteGroup, 
+                                                            this.props.selectedSubject):""}
                 </FullBody>
                 <Modal width= "70%" onClose={this.showTitles} show={this.state.showTitles}>
                     {this.props.selectedSubject? 

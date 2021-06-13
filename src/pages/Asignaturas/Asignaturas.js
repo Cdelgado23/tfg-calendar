@@ -40,7 +40,8 @@ return (
 
 
 function createEmptyGroup(){
-  return {defaultSessionValues:{color: ""}};
+  return {defaultSessionValues:{color: "#FFFFFF"},
+          color: "#FFFFFF"};
 }
 
 function createDefaultSession(group){
@@ -48,7 +49,8 @@ function createDefaultSession(group){
     subjectName: group.subjectName,
     groupName: group.groupName,
     color: group.defaultSessionValues.color,
-    teacher: group.defaultSessionValues.teacher
+    teacher: group.defaultSessionValues.teacher,
+    room: group.defaultSessionValues.room
   };
 
   return session;
@@ -105,17 +107,6 @@ return (
                         <StyledLabel margin= "0 0.5vw 0 0.5vw">Session color</StyledLabel>
                         <StyledInput margin= "0 0.5vw 0 0.5vw" type="color" name="color" value={group.defaultSessionValues.color} onChange= {event => {onChangeField(event,"color", "newGroup", "defaultSessionValues")}}/>
                     </FormElementGroup>
-                    
-                    <FormElementGroup>
-                        <StyledLabel margin= "0 0.5vw 0 0.5vw">Room</StyledLabel>
-                        {showRooms(rooms)}
-                    </FormElementGroup>
-
-                    <FormElementGroup>
-                        <StyledLabel margin= "0 0.5vw 0 0.5vw">Teacher</StyledLabel>
-                        <StyledInput margin= "0 0.5vw 0 0.5vw" type="text" name="room" value={group.defaultSessionValues.teacher} onChange= {event => {onChangeField(event,"teacher", "newGroup", "defaultSessionValues")}}/>
-                    </FormElementGroup> 
-
                     <div style ={{display: "flex", flexDirection: "row", justifyContent: "center", margin: "0 0 1vh 0"}}>
                         <ColorButton color = "#2DA283" margin="0 1vw" padding="0.5rem 1rem" width="fit-content" onClick={(e)=>{e.preventDefault(); createGroup(selectedSubject, group); showModal()}}>Create</ColorButton>
                     </div>
@@ -189,6 +180,7 @@ export default class Asignaturas extends React.Component {
       subjects: [],
       titles: [],
       rooms: [],
+      teachers: [],
 
       showModal: false,
       modalForm: " ",
@@ -201,6 +193,7 @@ export default class Asignaturas extends React.Component {
     this.setSessions = this.setSessions.bind(this);
     this.updateSession = this.updateSession.bind(this);
     this.createSession = this.createSession.bind(this);
+    this.deleteSession = this.deleteSession.bind(this);
 
 
     this.onSelectSubject  =    this.onSelectSubject.bind(this);
@@ -213,8 +206,10 @@ export default class Asignaturas extends React.Component {
     this.createSubject = this.createSubject.bind(this);
     this.updateSubject = this.updateSubject.bind(this);
     this.updateSubjectName = this.updateSubjectName.bind(this);
+    this.deleteSubject = this.deleteSubject.bind(this);
     
     this.createGroup = this.createGroup.bind(this);
+    this.deleteGroup = this.deleteGroup.bind(this);
 
     this.showModal = this.showModal.bind(this);
     this.chooseCreateForm= this.chooseCreateForm.bind(this);
@@ -224,6 +219,8 @@ export default class Asignaturas extends React.Component {
     this.getRooms = this.getRooms.bind(this);
     this.setRooms = this.setRooms.bind(this);
     this.getTimeBlocksOfSession = this.getTimeBlocksOfSession.bind(this);
+
+    this.setTeachers= this.setTeachers.bind(this);
   }
 
   getRooms(){
@@ -236,14 +233,15 @@ export default class Asignaturas extends React.Component {
   }
 
   getTimeBlocksOfSession(session){
+
+
     var time = session.startTime.split(":");
     var startMinute= parseInt(time[0])*60 + parseInt(time[1]);
     const row = (((startMinute - 480)/15)>>0) + 1;
-    const rowEnd= Math.ceil(((startMinute+session.length -480) /15))+1;
+    const rowEnd= Math.ceil(((startMinute+parseInt(session.length) -480) /15))+1;
 
     console.log("time " + time + " - startMinute" + startMinute + " - row " + row + "- rowend " + rowEnd);
   
-    console.log( Array.from(new Array(rowEnd-row), (x, i) => i+row));
     return Array.from(new Array(rowEnd-row), (x, i) => i+row);
   }
 
@@ -322,7 +320,8 @@ export default class Asignaturas extends React.Component {
   onSelectSession(session){
     this.setState({
       selectedSession: JSON.parse(JSON.stringify(session)),
-      rooms: [session.room]
+      rooms: [session.room],
+      teachers: [session.teacher]
     });
   }
 
@@ -342,19 +341,17 @@ export default class Asignaturas extends React.Component {
   }
   updateSession(session){
     this.context.updateSession(session, ()=> {
-      this.setState((prevState) =>(
-        {sessions: [...prevState.sessions.filter(s => s.id!==session.id), session]}
-      ));
-    }
+      this.context.loadSubjectsOfTeacher("teacher Z", this.setSubjects);
+    },
+    this.state.selectedSubject.semester
   );
   }
   createSession(session){
-    session["semester"]= this.state.selectedSubject.semester;
     this.context.createSession(session, ()=> {
         this.setState((prevState) =>(
           {sessions: [...prevState.sessions, session]}
         ));
-      }
+      }, this.state.selectedSubject.semester
     );
   }
 
@@ -367,32 +364,81 @@ export default class Asignaturas extends React.Component {
       }
     );
   }
+  deleteSubject(subject){
+    var callback= ()=> {
+      this.context.loadSubjectsOfTeacher("teacher Z", this.setSubjects);
+      this.setState((prevState) =>(
+        {
+        selectedSubject: null,
+        selectedGroup: null,
+        selectedSession: null}
+      ));
+    };
+    this.context.deleteSubject(subject,callback);
+  }
 
   createGroup(subject, group){
     group.subjectName = subject.subjectName;
     group.type = "group";
+    group.defaultSessionValues.teacher= {name: "Sin Asignar", checkConcurrency: false};
+    group.defaultSessionValues.room= {name: "Sin Asignar", checkConcurrency: false};
+    group.defaultSessionValues.length= 45;
+    console.log(subject.groups);
     subject.groups.push(group);
+    console.log(subject.groups);
     this.context.updateSubject(subject, ()=> {
       this.setState((prevState) =>(
-        {subjects: [...prevState.subjects.filter(s => s.id!==subject.id), subject]}
+        {subjects: [...prevState.subjects.filter(s => s.id!==subject.id), subject],
+         newGroup: createEmptyGroup()}
         ));
       }
     );
   }
 
+  deleteGroup(subject, group){
+
+    var callback= ()=> {
+      this.context.loadSubjectsOfTeacher("teacher Z", this.setSubjects);
+      this.setState((prevState) =>(
+        {
+        selectedGroup: null,
+        selectedSession: null}
+      ));
+    };
+
+    this.context.deleteGroup(subject, group, callback );
+  }
+
   setSubjects(_subjects){
-    this.setState({subjects: _subjects});
+    this.setState({subjects: _subjects,
+      selectedSubject: null,
+      selectedGroup: null,
+      selectedSession: null});
   }
   setRooms(_rooms){
+    if (this.state.selectedSession){
+      const index = _rooms.map(r=>(r.name)).indexOf(this.state.selectedSession.room.name);
+      if (index < 0) {
+        _rooms=[..._rooms, this.state.selectedSession.room];
+      }
+    }
     this.setState({rooms: _rooms});
+  }
+  setTeachers(_teachers){
+    if (this.state.selectedSession){
+      const index = _teachers.map(r=>(r.name)).indexOf(this.state.selectedSession.teacher.name);
+      if (index < 0) {
+        _teachers=[..._teachers, this.state.selectedSession.teacher];
+      }
+    }
+    this.setState({teachers: _teachers});
   }
 
   updateSubject(subject){
-    console.log("update subject");
     var callback= ()=> {
+      this.context.loadSubjectsOfTeacher("teacher Z", this.setSubjects);
       this.setState((prevState) =>(
-        {subjects: [...prevState.subjects.filter(s => s.id!==subject.id), subject],
-        selectedSubject: null,
+        {selectedSubject: null,
         selectedGroup: null,
         selectedSession: null}
       ));
@@ -403,6 +449,14 @@ export default class Asignaturas extends React.Component {
     }else{
       this.context.updateSubject(subject, callback);
     }
+  }
+
+  deleteSession(session){
+    this.context.deleteSession(session, ()=>{
+      this.setState((prevState) =>(
+        {sessions: prevState.sessions.filter((s)=>(s.id!=session.id))}
+      ));
+    },this.state.selectedSubject.semester);
   }
 
   updateSubjectName(subject, oldSubjectname, callback){
@@ -424,8 +478,9 @@ export default class Asignaturas extends React.Component {
         titles[index]= title;
       }
     }else{
-      title["semester"]=this.state.selectedSubject.semester;
+      title["semester"] = parseInt(this.state.selectedSubject.semester);
       titles.push(title);
+      console.log(title);
     }
 
     var subject = this.state.selectedSubject;
@@ -489,6 +544,9 @@ export default class Asignaturas extends React.Component {
                 updateSubject={this.updateSubject}
                 titles= {this.state.titles}
                 onSelectTitle={this.SelectTitleOfSubject}
+                onDeleteSession={this.deleteSession}
+                onDeleteGroup = {this.deleteGroup}
+                deleteSubject= {this.deleteSubject}
                 >
 
               </SubjectForm>
@@ -500,15 +558,21 @@ export default class Asignaturas extends React.Component {
               <MenuBody>
                 {
                   this.state.selectedSession!=null?
-                  <SessionForm getAvalibleRooms = {(session)=>{this.context.getAvailableRooms(this.state.selectedSubject.semester,
-                                                                                      session.day, 
-                                                                                      this.getTimeBlocksOfSession(session), 
-                                                                                      this.setRooms);}} 
+                  <SessionForm 
                   key ={this.state.selectedSession.id} 
                   id ={this.state.selectedSession.id} 
                   selectedSession={this.state.selectedSession}
                   updateSession = {this.updateSession}
-                  rooms = {this.state.rooms}>
+                  rooms = {this.state.rooms}
+                  teachers = {this.state.teachers}
+                  checkAvailability={(session)=>{this.context.getAvailableRooms(this.state.selectedSubject.semester,
+                                                                                session.day, 
+                                                                                this.getTimeBlocksOfSession(session), 
+                                                                                this.setRooms);
+                                                this.context.getAvailableTeachers(this.state.selectedSubject.semester,
+                                                                                session.day, 
+                                                                                this.getTimeBlocksOfSession(session), 
+                                                                                this.setTeachers);}}>
                   </SessionForm>:
                   ""
                 }

@@ -10,6 +10,7 @@ function listRooms(rooms, deleteRoom, deleteCallback){
   return rooms.map(room=>  
     <div style={{display: "flex", flexDirection: "row", width: "100%", justifyContent: "space-between"}}>
       <Button onClick={e=>{e.preventDefault()}}>{room.roomName}</Button>
+      {room.checkConcurrency==false? <Button background="#969696" disabled={true}>concurrent</Button>: ""}
       <Button background="#a83535" onClick={e=>{e.preventDefault();deleteRoom(room, )}}>Delete</Button>
     </div>
     );

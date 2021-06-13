@@ -3,7 +3,11 @@ import testData from './testData';
 
 
 
- 
+const dataSources={
+    "local": testData,
+    "dev": prodData,
+    "pro": prodData
+} 
 
 
 export default class Repository{
@@ -11,19 +15,7 @@ export default class Repository{
     constructor() {
 
         var env = process.env.REACT_APP_ENVIROMENT.trimEnd();
-        console.log(env.length);
-        console.log(env ==="local");
-        switch(env){
-            case "local":
-                this.dataSource = new testData(process.env.REACT_APP_BACKEND_BASE_URL);
-                break;
-            case "dev":
-            case "pro":
-                this.dataSource= new prodData();
-                break;
-            default:
-                console.warn("NO DATA SOURCE");
-        }
+        this.dataSource = new (this.getDataSource(env))(process.env.REACT_APP_BACKEND_BASE_URL);
 
         this.authenticationData={
             teacher:{
@@ -33,9 +25,25 @@ export default class Repository{
 
     }
 
+    getDataSource(env){
+        return env in dataSources? dataSources[env]: console.warn("NO DATA SOURCE");
+    }
 
     setLoadingCallback(callback){
         this.dataSource.setLoadingCallback(callback);
+    }
+
+    getTeachers(callback){
+        this.dataSource.getTeachers(callback);
+    }
+    createTeacher(teacher, callback){
+        this.dataSource.createTeacher(teacher, callback);
+    }
+    deleteTeacher(teacher, callback){
+        this.dataSource.deleteTeacher(teacher, callback);
+    }
+    getAvailableTeachers(semester, day, timeBlocks, callback){
+        this.dataSource.getAvailableTeachers(semester, day, timeBlocks, callback);
     }
 
     getRooms(callback){
@@ -73,28 +81,27 @@ export default class Repository{
         this.dataSource.getSessionsOfTeacher(teacher, callback);
     }
 
-    updateSession(session, callback){
-
-        var time = session.startTime.split(":");
-        var startMinute= parseInt(time[0])*60 + parseInt(time[1]);
-        const rowStart = (((startMinute - 480)/15)>>0) + 1;      
-        const rowEnd= Math.ceil(((startMinute+session.length - 480) /15))+1;
-
-        session.timeBlocks= Array.from({length: rowEnd-rowStart}, (_, i) => i + rowStart)
-        console.log(rowStart);
-        console.log(rowEnd);
-        console.log(session.timeBlocks);
-
-        this.dataSource.updateSession(session, callback);
+    updateSession(session, callback, semester){
+        this.dataSource.updateSession(session, callback, semester);
     }
-    createSession(session, callback){
-        this.dataSource.createSession(session, callback);
+    createSession(session, callback, semester){
+        this.dataSource.createSession(session, callback, semester);
     
+    }
+    deleteSession(session, callback, semester){
+        this.dataSource.deleteSession(session, callback, semester);
     }
 
     createSubject(subject, callback){
         this.dataSource.createSubject(subject, this.authenticationData.teacher.name, callback);
     
+    }
+    deleteSubject(subject, callback){
+        this.dataSource.deleteSubject(subject, callback);
+    }
+
+    deleteGroup(subject, group, callback){
+        this.dataSource.deleteGroup(subject, group, callback);
     }
 
     loadSubjectsOfTeacher(teacher, callback){
@@ -111,5 +118,9 @@ export default class Repository{
 
     updateSubjectName(subject, oldSubjectName, callback){
         this.dataSource.updateSubjectName(subject, oldSubjectName, callback);
+    }
+
+    checkDisponibilityForSession(session, semester, callback){
+        this.dataSource.checkDisponibilityForSession(session, semester, callback);
     }
 }
