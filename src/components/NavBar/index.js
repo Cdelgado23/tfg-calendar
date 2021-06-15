@@ -1,7 +1,6 @@
 
 import {
   Nav,
-  NavLink,
   NavMenu,
   NavBtn,
   NavBtnLinkGreen,
@@ -11,7 +10,6 @@ import {
 
 import React from 'react';
 import { useHistory,useLocation } from "react-router-dom";
-import { Button } from '../../pages/PagesElements';
 
 import logo from '../../logo.png';
 
