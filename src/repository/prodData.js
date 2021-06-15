@@ -43,6 +43,11 @@ export default class prodData{
         this.errorCallback={};
 
     }
+    getUser(){
+        console.log(firebase.auth().currentUser);
+        return firebase.auth().currentUser;
+    }
+
     setErrorCallback(callback){
         this.errorCallback= callback;
     }

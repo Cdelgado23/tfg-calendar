@@ -71,6 +71,7 @@ export const FormElementGroup = styled.div`
 `;
 
 export const StyledInput= styled.input`
+  border-radius: "4px";
   margin: ${props => props.margin? props.margin: "0.5vh"};
   margin-bottom: 0.5em;
 `;

@@ -24,6 +24,9 @@ export default class Repository{
         };
 
     }
+    getUser(){
+        return this.dataSource.getUser();
+    }
 
     getDataSource(env){
         return env in dataSources? dataSources[env]: console.warn("NO DATA SOURCE");
