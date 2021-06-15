@@ -69,7 +69,7 @@ const Navbar = (props) => {
          :
          <React.Fragment>
             <div style={{display: "flex", width: "100%", justifyContent: "center", alignItems: "center"}}>
-              <div style={{background: "#F5AB00", padding: "1rem", borderRadius: "5px", color: "white"}}>
+              <div style={{background: "#F5AB00", padding: "1rem 2rem", borderRadius: "5px", color: "white"}}>
                 Login
               </div>
             </div>
