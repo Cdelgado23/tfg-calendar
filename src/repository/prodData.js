@@ -621,7 +621,6 @@ export default class prodData{
 
         try{
             var groups = subject.groups.map(g =>(g.groupName));
-            var sessions =[];
             batch.update(this.db.collection("subjects").doc(subject.id), subject);
             if (updatedSemester && groups.length>0){
                 var rawData = await this.db.collection("sessions").where("subjectName", "==", subject.subjectName).where("groupName", "in", groups).get();
