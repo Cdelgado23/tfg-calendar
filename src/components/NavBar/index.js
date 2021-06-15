@@ -13,6 +13,7 @@ import React from 'react';
 import { useHistory,useLocation } from "react-router-dom";
 import { Button } from '../../pages/PagesElements';
 
+import logo from '../../logo.png';
 
 function handleRouteChange(event, history, location) {
   history.push("/"+event.target.value);
@@ -25,13 +26,14 @@ const Navbar = (props) => {
   return (
     <>
       <Nav>
-        <div style= {{"justify-self": "flex-start"}}>
-        <NavLink to='/'>
-          Universidad de Extremadura
-        </NavLink>
+        <div style= {{width: "15vw"}}>
+        <div style={{  color: "#fff", display: "flex", flexDirection:"column", justifyContent: "center", alignItems: "center", textDecoration: "none",
+                      margin: "0 0 0 1vw", height: "100%"}}>
+        <img src={logo} alt="logo"   height="100%"/>
+        </div>
         </div>
          {
-           props.showButtons?
+           props.loggedUser?
           <React.Fragment>
             <SelectRouter name="rooms" id="rooms" onChange={event =>{handleRouteChange(event, history, location)}}>
             <option value={"Horario"}>Horario</option>
@@ -58,8 +60,11 @@ const Navbar = (props) => {
                 <NavBtnLinkYellow to='/Titulaciones'>Titulaciones</NavBtnLinkYellow>
               </NavBtn>
             </NavMenu>
-            <NavBtn>
-              <NavBtnLinkGreen to='/Usuario'>Profesor Apellido1 Apellido2</NavBtnLinkGreen>
+            <NavBtn style={{width: "15vw"}}>
+              <NavBtnLinkGreen to='/Usuario'>
+              {props.loggedUser}
+
+              </NavBtnLinkGreen>
             </NavBtn>
           </React.Fragment>
 

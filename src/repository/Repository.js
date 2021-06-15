@@ -12,18 +12,22 @@ const dataSources={
 
 export default class Repository{
 
-    constructor() {
-
+    constructor(loadingCallback, userIsLogged) {
+        this.user=null;
         var env = process.env.REACT_APP_ENVIROMENT.trimEnd();
-        this.dataSource = new (this.getDataSource(env))(process.env.REACT_APP_BACKEND_BASE_URL);
-
-        this.authenticationData={
-            teacher:{
-                name: "teacher Z"
-            }
-        };
-
+        this.dataSource = new (this.getDataSource(env))(process.env.REACT_APP_BACKEND_BASE_URL, loadingCallback,  userIsLogged);
     }
+
+    setUser(user){
+        this.user= user;
+    }
+    logOut(callback){
+        this.dataSource.logOut(callback);
+    }
+    auth(email, password, callback){
+        this.dataSource.auth(email,password,callback);
+    }
+
     getUser(){
         return this.dataSource.getUser();
     }

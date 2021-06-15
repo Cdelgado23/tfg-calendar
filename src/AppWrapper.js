@@ -9,25 +9,43 @@ import Aulas from './pages/Aulas/Aulas';
 import Usuario from './pages/Usuario';
 import Profesores from './pages/Profesores/Profesores';
 import Titulaciones from './pages/Titulaciones/Titulaciones';
+import Login from './pages/Login/Login';
 
 import Repository from './repository/Repository';
 import {RepositoryContext} from './context/RepositoryContext';
-import { StyledInput, StyledLabel } from './components/SubjectForm/SubjectFormElements';
-import { Button } from './pages/PagesElements';
+
+import { Redirect } from "react-router-dom";
+
 
 export default class AppWrapper extends React.Component
  {
   constructor(props){
     super(props);
+    this.userIsLogged = this.userIsLogged.bind(this);
+    this.setLoading = this.setLoading.bind(this);
     this.state={
-      repository: new Repository(),
+      repository: new Repository(this.setLoading, this.userIsLogged),
       email: "",
-      password: ""
+      password: "",
+      loggedUser: false,
+      loading: false
     };
+
 
     this.setEmail= this.setEmail.bind(this);
     this.setPassword= this.setPassword.bind(this);
+    this.logOut = this.logOut.bind(this);
   }
+  setLoading(loading){
+    this.setState({loading: loading});
+  }
+  logOut(){
+    this.state.repository.logOut(()=>{this.userIsLogged(false)});
+  }
+  userIsLogged(isLogged){
+    this.setState({loggedUser: isLogged});
+  }
+
   setEmail(email){
     this.setState({email: email});
   }
@@ -38,45 +56,27 @@ export default class AppWrapper extends React.Component
   return (
     <RepositoryContext.Provider value= {this.state.repository}>
       <Router id="App">
-        <Navbar hist={this.props.hist} showButtons={this.state.repository.getUser()!==null}/>
-        {
-          this.state.repository.getUser()===null? "":  
+        <Navbar hist={this.props.hist} loggedUser={this.state.loggedUser}/>
           <Switch id="page-wrap">
-            <Route path='/Horario' render={()=><Horario/>}/>
-            <Route path='/Asignaturas' component={Asignaturas} />
-            <Route path='/Aulas' component={Aulas} />
-            <Route path='/Profesores' component={Profesores} />
-            <Route path='/Usuario' component={Usuario} />
-            <Route path='/Titulaciones' component={Titulaciones} />  
+          {
+            !this.state.loggedUser? 
+            <Route path='/Login' render={()=><Login history={this.props.hist} loggedUser={this.state.loggedUser}/>}></Route>
+            :  
+            <React.Fragment>
+              <Route path='/Horario' render={()=><Horario/>}/>
+              <Route path='/Asignaturas' component={Asignaturas} />
+              <Route path='/Aulas' component={Aulas} />
+              <Route path='/Profesores' component={Profesores} />
+              <Route path='/Usuario' render={()=><Usuario loggedUser={this.state.loggedUser} logOut={this.logOut}/>} />
+              <Route path='/Titulaciones' component={Titulaciones} />  
+            </React.Fragment>
+          }
           </Switch>
-        }
+          {
+            this.state.loggedUser? <Redirect to="/Horario"/>:
+                                  <Redirect to="/Login" />
+          }
       </Router>
-
-      <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '80vh'
-      }}
-    >
-      <div style={{border: "#2DA283", color: "white", display:"flex", flexDirection: "column", alignItems: "center", justifyContent: 'center', width: "40vw", background: "white", borderRadius: "4px"}}>
-        <h2 style={{color: "white", }}>Login now</h2>
-        <StyledLabel>Email</StyledLabel>
-        <StyledInput margin= "0 0.5vw 0 0.5vw"  type="text" name="email" 
-          value={this.state.email} onChange= {event => {this.setEmail(event.target.value)}}
-          style={{width: "80%"}}/>
-        <StyledLabel>Password</StyledLabel>
-        <StyledInput margin= "0 0.5vw 0 0.5vw"  type="password" name="email" 
-          value={this.state.password} onChange= {event => {this.setPassword(event.target.value)}}
-          style={{width: "80%"}}/>
-
-          <Button background={"#F5AB00"}>
-            Login
-          </Button>
-      </div>
-      
-    </div>
     </RepositoryContext.Provider>
   );
   }

@@ -9,9 +9,9 @@ import { FormBody, FormElementGroup, FormGroup, FullBody, Header, StyledInput, S
 function listRooms(rooms, deleteRoom, deleteCallback){
   return rooms.map(room=>  
     <div style={{display: "flex", flexDirection: "row", width: "100%", justifyContent: "space-between"}}>
-      <Button onClick={e=>{e.preventDefault()}}>{room.roomName}</Button>
-      {room.checkConcurrency===false? <Button background="#969696" disabled={true}>concurrent</Button>: ""}
-      <Button background="#a83535" onClick={e=>{e.preventDefault();deleteRoom(room, )}}>Delete</Button>
+      <Button background="#e7e9eb" onClick={e=>{e.preventDefault()}}style={{width: "70%", color: "black"}}>{room.roomName}</Button>
+      {room.checkConcurrency===false? <Button background="#969696" disabled={true} style={{width: "20%", padding: "0"}}>concurrent</Button>: <div style={{width: "20%", padding: "0", margin: "0.5em"}}></div>}
+      <Button background="#a83535" onClick={e=>{e.preventDefault();deleteRoom(room, )}} style={{width: "10%"}}>Delete</Button>
     </div>
     );
 }
@@ -105,7 +105,7 @@ export default class Aulas extends React.Component {
       >
         <PageHeader>
         </PageHeader>
-        <SpaceBetweenMenu>
+        <SpaceBetweenMenu style={{marginLeft: "-5%"}}>
 
             <FullBody>
               <FormGroup>

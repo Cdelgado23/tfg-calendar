@@ -1,7 +1,8 @@
 import React from 'react';
+import { Button } from './PagesElements';
+import { Redirect } from "react-router-dom";
 
-
-const Usuario = () => {
+const Usuario = (props) => {
   return (
     <div
       style={{
@@ -11,7 +12,10 @@ const Usuario = () => {
         height: '80vh'
       }}
     >
-      <h1>Usuario</h1>
+      <Button style={{padding: "3vh 3vw", cursor: "pointer"}} onClick={()=>{props.logOut()}}>Log out</Button>
+      {props.loggedUser?"":
+        <Redirect to="/Login" />
+      }
     </div>
   );
 };

@@ -83,7 +83,10 @@ export const NavBtnLinkGreen = styled(Link)`
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   text-decoration: none;
-
+  max-width: 15vw;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   &:hover {
     transition: all 0.2s ease-in-out;
     background: #6cd1b6;

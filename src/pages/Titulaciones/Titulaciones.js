@@ -9,9 +9,9 @@ import { FormBody, FormElementGroup, FormGroup, FullBody, Header, StyledInput, S
 function listTitles(titles, deleteTitle, deleteCallback){
   return titles.map(title=>
     <div style={{display: "flex", flexDirection: "row", width: "100%", justifyContent: "space-between"}}>
-      <Button onClick={e=>{e.preventDefault()}}>{title.titleName}</Button>
-      <Button background="#969696" disabled={true}>Semesters: {title.semesters}</Button>
-      <Button background="#a83535" onClick={e=>{e.preventDefault();deleteTitle(title, deleteCallback)}}>Delete</Button>
+      <Button background="#e7e9eb" onClick={e=>{e.preventDefault()}} style={{width: "70%", color: "black"}}>{title.titleName}</Button>
+      <Button background="#969696" disabled={true} style={{width: "20%"}}>Semesters: {title.semesters}</Button>
+      <Button background="#a83535" onClick={e=>{e.preventDefault();deleteTitle(title, deleteCallback)}} style={{width:"10%"}}>Delete</Button>
     </div>
     );
 }
@@ -99,14 +99,14 @@ export default class Profesores extends React.Component {
       >
         <PageHeader>
         </PageHeader>
-        <SpaceBetweenMenu>
+        <SpaceBetweenMenu style={{marginLeft: "-5%"}}>
 
             <FullBody>
               <FormGroup>
                 <Header>
                   <h2>Titulaciones</h2>
                 </Header>
-                <FormBody height="70vh" width="70vw" overflowy= "auto" style={{"border": "1px solid #EFEFEF","border-radius": "0 0 10px 10px"}}>
+                <FormBody height="70vh" width="60vw" overflowy= "auto" style={{"border": "1px solid #EFEFEF","border-radius": "0 0 10px 10px"}}>
                   {listTitles(this.state.titles, this.deleteTitle, this.getTitles)}
 
                   <Button onClick={e=>{e.preventDefault(); this.showModal()}}><b>+</b></Button>

@@ -6,6 +6,7 @@ display: flex;
 align-items: flex-end;
 justify-content: space-around;
 
+
 @media screen and (max-width: 1024px) {
     flex-direction: column;
     align-items: center;
@@ -114,7 +115,7 @@ export const Footer = styled.div`
 `;
 
 const StyledLoader = styled(LoadingOverlay)`
-  height: 200%;
+  height: 100%;
 
 `
  

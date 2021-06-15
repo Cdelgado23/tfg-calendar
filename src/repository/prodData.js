@@ -18,7 +18,7 @@ function getTimeBlocksOfSession(session){
 
 export default class prodData{
 
-    constructor(loadingCallback) {
+    constructor(_, loadingCallback, userIsLogged) {
         console.log("init repo");
         var firebaseConfig = {
             apiKey:             process.env.REACT_APP_FIREBASE_API_KEY.trim(),
@@ -42,6 +42,41 @@ export default class prodData{
         this.loadingCallback= loadingCallback;
         this.errorCallback={};
 
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                console.log(user.email);
+                userIsLogged(user.email);
+            } else {
+                userIsLogged(false);
+            }
+          });
+
+    }
+
+    logOut(callback){
+        firebase.auth().signOut().then(() => {
+            callback();
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
+
+    auth(email, password, callback){
+        this.loadingCallback(true);
+        firebase.auth().signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            this.loadingCallback(false);
+            // Signed in
+            var user = userCredential.user;
+            // ...
+            callback(user);
+        })
+        .catch((error) => {
+            this.loadingCallback(false);
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            callback(errorMessage);
+        });
     }
     getUser(){
         console.log(firebase.auth().currentUser);
