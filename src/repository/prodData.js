@@ -40,7 +40,11 @@ export default class prodData{
         }
            
         this.loadingCallback= loadingCallback;
+        this.errorCallback={};
 
+    }
+    setErrorCallback(callback){
+        this.errorCallback= callback;
     }
     setLoadingCallback(callback){
         this.loadingCallback= callback;
@@ -57,6 +61,8 @@ export default class prodData{
             });
             this.loadingCallback(false);
             callback(data);
+        }).catch(err=>{
+            this.errorCallback(err);
         });
     }
     createTeacher(teacher, callback){
@@ -95,6 +101,8 @@ export default class prodData{
         batch.commit().then(() => {
             this.loadingCallback(false);
             callback();
+        }).catch(err=>{
+            this.errorCallback(err);
         });
     }
 
@@ -128,6 +136,8 @@ export default class prodData{
         batch.commit().then(() => {
             this.loadingCallback(false);
             callback();
+        }).catch(err=>{
+            this.errorCallback(err);
         });
     }
 
@@ -153,6 +163,8 @@ export default class prodData{
             console.log(formattedTeachers);
             this.loadingCallback(false);
             callback(formattedTeachers);
+        }).catch(err=>{
+            this.errorCallback(err);
         });
     }
 
@@ -167,6 +179,8 @@ export default class prodData{
             });
             this.loadingCallback(false);
             callback(data);
+        }).catch(err=>{
+            this.errorCallback(err);
         });
     }
 
@@ -190,6 +204,8 @@ export default class prodData{
             console.log(rooms);
             this.loadingCallback(false);
             callback(formattedRooms);
+        }).catch(err=>{
+            this.errorCallback(err);
         });
     }
 
@@ -227,6 +243,8 @@ export default class prodData{
         batch.commit().then(() => {
             this.loadingCallback(false);
             callback();
+        }).catch(err=>{
+            this.errorCallback(err);
         });
 
     }
@@ -268,6 +286,8 @@ export default class prodData{
         batch.commit().then(() => {
             this.loadingCallback(false);
             callback();
+        }).catch(err=>{
+            this.errorCallback(err);
         });
     }
     
@@ -283,6 +303,9 @@ export default class prodData{
             });
             console.log(data);
             callback(data);
+        })
+        .catch(err=>{
+            this.errorCallback(err);
         });
     }
     createTitle(title, callback){
@@ -294,8 +317,8 @@ export default class prodData{
             console.log("Document successfully written!");
             callback();
         })
-        .catch((error) => {
-            console.error("Error writing document: ", error);
+        .catch(err=>{
+            this.errorCallback(err);
         });
     }
 
@@ -305,8 +328,8 @@ export default class prodData{
             console.log("Document successfully deleted!");
             callback();
         })
-        .catch((error) => {
-            console.error("Error writing document: ", error);
+        .catch(err=>{
+            this.errorCallback(err);
         });
     }
 
@@ -323,6 +346,8 @@ export default class prodData{
                 data.push(session);
             });
             callback(data);
+        }).catch(err=>{
+            this.errorCallback(err);
         });    
     }
 
@@ -337,6 +362,8 @@ export default class prodData{
                 data.push(session);
             });
             callback(data);
+        }).catch(err=>{
+            this.errorCallback(err);
         });
     }
 
@@ -353,6 +380,8 @@ export default class prodData{
                 data.push(session);
             });
             callback(data);
+        }).catch(err=>{
+            this.errorCallback(err);
         });
     }
     getSessionsOfSubjectGroup(subject, group, callback){
@@ -366,6 +395,8 @@ export default class prodData{
                 data.push(session);
             });
             callback(data);
+        }).catch(err=>{
+            this.errorCallback(err);
         });
     }
     getSessionsOfRoom(room){
@@ -378,6 +409,8 @@ export default class prodData{
             querySnapshot.forEach((doc) => {
                 console.log(`${doc.id} => ${JSON.stringify(doc.data())}`);
             });
+        }).catch(err=>{
+            this.errorCallback(err);
         });
     }
     updateSession(session, callback, semester) {
@@ -445,6 +478,8 @@ export default class prodData{
                 this.loadingCallback(false);
                 callback();
                 console.log("Batch completed");
+            }).catch(err=>{
+                this.errorCallback(err);
             });
 
           //-------------------------
@@ -491,8 +526,8 @@ export default class prodData{
             this.loadingCallback(false);
             callback();
         })
-        .catch((error) => {
-            console.error("Error adding document: ", error);
+        .catch(err=>{
+            this.errorCallback(err);
         });
     }
 
@@ -507,6 +542,8 @@ export default class prodData{
             this.loadingCallback(false);
             callback();
             console.log("Batch completed");
+        }).catch(err=>{
+            this.errorCallback(err);
         });
     }
 
@@ -583,10 +620,13 @@ export default class prodData{
                 this.loadingCallback(false);
                 callback();
                 console.log("Batch completed");
+            }).catch(err=>{
+                this.errorCallback(err);
             });   
-        }catch(err){
+        }
+        catch(err){
             console.log("error updating subject: " + err);
-        } 
+        };
     }
 
 
@@ -619,6 +659,8 @@ export default class prodData{
                 this.loadingCallback(false);
                 callback();
                 console.log("Batch completed");
+            }).catch(err=>{
+                this.errorCallback(err);
             });
         });
 
@@ -631,16 +673,16 @@ export default class prodData{
         subject.groups=[];
         subject.teachers=[owner];
         console.log(subject);
-        this.db.collection("subjects").add(
+        this.db.collection("subjects").doc(subject.subjectName).set(
             subject
         )
-        .then((docRef) => {
-            console.log("Document written with ID: ", docRef.id);
-            callback(subject);
-            subject["id"] = docRef.id; 
+        .then(() => {
+            callback();
         })
-        .catch((error) => {
-            console.error("Error adding document: ", error);
+        .catch(err=>{
+            console.log("ERROR");
+            console.log(err);
+            this.errorCallback(err);
         });
     }
 
@@ -671,6 +713,8 @@ export default class prodData{
                 this.loadingCallback(false);
                 callback();
                 console.log("Batch completed");
+            }).catch(err=>{
+                this.errorCallback(err);
             });   
         }catch(err){
             console.log("error delete subject: " + err);
@@ -703,6 +747,8 @@ export default class prodData{
                 this.loadingCallback(false);
                 callback();
                 console.log("Batch completed");
+            }).catch(err=>{
+                this.errorCallback(err);
             });    
         });
     }

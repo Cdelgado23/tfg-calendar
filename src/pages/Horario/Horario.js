@@ -112,7 +112,20 @@ export default class Horario extends React.Component {
     this.compareAvailabilityFactors = this.compareAvailabilityFactors.bind(this);
     this.addRoom = this.addRoom.bind(this);
     this.addTeacher = this.addTeacher.bind(this);
+    this.showError = this.showError.bind(this);
   }
+
+  showError(err){
+    console.log("error");
+    console.log(err);
+    this.setLoading(false);
+    this.setFooterMsg({
+      header: "Ha ocurrido un error",
+      msgs:[err],
+      type: "error"
+    });
+  }
+
   compareAvailabilityFactors(session1, session2){
     var timeBlocks1 = this.getTimeBlocksOfSession(session1);
     var timeBlocks2 = this.getTimeBlocksOfSession(session2);
@@ -310,6 +323,7 @@ export default class Horario extends React.Component {
 
   componentDidMount() {
     this.context.setLoadingCallback(this.setLoading);
+    this.context.setErrorCallback(this.showError);
 
     this.context.loadTitles(this.setTitles);
 

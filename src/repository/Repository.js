@@ -32,6 +32,9 @@ export default class Repository{
     setLoadingCallback(callback){
         this.dataSource.setLoadingCallback(callback);
     }
+    setErrorCallback(callback){
+        this.dataSource.setErrorCallback(callback);
+    }
 
     getTeachers(callback){
         this.dataSource.getTeachers(callback);

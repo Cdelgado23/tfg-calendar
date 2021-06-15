@@ -14,9 +14,10 @@ function subjectIsValid(subject){
   return subject.color.length>6 && subject.color!=="#ffffff" && subject.subjectName.length>3; 
 }
 
-function groupIsValid(group){
+function groupIsValid(subject, group){
   return group.groupName.length>3 && group.color.length>6 && group.color!=="#ffffff"
   && group.defaultSessionValues.color.length>6 && group.defaultSessionValues.color!=="#ffffff"
+  && !subject.groups.map(g =>(g.groupName)).includes(group.groupName);
 }
 function sessionIsValid(session){
   return session.length>0;
@@ -134,7 +135,7 @@ return (
                         <StyledInput margin= "0 0.5vw 0 0.5vw" type="color" name="color" value={group.defaultSessionValues.color} onChange= {event => {onChangeField(event,"color", "newGroup", "defaultSessionValues")}}/>
                     </FormElementGroup>
                     <div style ={{display: "flex", flexDirection: "row", justifyContent: "center", margin: "0 0 1vh 0"}}>
-                        <ColorButton disabled={!groupIsValid(group)} color = "#2DA283" margin="0 1vw" padding="0.5rem 1rem" width="fit-content" onClick={(e)=>{e.preventDefault(); createGroup(selectedSubject, group); showModal()}}>Create</ColorButton>
+                        <ColorButton disabled={!groupIsValid(selectedSubject, group)} color = "#2DA283" margin="0 1vw" padding="0.5rem 1rem" width="fit-content" onClick={(e)=>{e.preventDefault(); createGroup(selectedSubject, group); showModal()}}>Create</ColorButton>
                     </div>
                 </FormBody>
   </React.Fragment>
@@ -209,6 +210,8 @@ export default class Asignaturas extends React.Component {
       teachers: [],
 
       showModal: false,
+      showError: false,
+      error: "",
       modalForm: " ",
       newSubject: {titles:[], color: "#ffffff", "subjectName":""},
       newGroup: createEmptyGroup(), 
@@ -250,6 +253,14 @@ export default class Asignaturas extends React.Component {
     this.setTeachers= this.setTeachers.bind(this);
     this.checkAvailability= this.checkAvailability.bind(this);
 
+    this.errorCallback= this.errorCallback.bind(this);
+
+  }
+
+  errorCallback(err){
+    this.setState({showModal:true,
+                showError: true,
+                error: err});
   }
 
   checkAvailability(session)
@@ -309,7 +320,8 @@ export default class Asignaturas extends React.Component {
     this.setState((prevState) =>(
       {showModal: !prevState.showModal,
       modalForm: modalForm,
-      selectedSession: null}
+      selectedSession: null,
+      showError: false}
     ));
   }
 
@@ -424,9 +436,7 @@ export default class Asignaturas extends React.Component {
   createSubject(subject){
     subject.semester= 1;
     this.context.createSubject(subject, ()=> {
-      this.setState((prevState) =>(
-        {subjects: [...prevState.subjects, subject]}
-        ));
+      this.context.loadSubjectsOfTeacher("teacher Z", this.setSubjects);
       }
     );
   }
@@ -565,6 +575,7 @@ export default class Asignaturas extends React.Component {
 
   componentDidMount() {
     this.context.setLoadingCallback(this.setLoading);
+    this.context.setErrorCallback(this.errorCallback);
     
     this.context.loadSubjectsOfTeacher("teacher Z", this.setSubjects);
     this.context.loadSessionsOfTeacher("teacher Z", this.setSessions);
@@ -655,7 +666,10 @@ export default class Asignaturas extends React.Component {
           <Footer></Footer>
         </div>
         <Modal width="60%" onClose={this.showModal} show={this.state.showModal}>
-          {this.chooseCreateForm(this.state.modalForm, this.state.selectedSubject, this.state.selectedGroup)}
+          {
+            this.state.showError? this.state.error: 
+            this.chooseCreateForm(this.state.modalForm, this.state.selectedSubject, this.state.selectedGroup)
+          }
         </Modal>
       </MyLoader>
     );
