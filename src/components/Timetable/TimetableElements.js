@@ -40,6 +40,56 @@ export const GridTimeElement = styled.div`
 
 `;
 
+export const GridContainer = styled.div`
+  grid-column-start: ${props => props.column};
+  grid-row-start: ${props => props.row};
+
+  grid-column-end: ${props => props.column +1};
+  grid-row-end: ${props => props.row + (props.size || 1)};
+  background-color: ${props => props.color || "#FFFFFF"};
+  justify-self: stretch;
+  height: auto;
+  width: auto;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  outline: none;
+  border: none;
+  
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  color: white; 
+`;
+
+export const GridContainerElement = styled.button`
+background-color: ${props => props.color || "#FFFFFF"};
+justify-self: stretch;
+height: 100%;
+width: auto;
+
+display: flex;
+justify-content: center;
+align-items: center;
+
+outline: none;
+border: none;
+
+overflow: hidden;
+text-overflow: ellipsis;
+
+color: white; 
+&:hover {
+  transition: all 0.2s ease-in-out;
+  filter: brightness(85%);
+  color: #010606;
+}
+&:active {
+  background: #FFFFFF;
+}
+`;
 
 export const GridElement = styled.button`
   grid-column-start: ${props => props.column};
@@ -61,6 +111,7 @@ export const GridElement = styled.button`
   overflow: hidden;
   text-overflow: ellipsis;
 
+  color: white; 
   &:hover {
     transition: all 0.2s ease-in-out;
     filter: brightness(85%);

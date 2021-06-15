@@ -8,8 +8,7 @@ import AppWrapper from './AppWrapper';
 
 function App() {
   let history = useHistory();
-  console.log("app");
-  console.log(RepositoryContext);
+  
   return (
     <AppWrapper hist={history}></AppWrapper>
   );

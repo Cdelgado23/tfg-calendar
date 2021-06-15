@@ -21,6 +21,7 @@ export const SubjectTitle = styled.button`
     border: none;
     overflow: hidden;
     text-overflow: ellipsis;
+    color: white;
     &:hover {
         transition: all 0.2s ease-in-out;
         background: #6cd1b6;
@@ -47,10 +48,10 @@ export const GroupElement = styled.button`
     margin: 0.5vh;
     overflow: hidden;
     text-overflow: ellipsis;
+    color: white;
     &:hover {
         transition: all 0.2s ease-in-out;
-        background: #6cd1b6;
-        color: #010606;
+        filter: brightness(85%);
     }
 `;
 
@@ -66,7 +67,6 @@ export const AddGroupButton = styled.button`
 
     &:hover {
         transition: all 0.2s ease-in-out;
-        background: #6cd1b6;
-        color: #010606;
+        filter: brightness(85%);
     }
 `;

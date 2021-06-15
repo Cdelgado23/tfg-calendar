@@ -1,53 +1,132 @@
-import firebase from 'firebase';
 import prodData from './prodData';
+import testData from './testData';
 
-// Required for side-effects
-require("firebase/firestore");
 
- 
+
+const dataSources={
+    "local": testData,
+    "dev": prodData,
+    "pro": prodData
+} 
 
 
 export default class Repository{
 
     constructor() {
-        if (this.db == null){
-        console.log("init repo");
-        var firebaseConfig = {
-            apiKey:             process.env.REACT_APP_FIREBASE_API_KEY,
-            authDomain:         process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-            projectId:          process.env.REACT_APP_FIREBASE_PROJECT_ID,
-            storageBucket:      process.env.REACT_APP_FIREBASE_STORAGEBUCKET,
-            messagingSenderId:  process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-            appId:              process.env.REACT_APP_FIREBASE_APP_ID
-          };
 
-        firebase.initializeApp(firebaseConfig);
-        this.db = firebase.firestore();
-        }
-        this.dataSource= new prodData(this.db);
+        var env = process.env.REACT_APP_ENVIROMENT.trimEnd();
+        this.dataSource = new (this.getDataSource(env))(process.env.REACT_APP_BACKEND_BASE_URL);
+
+        this.authenticationData={
+            teacher:{
+                name: "teacher Z"
+            }
+        };
+
+    }
+
+    getDataSource(env){
+        return env in dataSources? dataSources[env]: console.warn("NO DATA SOURCE");
     }
 
     setLoadingCallback(callback){
         this.dataSource.setLoadingCallback(callback);
     }
 
+    getTeachers(callback){
+        this.dataSource.getTeachers(callback);
+    }
+    createTeacher(teacher, callback){
+        this.dataSource.createTeacher(teacher, callback);
+    }
+    deleteTeacher(teacher, callback){
+        this.dataSource.deleteTeacher(teacher, callback);
+    }
+    getAvailableTeachers(semester, day, timeBlocks, callback){
+        this.dataSource.getAvailableTeachers(semester, day, timeBlocks, callback);
+    }
+
+    getRooms(callback){
+        this.dataSource.getRooms(callback);
+    }
+
+    createRoom(room, callback){
+        this.dataSource.createRoom(room, callback);
+    }
+
+    deleteRoom(room, callback){
+        this.dataSource.deleteRoom(room, callback);
+    }
+
+    getAvailableRooms(semester, day, timeBlocks, callback){
+        this.dataSource.getAvailableRooms(semester, day, timeBlocks, callback);
+    }
+
+    getSessionOfRoomInDay(room, day, semester, callback){
+        this.dataSource.getSessionOfRoomInDay(room, day, semester, callback);
+    }
+
+    loadTitles(callBack){
+        this.dataSource.loadTitles(callBack);
+    }
+    loadSubjectsOfTitle(title, callback){
+        this.dataSource.loadSubjectsOfTitle(title, callback);
+    }
+    loadSessionsOfSubjects(subjectNames, callback){
+        this.dataSource.loadSessionsOfSubjects(subjectNames, callback);
+    }
+
+
     loadSessionsOfTeacher(teacher, callback){
         this.dataSource.getSessionsOfTeacher(teacher, callback);
     }
 
-    updateSession(session, callback){
-        this.dataSource.updateSession(session, callback);
+    updateSession(session, callback, semester){
+        this.dataSource.updateSession(session, callback, semester);
     }
-    createSession(session, callback){
-        this.dataSource.createSession(session, callback);
+    createSession(session, callback, semester){
+        this.dataSource.createSession(session, callback, semester);
     
+    }
+    deleteSession(session, callback, semester){
+        this.dataSource.deleteSession(session, callback, semester);
+    }
+
+    createSubject(subject, callback){
+        this.dataSource.createSubject(subject, this.authenticationData.teacher.name, callback);
+    
+    }
+    deleteSubject(subject, callback){
+        this.dataSource.deleteSubject(subject, callback);
+    }
+
+    deleteGroup(subject, group, callback){
+        this.dataSource.deleteGroup(subject, group, callback);
     }
 
     loadSubjectsOfTeacher(teacher, callback){
         this.dataSource.getSubjectsOfTeacher(teacher, callback);
     }
 
-    updateSubject(subject){
+    updateSubject(subject, callback){
+        this.dataSource.updateSubject(subject, callback);
     }
 
+    loadSessionsOfSubjectGroup(subject, group, callback){
+        this.dataSource.getSessionsOfSubjectGroup(subject, group, callback);
+    }
+
+    updateSubjectName(subject, oldSubjectName, callback){
+        this.dataSource.updateSubjectName(subject, oldSubjectName, callback);
+    }
+
+    checkDisponibilityForSession(session, semester, callback){
+        this.dataSource.checkDisponibilityForSession(session, semester, callback);
+    }
+    createTitle(title, callback){
+        this.dataSource.createTitle(title, callback);
+    }
+    deleteTitle(title, callback){
+        this.dataSource.deleteTitle(title, callback);
+    }
 }

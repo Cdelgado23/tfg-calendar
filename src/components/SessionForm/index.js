@@ -1,17 +1,30 @@
 import React from 'react';
+import { Button } from '../../pages/PagesElements';
 import {FlexForm, NotificationsButtonsContainer, FormButton, FormSubmit, SessionInput} from './SessionFormElements'
 
-function showRooms(rooms, handleChange){
+function showRooms(rooms, handleChange, defaultRoom, field){
+
     const listRooms = rooms.map((room) =>
-    <option value={room}>{room}</option>
+    <option key={room.name} value={JSON.stringify(room)} selected={room.name===defaultRoom.name}>{room.name}</option>
   );
   return (
-    <select name="rooms" id="rooms" onChange={handleChange}>
+    <select name="rooms" id={field} defaultValue={defaultRoom} onChange={e=>{handleChange(e, field)}} style={{marginBottom: "0.5em"}}>
         {listRooms}
     </select>
   );
 }
 
+const week=["", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+function showWeekdays(selectedDay, handleChange){
+    const listDays = Array.from(new Array(7), (x, i) => i+1).map((day) =>
+                        <option value={parseInt(day)}>{week[day]}</option>
+                );
+  return (
+    <select name="days" id="days" defaultValue={parseInt(selectedDay)} onChange={e=> {handleChange(e, "day")}} style={{marginBottom: "0.5em"}}>
+        {listDays}
+    </select>
+  );
+}
 
 export default class SessionForm extends React.Component {
 
@@ -21,21 +34,14 @@ export default class SessionForm extends React.Component {
         this.onChangeField= this.onChangeField.bind(this);
         this.onChangeCheckbox= this.onChangeCheckbox.bind(this);
 
-        console.log("selected: ");
-        console.log(this.props.selectedSession);
         if (this.props.selectedSession){
             this.state={
                 id: this.props.selectedSession.id,
                 subjectName: this.props.selectedSession.subjectName,
                 groupName: this.props.selectedSession.groupName,
-                startMinute: this.props.selectedSession.startMinute,
+                startTime: this.props.selectedSession.startTime,
                 length: this.props.selectedSession.length,
                 day: this.props.selectedSession.day,
-                executionDate: this.props.selectedSession.executionDate,
-                recurrencePeriod: this.props.selectedSession.recurrencePeriod,
-                recurrent: this.props.selectedSession.recurrent,
-                startFrom: this.props.selectedSession.startFrom,
-                endAt: this.props.selectedSession.endAt,
                 room: this.props.selectedSession.room,
                 teacher: this.props.selectedSession.teacher,
                 color: this.props.selectedSession.color
@@ -44,29 +50,73 @@ export default class SessionForm extends React.Component {
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.updateStateFromSession = this.updateStateFromSession.bind(this);
+        this.onUnavailability = this.onUnavailability.bind(this);
+    }
+    onUnavailability(){
+
     }
     updateStateFromSession(session){
-        this.state.setState({
+        this.setState({
                 id: session.id,
                 subjectName: session.subjectName,
                 groupName: session.groupName,
-                startMinute: session.startMinute,
+                startTime: session.startTime,
                 length: session.length,
                 day: session.day,
-                executionDate: session.executionDate,
-                recurrencePeriod: session.recurrencePeriod,
-                recurrent: session.recurrent,
-                startFrom: session.startFrom,
-                endAt: session.endAt,
                 room: session.room,
                 teacher: session.teacher,
                 color: session.color
             }
         );
+        if (this.state.id){
+            this.props.checkAvailability(this.state);
+        }
     }
     componentDidUpdate(prevProps) {
         if (prevProps.selectedSession !== this.props.selectedSession) {
           this.updateStateFromSession(this.props.selectedSession);
+          if (this.props.selectedSession.id){
+            this.props.checkAvailability(this.state);
+          }
+        }
+
+        if (prevProps.rooms !== this.props.rooms){
+            console.log("rooms");
+            console.log(this.props.rooms);
+            console.log(this.state.room.name);
+            if (!this.props.rooms.map(t => t.name).includes(this.state.room.name)){
+                this.setState({
+                    room: {
+                        name: "Sin Asignar",
+                        checkConcurrency: false
+                    }
+                });
+                console.log("room unavailable");
+                console.log(this.props.rooms.map(t => t.name));
+                console.log(this.props);
+            }
+        }
+
+        if (prevProps.teachers !== this.props.teachers){
+
+            if (!this.props.teachers.map(t => t.name).includes(this.state.teacher.name)){
+                this.setState({
+                    teacher: {
+                        name: "Sin Asignar",
+                        checkConcurrency: false
+                    }
+                });
+                console.log("teacher unavailable");
+                console.log(this.props.teachers.map(t => t.name));
+
+            }
+        }
+
+    }
+
+    componentDidMount(){
+        if (this.state.id){
+            this.props.checkAvailability(this.state);
         }
     }
 
@@ -76,25 +126,14 @@ export default class SessionForm extends React.Component {
             id: this.state.id,
             subjectName: this.state.subjectName,
             groupName: this.state.groupName,
-            startMinute: this.state.startMinute,
             length: this.state.length,
-            recurrent: this.state.recurrent,
             room: this.state.room,
             teacher: this.state.teacher,
-            color: this.state.color
+            color: this.state.color,
+            day: this.state.day,
+            startTime: this.state.startTime
         }
 
-        if(session.recurrent){
-            session["startFrom"] = this.state.startFrom;
-            session["endAt"] = this.state.endAt;
-            session["day"] =  Number(this.state.day);
-            session["recurrencePeriod"] = Number(this.state.recurrencePeriod);
-        }else{
-            session["executionDate"] = this.state.executionDate;
-        }
-
-        console.log("update button");
-        console.log(session);
         this.props.updateSession(session);
         this.setState({
             id: null
@@ -102,14 +141,25 @@ export default class SessionForm extends React.Component {
     }
 
     onChangeField(event, field){
-        console.log(event.target.value);
-        this.setState({[field]: event.target.value});
+        if (field==="day"){
+            this.setState({day: parseInt(event.target.value)},
+            ()=>{this.props.checkAvailability(this.state)});
+        }
+        else if (["room", "teacher"].includes(field)){
+            this.setState({[field]: JSON.parse(event.target.value)});
+        }else{
+        this.setState({[field]: event.target.value==""? 0:event.target.value}
+            ,()=>{
+                if (["length", "startTime"].includes(field)){
+                    this.props.checkAvailability(this.state);
+                }
+            });
+        }
     }
 
     onChangeCheckbox(field){
         this.setState(prevState => ({[field]: !prevState[field]}));
     }
-
 
     render(){
 
@@ -126,56 +176,46 @@ export default class SessionForm extends React.Component {
                     Group
                 </label>
                 <SessionInput disabled type="text" name="group" value={this.state.groupName}  onChange= {event => {this.onChangeField(event,"groupName")}}/>
-                
                 <label>
-                <input type="checkbox" name="recurrent"  checked={this.state.recurrent} value={this.state.recurrent}  onChange= {event => {this.onChangeCheckbox("recurrent")}}/>
-                    Recurrent
+                    Color
                 </label>
+                <SessionInput type="color" name="color" value={this.state.color}  onChange= {event => {this.onChangeField(event,"color")}}/>
                 
-                {this.state.recurrent===true? 
-                <React.Fragment> 
-                <label>
-                    Recurrence Period
-                </label>
-                <SessionInput type="number" name="day"  value={this.state.recurrencePeriod}  onChange= {event => {this.onChangeField(event,"recurrencePeriod")}}/>
                 <label>
                     Day
                 </label>
-                <SessionInput type="number" name="day"  value={this.state.day}  onChange= {event => {this.onChangeField(event,"day")}}/>
-                <label>
-                    Start From
-                </label>
-                <SessionInput type="week" name="startFrom"  value={this.state.startFrom}  onChange= {event => {this.onChangeCheckbox(event,"startFrom")}}/>
-                <label>
-                    End At
-                </label>
-                <SessionInput type="week" name="endAt"  value={this.state.endAt}  onChange= {event => {this.onChangeCheckbox(event, "endAt")}}/>
-                </React.Fragment>
-                :
-                <React.Fragment>
-                    <label>
-                        Execution Date
-                    </label>
-                    <SessionInput type="date" name="day"  value={this.state.executionDate}  onChange= {event => {this.onChangeField(event,"executionDate")}}/>
-                </React.Fragment>
-                }
-
-
+                {showWeekdays(this.state.day, this.onChangeField)}
                 <label>
                     Start Time
                 </label>
-                <SessionInput type="text" name="startTime" value={this.state.startMinute}  onChange= {event => {this.onChangeField(event,"startMinute")}}/>
+                <SessionInput type="time" name= "start" min="08:00" max="21:00" value={this.state.startTime} onChange= {event => {this.onChangeField(event,"startTime");}}></SessionInput>
+                
                 <label>
                     Duration
                 </label>
-                <SessionInput type="text" name="length"  value={this.state.length}  onChange= {event => {this.onChangeField(event,"length")}}/>
+                <SessionInput type="number" name="length"  value={this.state.length}  onChange= {event => {this.onChangeField(event,"length");}}/>
                 <label>
                     Room
                 </label>
-                {showRooms(this.props.getAvalibleRooms(this.props.selectedSession), this.onChangeField)}
+                {showRooms(this.props.rooms, this.onChangeField, this.state.room, "room")}
+                <label>
+                    Teacher
+                </label>
+                {showRooms(this.props.teachers, this.onChangeField, this.state.teacher, "teacher")}
                 <br/>
                 <FormSubmit color = "#2DA283" type="submit" value="Update"/>
             </FlexForm>
+
+            </div>
+        );
+        }else{
+            return <div></div>;
+        }
+    }
+
+}
+
+/*----NOTIFICATIONS FRAGMENT- GOES RIGHT BELOW SUBMIT BUTTON-----
             <h4 style={{textAlign: "center"}}>Notificaciones</h4>
             <NotificationsButtonsContainer>
             <FormButton color = "#2DA283">
@@ -185,11 +225,24 @@ export default class SessionForm extends React.Component {
                 añadir
             </FormButton>
             </NotificationsButtonsContainer>
-            </div>
-        );
-        }else{
-            return <div></div>;
-        }
-    }
 
-}
+            ----------------------------------------
+*/
+
+
+//DONE: CRUD profesores
+//DONE: preparar concurrencia profesores
+//DONE: session form concurrencia profesores
+//DONE: concurrencia desde horario
+//DONE: Borrar asignaturas
+//DONE: Añadir bloques al check de ocupación (son 52 bloques - 13X4 - no 48 - 12X4)
+//DONE: Creación sesiones desde vista de Asignaturas
+//DONE: Varias sesiones en un mismo segmento de tiempo
+//DONE: Validaciones inputs
+//DONE  Casos: S1 > S2 -> S1 se dibuja debajo de S2
+//DONE         S1 = S2 -> Comparten celda
+
+//DONE: Add titulaciones
+//TODO: Check colisiones al cambiar asignatura de semestre !!!
+//TODO: Desasignar aulas/profesores al borrarlos
+//TODO: AUTENTICACIÓN
