@@ -30,10 +30,15 @@ export default class prodData{
           };
 
         console.log(firebaseConfig)
-        if (this.db==null){
-            firebase.initializeApp(firebaseConfig);
-            this.db = firebase.firestore();
+        if (!firebase.apps.length) {
+            try {
+                firebase.initializeApp(firebaseConfig);
+                this.db = firebase.firestore();
+                } catch (err) {
+                    console.log("captured " + err);
+                }
         }
+           
         this.loadingCallback= loadingCallback;
 
     }
@@ -177,7 +182,7 @@ export default class prodData{
                         rooms= doc.data()[tb];
                     }else{
                         rooms = rooms.filter(r=>(doc.data()[tb].includes(r)));
-                    }
+                    } 
                 });
                 rooms.forEach(r=>{formattedRooms.push({name: r, checkConcurrency: true})})
             }
@@ -551,22 +556,40 @@ export default class prodData{
         });
     }
 
-    updateSubject(subject, callback){
+    async updateSubject(subject, callback, updatedSemester){
         this.loadingCallback(true);
+        var batch = this.db.batch();
 
-        this.db.collection("subjects").doc(subject.id).update({
-            color: subject.color,
-            groups: subject.groups,
-            subjectName: subject.subjectName,
-            teachers: subject.teachers,
-            titles: subject.titles,
-            semester: parseInt(subject.semester)
-          }).then(() => {
-            this.loadingCallback(false);
-            callback(subject);
-            console.log("subject updated");
-          });
+        try{
+            var groups = subject.groups.map(g =>(g.groupName));
+            var sessions =[];
+            batch.update(this.db.collection("subjects").doc(subject.id), subject);
+            if (updatedSemester && groups.length>0){
+                var rawData = await this.db.collection("sessions").where("subjectName", "==", subject.subjectName).where("groupName", "in", groups).get();
+                rawData=rawData.docs;
+                console.log(subject.subjectName);
+                console.log(groups);
+                rawData.forEach((doc) => {
+                    var session= doc.data();
+                    session["id"]= doc.id;
+                    session.room={name: "Sin Asignar", checkConcurrency: false};
+                    session.teacher={name: "Sin Asignar", checkConcurrency: false};
+                    console.log("updating session");
+                    console.log(session);
+                    batch.update(this.db.collection("sessions").doc(session.id), session);
+                });
+            }            
+            batch.commit().then(() => {
+                this.loadingCallback(false);
+                callback();
+                console.log("Batch completed");
+            });   
+        }catch(err){
+            console.log("error updating subject: " + err);
+        } 
     }
+
+
 
     updateSubjectName(subject, oldSubjectName, callback){
         this.loadingCallback(true);

@@ -515,7 +515,7 @@ export default class Asignaturas extends React.Component {
     if (subject.subjectName!==this.state.originalSelectedSubject.subjectName){
       this.updateSubjectName(subject, this.state.originalSelectedSubject.subjectName, callback);
     }else{
-      this.context.updateSubject(subject, callback);
+      this.context.updateSubject(subject, callback, subject.semester !== this.state.originalSelectedSubject.semester);
     }
   }
 

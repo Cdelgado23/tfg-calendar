@@ -108,8 +108,8 @@ export default class Repository{
         this.dataSource.getSubjectsOfTeacher(teacher, callback);
     }
 
-    updateSubject(subject, callback){
-        this.dataSource.updateSubject(subject, callback);
+    updateSubject(subject, callback, updatedSemester){
+        this.dataSource.updateSubject(subject, callback, updatedSemester);
     }
 
     loadSessionsOfSubjectGroup(subject, group, callback){
