@@ -106,7 +106,7 @@ export default class prodData{
         });
     }
 
-    deleteTeacher(teacher, callback){
+    async deleteTeacher(teacher, callback){
         this.loadingCallback(true);
         
         
@@ -131,6 +131,17 @@ export default class prodData{
                 batch.update(teacherOcupancyRef.doc(semester+"-"+day), ocupancy);
             }
         }        
+
+        var rawData = await this.db.collection("sessions").where("teacher.name", "==", teacher.teacherName).get();
+        rawData=rawData.docs;
+        rawData.forEach((doc) => {
+            var session= doc.data();
+            session["id"]= doc.id;
+            session.teacher={name: "Sin Asignar", checkConcurrency: false};
+            console.log("updating session");
+            console.log(session);
+            batch.update(this.db.collection("sessions").doc(session.id), session);
+        });
         
         // Commit the batch
         batch.commit().then(() => {
@@ -249,7 +260,7 @@ export default class prodData{
 
     }
 
-    deleteRoom(room, callback){
+    async deleteRoom(room, callback){
 
         this.loadingCallback(true);
         
@@ -280,7 +291,18 @@ export default class prodData{
             for (day = 1; day < 8; day++) {
                 batch.update(roomOcupancyRef.doc(semester+"-"+day), ocupancy);
             }
-        }        
+        }  
+        
+        var rawData = await this.db.collection("sessions").where("room.name", "==", room.roomName).get();
+        rawData=rawData.docs;
+        rawData.forEach((doc) => {
+            var session= doc.data();
+            session["id"]= doc.id;
+            session.room={name: "Sin Asignar", checkConcurrency: false};
+            console.log("updating session");
+            console.log(session);
+            batch.update(this.db.collection("sessions").doc(session.id), session);
+        });
         
         // Commit the batch
         batch.commit().then(() => {

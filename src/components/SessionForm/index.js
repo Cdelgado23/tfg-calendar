@@ -242,6 +242,6 @@ export default class SessionForm extends React.Component {
 //DONE         S1 = S2 -> Comparten celda
 
 //DONE: Add titulaciones
-//TODO: Check colisiones al cambiar asignatura de semestre !!!
-//TODO: Desasignar aulas/profesores al borrarlos
+//DONE: Check colisiones al cambiar asignatura de semestre !!!
+//NOPE: Desasignar aulas/profesores al borrarlos
 //TODO: AUTENTICACIÓN
