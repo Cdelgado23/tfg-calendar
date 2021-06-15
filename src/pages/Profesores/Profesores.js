@@ -16,6 +16,9 @@ function listTeachers(teachers, deleteTeacher, deleteCallback){
     );
 }
 
+function teacherIsValid(teacher){
+  return teacher.teacherName.length>5;
+}
 
 export default class Profesores extends React.Component {
   static contextType = RepositoryContext;
@@ -24,7 +27,7 @@ export default class Profesores extends React.Component {
     super(props);
     this.state={
       show: false,
-      newTeacher: {},
+      newTeacher: {teacherName: ""},
       teachers:[],
       checkConcurrency: true
     };
@@ -71,7 +74,7 @@ export default class Profesores extends React.Component {
     this.context.createTeacher(teacher, this.getTeachers);
     this.setState({
       checkConcurrency: true,
-      newTeacher: {}
+      newTeacher: {teacherName: ""}
     });
   }
 
@@ -109,7 +112,7 @@ export default class Profesores extends React.Component {
                 <Header>
                   <h2>Profesores</h2>
                 </Header>
-                <FormBody height="70vh" width="30vw" overflowy= "auto" style={{"border": "1px solid #EFEFEF","border-radius": "0 0 10px 10px"}}>
+                <FormBody height="70vh" width="60vw" overflowy= "auto" style={{"border": "1px solid #EFEFEF","border-radius": "0 0 10px 10px"}}>
                   {listTeachers(this.state.teachers, this.deleteTeacher, this.getTeachers)}
 
                   <Button onClick={e=>{e.preventDefault(); this.showModal()}}><b>+</b></Button>
@@ -131,7 +134,7 @@ export default class Profesores extends React.Component {
           </StyledLabel>
           </FormElementGroup>
 
-          <Button onClick={e=>{this.createTeacher(this.state.newTeacher);}}>Create</Button>
+          <Button disabled={!teacherIsValid(this.state.newTeacher)}onClick={e=>{this.createTeacher(this.state.newTeacher);}}>Create</Button>
         </Modal>
       </div>
       </MyLoader>

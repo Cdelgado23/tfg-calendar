@@ -49,7 +49,7 @@ export const FormBody = styled.form`
 `;
 
 export const EmptySpace=styled.div`
-    height: 5.6vh;
+    height: 6.5vh;
 `;
 
 export const Header= styled.div`

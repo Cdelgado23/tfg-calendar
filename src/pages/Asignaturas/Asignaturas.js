@@ -12,27 +12,40 @@ import Modal from '../../components/Modal';
 
 const rooms=["Sala 1", "Sala Grande", "Salón de actos"];
 
-function showRooms(rooms, handleChange){
+
+function subjectIsValid(subject){
+  return subject.color.length>6 && subject.color!="#ffffff" && subject.subjectName.length>3; 
+}
+
+function groupIsValid(group){
+  return group.groupName.length>3 && group.color.length>6 && group.color!="#ffffff"
+  && group.defaultSessionValues.color.length>6 && group.defaultSessionValues.color!="#ffffff"
+}
+function sessionIsValid(session){
+  return session.length>0;
+}
+
+
+function showRooms(rooms, field, handleChange, defaultValue){
   const listRooms = rooms.map((room) =>
-  <option value={room}>{room}</option>
+  <option key={room.name} value={JSON.stringify(room)}>{room.name}</option>
 );
-
-
+rooms.forEach(r=>{if (r.name === defaultValue.name) defaultValue=r;});
 
 return (
-  <select name="rooms" id="rooms" onChange={handleChange} style={{margin: "0 0.5vw 0 0.5vw"}}>
+  <select name={field} id={field} value={JSON.stringify(defaultValue)} onChange={e=>{handleChange(e,field, "newSession")}} style={{marginBottom: "0.5em"}}>
       {listRooms}
   </select>
 );
 }
 
 const week=["", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
-function showWeekdays(selectedDay, handleChange){
+function showWeekdays(selectedDay, handleChange, checkAvailability){
   const listDays = Array.from(new Array(7), (x, i) => i+1).map((day) =>
                       <option value={parseInt(day)}>{week[day]}</option>
               );
 return (
-  <select name="days" id="days" defaultValue={selectedDay} onChange={(event)=>{handleChange(event,"day", "newSession")}} style={{margin: "0 0.5vw 0 0.5vw"}}>
+  <select name="days" id="days" defaultValue={selectedDay} onChange={(event)=>{handleChange(event,"day", "newSession", null, checkAvailability)}} style={{margin: "0 0.5vw 0 0.5vw"}}>
       {listDays}
   </select>
 );
@@ -40,8 +53,9 @@ return (
 
 
 function createEmptyGroup(){
-  return {defaultSessionValues:{color: "#FFFFFF"},
-          color: "#FFFFFF"};
+  return {defaultSessionValues:{color: "#ffffff"},
+          color: "#ffffff",
+          groupName: ""};
 }
 
 function createDefaultSession(group){
@@ -50,7 +64,22 @@ function createDefaultSession(group){
     groupName: group.groupName,
     color: group.defaultSessionValues.color,
     teacher: group.defaultSessionValues.teacher,
-    room: group.defaultSessionValues.room
+    room: group.defaultSessionValues.room,
+    day: 1,
+    length: 45,
+    startTime: "08:00"
+  };
+
+  return session;
+}
+
+function createEmptySession(){
+  var session = {
+    day: 1,
+    length: 45,
+    startTime: "08:00",
+    room: {checkConcurrency: false, name: "Sin Asignar"},
+    teacher: {checkConcurrency: false, name: "Sin Asignar"}
   };
 
   return session;
@@ -78,7 +107,7 @@ function createSubjectForm(subject, onChangeField, createSubject, showModal){
         </FormElementGroup>
   
         <div style ={{display: "flex", flexDirection: "row", justifyContent: "center", margin: "auto"}}>
-            <ColorButton color = "#db3f3f" margin="0 1vw" padding="0.5rem 1rem"   width="fit-content" onClick={(e)=>{e.preventDefault(); createSubject(subject); showModal()}}>Create</ColorButton>
+            <ColorButton disabled={!subjectIsValid(subject)}color = "#2DA283" margin="0 1vw" padding="0.5rem 1rem"   width="fit-content" onClick={(e)=>{e.preventDefault(); createSubject(subject); showModal()}}>Create</ColorButton>
         </div>
       </FormBody>
     </React.Fragment>
@@ -108,14 +137,14 @@ return (
                         <StyledInput margin= "0 0.5vw 0 0.5vw" type="color" name="color" value={group.defaultSessionValues.color} onChange= {event => {onChangeField(event,"color", "newGroup", "defaultSessionValues")}}/>
                     </FormElementGroup>
                     <div style ={{display: "flex", flexDirection: "row", justifyContent: "center", margin: "0 0 1vh 0"}}>
-                        <ColorButton color = "#2DA283" margin="0 1vw" padding="0.5rem 1rem" width="fit-content" onClick={(e)=>{e.preventDefault(); createGroup(selectedSubject, group); showModal()}}>Create</ColorButton>
+                        <ColorButton disabled={!groupIsValid(group)} color = "#2DA283" margin="0 1vw" padding="0.5rem 1rem" width="fit-content" onClick={(e)=>{e.preventDefault(); createGroup(selectedSubject, group); showModal()}}>Create</ColorButton>
                     </div>
                 </FormBody>
   </React.Fragment>
 );
 }
 
-function createSessionForm( selectedGroup, session, onChangeField, onChangeCheckBox, createSession, showModal){
+function createSessionForm( selectedGroup, session, onChangeField, onChangeCheckBox, createSession, showModal, rooms, teachers, checkAvailability){
   
   return (
     <React.Fragment>
@@ -137,30 +166,30 @@ function createSessionForm( selectedGroup, session, onChangeField, onChangeCheck
 
         <FormElementGroup>
             <StyledLabel margin= "0 0.5vw 0 0.5vw">Start Time</StyledLabel>
-            <StyledInput margin= "0 0.5vw 0 0.5vw" type="time" name="startTime" value={session.startTime} onChange= {event => {onChangeField(event,"startTime", "newSession")}}/>
+            <StyledInput margin= "0 0.5vw 0 0.5vw" type="time" name="startTime" value={session.startTime} onChange= {event => {onChangeField(event,"startTime", "newSession", null, checkAvailability)}}/>
         </FormElementGroup>
         <FormElementGroup>
             <StyledLabel margin= "0 0.5vw 0 0.5vw">Day</StyledLabel>
-            {showWeekdays(session.day, onChangeField)}
+            {showWeekdays(session.day, onChangeField, checkAvailability)}
         </FormElementGroup>
 
         <FormElementGroup>
                 <StyledLabel margin= "0 0.5vw 0 0.5vw">Duration</StyledLabel>
-                <StyledInput margin= "0 0.5vw 0 0.5vw" type="number" name="day" value={session.length} onChange= {event => {onChangeField(event,"length", "newSession")}}/>
+                <StyledInput margin= "0 0.5vw 0 0.5vw" type="number" name="length" value={session.length} onChange= {event => {onChangeField(event,"length", "newSession", null, checkAvailability)}}/>
         </FormElementGroup>
         <FormElementGroup>
             <StyledLabel margin= "0 0.5vw 0 0.5vw">Room</StyledLabel>
-            {showRooms(rooms)}
+            {showRooms(rooms, "room", onChangeField, session.room)}
         </FormElementGroup>
 
         <FormElementGroup>
             <StyledLabel margin= "0 0.5vw 0 0.5vw">Teacher</StyledLabel>
-            <StyledInput margin= "0 0.5vw 0 0.5vw" type="text" name="room" value={session.teacher} onChange= {event => {onChangeField(event,"teacher", "newSession")}}/>
+            {showRooms(teachers, "teacher", onChangeField, session.teacher)}
         </FormElementGroup> 
 
 
         <div style ={{display: "flex", flexDirection: "row", justifyContent: "center", margin: "0 0 1vh 0"}}>
-          <ColorButton color = "#2DA283" margin="0 1vw" padding="0.5rem 1rem" width="fit-content" onClick={(e)=>{e.preventDefault();createSession(session); showModal()}}>Create</ColorButton>
+          <ColorButton disabled={!sessionIsValid(session)} color = "#2DA283" margin="0 1vw" padding="0.5rem 1rem" width="fit-content" onClick={(e)=>{e.preventDefault();createSession(session); showModal()}}>Create</ColorButton>
         </div>
       </FormBody>
     </React.Fragment>
@@ -184,10 +213,11 @@ export default class Asignaturas extends React.Component {
 
       showModal: false,
       modalForm: " ",
-      newSubject: {titles:[]},
+      newSubject: {titles:[], color: "#ffffff", "subjectName":""},
       newGroup: createEmptyGroup(), 
       newSession: {}
     };
+    
 
     this.setLoading = this.setLoading.bind(this);
     this.setSessions = this.setSessions.bind(this);
@@ -221,6 +251,24 @@ export default class Asignaturas extends React.Component {
     this.getTimeBlocksOfSession = this.getTimeBlocksOfSession.bind(this);
 
     this.setTeachers= this.setTeachers.bind(this);
+    this.checkAvailability= this.checkAvailability.bind(this);
+
+  }
+
+  checkAvailability(session)
+  { 
+    console.log("check avai");
+    console.log(session);
+    console.log(this.state.selectedSubject.semester + " - " + session.day + " - " + this.getTimeBlocksOfSession(session));
+
+    this.context.getAvailableRooms(this.state.selectedSubject.semester,
+                                    session.day, 
+                                    this.getTimeBlocksOfSession(session), 
+                                    this.setRooms);
+    this.context.getAvailableTeachers(this.state.selectedSubject.semester,
+                                      session.day, 
+                                      this.getTimeBlocksOfSession(session), 
+                                      this.setTeachers);
   }
 
   getRooms(){
@@ -253,7 +301,8 @@ export default class Asignaturas extends React.Component {
       case "group":
         return createGroupForm(selectedSubject, this.state.newGroup, this.onChangeField, this.onChangeCheckBox, this.createGroup, this.showModal);
       case "session":
-        return createSessionForm(selectedGroup, this.state.newSession, this.onChangeField, this.onChangeCheckBox, this.createSession, this.showModal);
+        return createSessionForm(selectedGroup, this.state.newSession, this.onChangeField, this.onChangeCheckBox, 
+                                  this.createSession, this.showModal, this.state.rooms, this.state.teachers, this.checkAvailability);
       default:
         return "";
     }
@@ -262,24 +311,45 @@ export default class Asignaturas extends React.Component {
   showModal(modalForm){
     this.setState((prevState) =>(
       {showModal: !prevState.showModal,
-      modalForm: modalForm}
+      modalForm: modalForm,
+      selectedSession: null}
     ));
   }
 
-  onChangeField(event, field, object, rootField){
+  onChangeField(event, field, object, rootField, checkAvailability){
 
     console.log(event.target.value);
+    console.log(this.state);
+    console.log(field + " - " + object + " - " + rootField + " - " + checkAvailability);
+    var value= event.target.value;
+
+
+    if (["room", "teacher"].includes(field)){
+      value= JSON.parse(value);
+    }
+    if (field==="length" && !value){
+      value=0;
+    }
+    if (["day", "length"].includes(field)){
+      value= parseInt(value);
+    }
 
     var o = this.state[object];
     if (rootField)
     {
-      o[rootField][field]= event.target.value;
+      o[rootField][field]= value;
     }
     else{
-      o[field]= event.target.value;
+      o[field]= value;
     }
 
-    this.setState({[object]: o});
+    this.setState({[object]: o}, ()=>{
+      if (checkAvailability){
+        console.log("check av");
+        console.log(this.state.newSession);
+        checkAvailability(this.state.newSession);
+      }
+    });
 
     console.log("state");
     console.log(this.state);
@@ -341,16 +411,15 @@ export default class Asignaturas extends React.Component {
   }
   updateSession(session){
     this.context.updateSession(session, ()=> {
-      this.context.loadSubjectsOfTeacher("teacher Z", this.setSubjects);
+      this.context.loadSessionsOfSubjectGroup(this.state.selectedSubject.subjectName, this.state.selectedGroup.groupName, this.setSessions);
     },
     this.state.selectedSubject.semester
   );
   }
   createSession(session){
+    console.log(session);
     this.context.createSession(session, ()=> {
-        this.setState((prevState) =>(
-          {sessions: [...prevState.sessions, session]}
-        ));
+      this.context.loadSessionsOfSubjectGroup(this.state.selectedSubject.subjectName, this.state.selectedGroup.groupName, this.setSessions);
       }, this.state.selectedSubject.semester
     );
   }
@@ -416,6 +485,8 @@ export default class Asignaturas extends React.Component {
       selectedSession: null});
   }
   setRooms(_rooms){
+    console.log("setRooms");
+    console.log(_rooms);
     if (this.state.selectedSession){
       const index = _rooms.map(r=>(r.name)).indexOf(this.state.selectedSession.room.name);
       if (index < 0) {
@@ -452,6 +523,8 @@ export default class Asignaturas extends React.Component {
   }
 
   deleteSession(session){
+    console.log("subject");
+    console.log(this.state.selectedSubject.semester);
     this.context.deleteSession(session, ()=>{
       this.setState((prevState) =>(
         {sessions: prevState.sessions.filter((s)=>(s.id!=session.id))}
@@ -499,6 +572,7 @@ export default class Asignaturas extends React.Component {
     this.context.loadSubjectsOfTeacher("teacher Z", this.setSubjects);
     this.context.loadSessionsOfTeacher("teacher Z", this.setSessions);
     this.context.loadTitles( (titles)=>{this.setState({titles: titles})});
+
 //    this.context.getRooms((rooms)=>{this.setState({rooms: rooms})});
   }
 
@@ -547,6 +621,7 @@ export default class Asignaturas extends React.Component {
                 onDeleteSession={this.deleteSession}
                 onDeleteGroup = {this.deleteGroup}
                 deleteSubject= {this.deleteSubject}
+                checkAvailability={()=>this.checkAvailability(createEmptySession())}
                 >
 
               </SubjectForm>

@@ -50,6 +50,10 @@ export default class SessionForm extends React.Component {
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.updateStateFromSession = this.updateStateFromSession.bind(this);
+        this.onUnavailability = this.onUnavailability.bind(this);
+    }
+    onUnavailability(){
+
     }
     updateStateFromSession(session){
         this.setState({
@@ -75,6 +79,39 @@ export default class SessionForm extends React.Component {
             this.props.checkAvailability(this.state);
           }
         }
+
+        if (prevProps.rooms !== this.props.rooms){
+            console.log("rooms");
+            console.log(this.props.rooms);
+            console.log(this.state.room.name);
+            if (!this.props.rooms.map(t => t.name).includes(this.state.room.name)){
+                this.setState({
+                    room: {
+                        name: "Sin Asignar",
+                        checkConcurrency: false
+                    }
+                });
+                console.log("room unavailable");
+                console.log(this.props.rooms.map(t => t.name));
+                console.log(this.props);
+            }
+        }
+
+        if (prevProps.teachers !== this.props.teachers){
+
+            if (!this.props.teachers.map(t => t.name).includes(this.state.teacher.name)){
+                this.setState({
+                    teacher: {
+                        name: "Sin Asignar",
+                        checkConcurrency: false
+                    }
+                });
+                console.log("teacher unavailable");
+                console.log(this.props.teachers.map(t => t.name));
+
+            }
+        }
+
     }
 
     componentDidMount(){
@@ -105,14 +142,15 @@ export default class SessionForm extends React.Component {
 
     onChangeField(event, field){
         if (field==="day"){
-            this.setState({day: parseInt(event.target.value)});
+            this.setState({day: parseInt(event.target.value)},
+            ()=>{this.props.checkAvailability(this.state)});
         }
         else if (["room", "teacher"].includes(field)){
             this.setState({[field]: JSON.parse(event.target.value)});
         }else{
         this.setState({[field]: event.target.value==""? 0:event.target.value}
             ,()=>{
-                if (["length", "startTime", "day"].includes(field)){
+                if (["length", "startTime"].includes(field)){
                     this.props.checkAvailability(this.state);
                 }
             });
@@ -167,15 +205,7 @@ export default class SessionForm extends React.Component {
                 <br/>
                 <FormSubmit color = "#2DA283" type="submit" value="Update"/>
             </FlexForm>
-            <h4 style={{textAlign: "center"}}>Notificaciones</h4>
-            <NotificationsButtonsContainer>
-            <FormButton color = "#2DA283">
-                ver
-            </FormButton>
-            <FormButton color = "#2DA283">
-                añadir
-            </FormButton>
-            </NotificationsButtonsContainer>
+
             </div>
         );
         }else{
@@ -185,16 +215,34 @@ export default class SessionForm extends React.Component {
 
 }
 
+/*----NOTIFICATIONS FRAGMENT- GOES RIGHT BELOW SUBMIT BUTTON-----
+            <h4 style={{textAlign: "center"}}>Notificaciones</h4>
+            <NotificationsButtonsContainer>
+            <FormButton color = "#2DA283">
+                ver
+            </FormButton>
+            <FormButton color = "#2DA283">
+                añadir
+            </FormButton>
+            </NotificationsButtonsContainer>
+
+            ----------------------------------------
+*/
+
+
 //DONE: CRUD profesores
 //DONE: preparar concurrencia profesores
 //DONE: session form concurrencia profesores
 //DONE: concurrencia desde horario
 //DONE: Borrar asignaturas
-//TODO: Check colisiones al cambiar asignatura de semestre
-//TODO: Creación sesiones desde vista de Asignaturas
-//TODO: Desasignar aulas/profesores al borrarlos
-//TODO: Varias sesiones en un mismo segmento de tiempo
-//TODO: Validaciones inputs
+//DONE: Añadir bloques al check de ocupación (son 52 bloques - 13X4 - no 48 - 12X4)
+//DONE: Creación sesiones desde vista de Asignaturas
+//DONE: Varias sesiones en un mismo segmento de tiempo
+//DONE: Validaciones inputs
 //DONE  Casos: S1 > S2 -> S1 se dibuja debajo de S2
 //DONE         S1 = S2 -> Comparten celda
+
+//DONE: Add titulaciones
+//TODO: Check colisiones al cambiar asignatura de semestre !!!
+//TODO: Desasignar aulas/profesores al borrarlos
 //TODO: AUTENTICACIÓN

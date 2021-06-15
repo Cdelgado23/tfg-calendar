@@ -67,7 +67,7 @@ export const GridContainer = styled.div`
 export const GridContainerElement = styled.button`
 background-color: ${props => props.color || "#FFFFFF"};
 justify-self: stretch;
-height: auto;
+height: 100%;
 width: auto;
 
 display: flex;

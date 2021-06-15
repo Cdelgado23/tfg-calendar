@@ -117,12 +117,12 @@ function SubjectFormGroup(subject, onChangeField, onSelectGroup, updateSubject, 
                     </Header>
                     <FormBody height="27.5vh" overflow="scroll" overflowy="scroll" margin="0.5vh 0 0 0" border="1px solid #EFEFEF">
                         {GroupButtonList(subject, onSelectGroup)}
-                        <ColorButton color = "#2DA283" padding="1vh" margin="2%" onClick={(e)=> {e.preventDefault(); showModal("group")}}>+</ColorButton>
+                        <ColorButton disabled={subject.groups.length>9} color = "#2DA283" padding="1vh" margin="2%" onClick={(e)=> {e.preventDefault(); showModal("group")}}>+</ColorButton>
                     </FormBody>
             </FormGroup>);
 }
 
-function GroupFormGroup(group, sessions, onChangeField, onSelectSession, onChangeCheckBox, showModal, onDeleteSession, onDeleteGroup, subject){
+function GroupFormGroup(group, sessions, onChangeField, onSelectSession, onChangeCheckBox, showModal, onDeleteSession, onDeleteGroup, subject, checkAvailability){
     return (<FormGroup width="40vw" margin="0 0 0 1.5vw">
 
                 <Header>
@@ -155,7 +155,7 @@ function GroupFormGroup(group, sessions, onChangeField, onSelectSession, onChang
                 </Header>
                 <FormBody height="27.5vh" overflowy="auto" margin="0.5vh 0 0 0" style={{    "border": "1px solid #EFEFEF","border-radius": "0 0 10px 10px"}}>
                     {SessionButtonList(sessions, onSelectSession, onDeleteSession)}
-                    <ColorButton color = "#2DA283" padding="1vh" margin="2%" onClick={(e)=> {e.preventDefault(); showModal("session")}}>+</ColorButton>
+                    <ColorButton color = "#2DA283" padding="1vh" margin="2%" onClick={(e)=> {e.preventDefault(); showModal("session"); checkAvailability()}}>+</ColorButton>
 
                 </FormBody>
 
@@ -251,7 +251,8 @@ export default class SubjectForm extends React.Component {
                                                             this.props.showModal,
                                                             this.props.onDeleteSession, 
                                                             this.props.onDeleteGroup, 
-                                                            this.props.selectedSubject):""}
+                                                            this.props.selectedSubject, 
+                                                            this.props.checkAvailability):""}
                 </FullBody>
                 <Modal width= "70%" onClose={this.showTitles} show={this.state.showTitles}>
                     {this.props.selectedSubject? 

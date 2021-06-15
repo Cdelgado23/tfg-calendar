@@ -35,6 +35,7 @@ export default class prodData{
             this.db = firebase.firestore();
         }
         this.loadingCallback= loadingCallback;
+
     }
     setLoadingCallback(callback){
         this.loadingCallback= callback;
@@ -69,7 +70,7 @@ export default class prodData{
 
         var timeBlock;
         if (teacher.checkConcurrency){
-            for (timeBlock = 1; timeBlock < 48; timeBlock++) {
+            for (timeBlock = 1; timeBlock < 53; timeBlock++) {
                 ocupancy[timeBlock]= firebase.firestore.FieldValue.arrayUnion(teacher.teacherName);
             }
         }else{
@@ -106,7 +107,7 @@ export default class prodData{
         var ocupancy={};
 
         var timeBlock;
-        for (timeBlock = 1; timeBlock < 48; timeBlock++) {
+        for (timeBlock = 1; timeBlock < 53; timeBlock++) {
             ocupancy[timeBlock]= firebase.firestore.FieldValue.arrayRemove(teacher.teacherName);
         }
 
@@ -200,7 +201,7 @@ export default class prodData{
 
         var timeBlock;
         if (room.checkConcurrency){
-            for (timeBlock = 1; timeBlock < 48; timeBlock++) {
+            for (timeBlock = 1; timeBlock < 53; timeBlock++) {
                 ocupancy[timeBlock]= firebase.firestore.FieldValue.arrayUnion(room.roomName);
             }
         }else{
@@ -240,7 +241,7 @@ export default class prodData{
         var timeBlock;
 
         if (room.checkConcurrency){
-            for (timeBlock = 1; timeBlock < 48; timeBlock++) {
+            for (timeBlock = 1; timeBlock < 53; timeBlock++) {
                 ocupancy[timeBlock]= firebase.firestore.FieldValue.arrayRemove(room.roomName);
             }
         }else{
@@ -270,10 +271,35 @@ export default class prodData{
             var data = [];
             querySnapshot.forEach((doc) => {
                 var session= doc.data();
+                session.id= doc.id;
                 data.push(session);
             });
             console.log(data);
             callback(data);
+        });
+    }
+    createTitle(title, callback){
+        this.db.collection("titles").doc().set({
+            titleName: title.titleName,
+            semesters: parseInt(title.semesters)
+        })
+        .then(() => {
+            console.log("Document successfully written!");
+            callback();
+        })
+        .catch((error) => {
+            console.error("Error writing document: ", error);
+        });
+    }
+
+    deleteTitle(title, callback){
+        this.db.collection("titles").doc(title.id).delete()
+        .then(() => {
+            console.log("Document successfully deleted!");
+            callback();
+        })
+        .catch((error) => {
+            console.error("Error writing document: ", error);
         });
     }
 
@@ -419,7 +445,7 @@ export default class prodData{
     }
 
     createSession(session, callback, semester){
-
+        session.type="session";
         this.loadingCallback(true);
         var batch = this.db.batch();
         var roomOcupancyRef= this.db.collection('roomsOcupancy');
@@ -467,7 +493,7 @@ export default class prodData{
         this.loadingCallback(true);
         var batch = this.db.batch();
 
-        this.deleteSessionBatch(session, callback,batch);
+        this.deleteSessionBatch(session, semester, batch);
 
         batch.commit().then(() => {
             this.loadingCallback(false);

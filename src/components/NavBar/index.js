@@ -34,7 +34,8 @@ const Navbar = (props) => {
           <option value={"Horario"}>Horario</option>
           <option value={"Asignaturas"}>Asignaturas</option>
           <option value={"Aulas"}>Aulas</option>
-
+          <option value={"Profesore"}>Profesores</option>
+          <option value={"Titulaciones"}>Titulaciones</option>
           </SelectRouter>
 
         <NavMenu>
@@ -49,6 +50,9 @@ const Navbar = (props) => {
           </NavBtn>
           <NavBtn>
             <NavBtnLinkYellow to='/Profesores'>Profesores</NavBtnLinkYellow>
+          </NavBtn>
+          <NavBtn>
+            <NavBtnLinkYellow to='/Titulaciones'>Titulaciones</NavBtnLinkYellow>
           </NavBtn>
         </NavMenu>
         <NavBtn>

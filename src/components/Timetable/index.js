@@ -321,6 +321,7 @@ export default class Timetable extends React.Component {
       console.log(id);
       console.log(config);
 
+      var originalSession = generateSessionFromDrop(data);
       var session = generateSessionFromDrop(data);
       var startMinute= (((id/8)>>0)-1) *config.mins_x_block + config.timeStart;
 
@@ -332,14 +333,12 @@ export default class Timetable extends React.Component {
 
       var startTime =  hours+ ":" + minutes;
       
-      session["startMinute"] = startMinute;
       session["startTime"] = startTime;
       session["day"]=id%8;
 
       var schedulableInformation= this.getScheduleInformation(session, id);      
 
       if (schedulableInformation.schedulable===true){
-        session.startMinute= schedulableInformation.startMinute;
 
         if (data.type ==="session"){  
           this.props.updateSession(session);

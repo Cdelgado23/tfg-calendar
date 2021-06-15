@@ -16,6 +16,10 @@ function listRooms(rooms, deleteRoom, deleteCallback){
     );
 }
 
+function roomIsValid(room){
+  return room.roomName.length>3;
+}
+
 
 export default class Aulas extends React.Component {
   static contextType = RepositoryContext;
@@ -24,7 +28,7 @@ export default class Aulas extends React.Component {
     super(props);
     this.state={
       show: false,
-      newRoom:{},
+      newRoom:{roomName: ""},
       rooms: [],
       checkConcurrency: true
     };
@@ -108,7 +112,7 @@ export default class Aulas extends React.Component {
                 <Header>
                   <h2>Aulas</h2>
                 </Header>
-                <FormBody height="70vh" width="30vw" overflowy= "auto" style={{"border": "1px solid #EFEFEF","border-radius": "0 0 10px 10px"}}>
+                <FormBody height="70vh" width="60vw" overflowy= "auto" style={{"border": "1px solid #EFEFEF","border-radius": "0 0 10px 10px"}}>
                   {listRooms(this.state.rooms, this.deleteRoom, this.getRooms)}
 
                   <Button onClick={e=>{e.preventDefault(); this.showModal()}}><b>+</b></Button>
@@ -130,7 +134,7 @@ export default class Aulas extends React.Component {
           </StyledLabel>
           </FormElementGroup>
 
-          <Button onClick={e=>{this.createRoom(this.state.newRoom);}}>Create</Button>
+          <Button disabled={!roomIsValid(this.state.newRoom)} onClick={e=>{this.createRoom(this.state.newRoom);}}>Create</Button>
         </Modal>
       </div>
       </MyLoader>

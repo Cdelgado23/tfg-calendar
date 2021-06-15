@@ -13,7 +13,13 @@ import { EmptySpace, Header } from '../../components/SubjectForm/SubjectFormElem
 
 const rooms=["Sala 1", "Sala Grande", "Salón de actos"];
 
-
+function addElementToCollection(col, elem){
+  const index = col.map(r=>(r.name)).indexOf(elem.name);
+  if (index < 0) {
+    return [...col, elem];   
+  }
+  return col;
+}
 
 
 function ListSubjects(params) {
@@ -38,7 +44,6 @@ function TitlesDropdown(titles, onChange){
   );
 
 }
-
 
 function SemesterDropdown(semesters, onChange, defaultValue){
   return(  
@@ -108,8 +113,24 @@ export default class Horario extends React.Component {
 
     this.setTeachers= this.setTeachers.bind(this);
     this.getTimeBlocksOfSession= this.getTimeBlocksOfSession.bind(this);
+
+    this.compareAvailabilityFactors = this.compareAvailabilityFactors.bind(this);
+    this.addRoom = this.addRoom.bind(this);
+    this.addTeacher = this.addTeacher.bind(this);
   }
-  
+  compareAvailabilityFactors(session1, session2){
+    var timeBlocks1 = this.getTimeBlocksOfSession(session1);
+    var timeBlocks2 = this.getTimeBlocksOfSession(session2);
+    console.log("availability factors");
+    console.log(session1.day + " - " + session2.day);
+    console.log(timeBlocks1);
+    console.log(timeBlocks2);
+    console.log(session1.day ===session2.day);
+    console.log(timeBlocks1.some(r=> timeBlocks2.indexOf(r) >= 0));
+    return (session1.day ===session2.day &&
+            timeBlocks1.some(r=> timeBlocks2.indexOf(r) >= 0));
+  }
+
   handleSessionClick(clickedSession){
     this.setState({ 
       selectedSession: clickedSession,
@@ -244,23 +265,39 @@ export default class Horario extends React.Component {
     });
   }
   setRooms(_rooms){
-    if (this.state.selectedSession){
-      const index = _rooms.map(r=>(r.name)).indexOf(this.state.selectedSession.room.name);
-      if (index < 0) {
-        _rooms=[..._rooms, this.state.selectedSession.room];
-      }
-    }
     this.setState({rooms: _rooms});
   }
   setTeachers(_teachers){
-    if (this.state.selectedSession){
-      const index = _teachers.map(r=>(r.name)).indexOf(this.state.selectedSession.teacher.name);
-      if (index < 0) {
-        _teachers=[..._teachers, this.state.selectedSession.teacher];
-      }
-    }
     this.setState({teachers: _teachers});
   }
+
+  addRoom(room){
+    const index = this.state.rooms.map(r=>(r.name)).indexOf(room.name);
+    
+    console.log("add room " + room.name);
+    console.log(index);
+    console.log(this.state.rooms.map(r=>r.name));
+
+    if (index < 0) {
+      this.setState((prevState) =>(
+        {rooms: [...prevState.rooms, room]}
+      ));    
+    }
+  }
+  addTeacher(teacher){
+    const index = this.state.teachers.map(r=>(r.name)).indexOf(teacher.name);
+
+    console.log("add teacher " + teacher.name);
+    console.log(index);
+
+    if (index < 0) {
+      this.setState((prevState) =>(
+        {teachers: [...prevState.teachers, teacher]}
+      ));    
+    }
+
+  }
+
   getTimeBlocksOfSession(session){
     console.log("getTimeBlocks");
     console.log(session);
@@ -333,11 +370,27 @@ export default class Horario extends React.Component {
                               checkAvailability={(session)=>{this.context.getAvailableRooms(this.state.selectedSemester,
                                                                                             session.day, 
                                                                                             this.getTimeBlocksOfSession(session), 
-                                                                                            this.setRooms);
-                                                          this.context.getAvailableTeachers(this.state.selectedSemester,
+                                                                                            (rooms) => {
+                                                                                              if (this.compareAvailabilityFactors(this.state.selectedSession, session))
+                                                                                              {
+                                                                                                rooms = addElementToCollection(rooms, session.room);
+                                                                                              }
+                                                                                              console.log("rooms");
+                                                                                              console.log(rooms);
+                                                                                              this.setRooms(rooms);
+                                                                                            });
+                                                            this.context.getAvailableTeachers(this.state.selectedSemester,
                                                                                             session.day, 
-                                                                                            this.getTimeBlocksOfSession(session), 
-                                                                                            this.setTeachers);}}>
+                                                                                            this.getTimeBlocksOfSession(session),
+                                                                                            (teachers) =>{
+                                                                                              if (this.compareAvailabilityFactors(this.state.selectedSession, session))
+                                                                                              {
+                                                                                                teachers = addElementToCollection(teachers, session.teacher);
+                                                                                              }
+                                                                                              this.setTeachers(teachers);
+                                                                                            } 
+                                                                                            );
+                                                            }}>
                 </SessionForm>
               </MenuBody>
             </LateralMenu>     

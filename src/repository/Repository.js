@@ -123,4 +123,10 @@ export default class Repository{
     checkDisponibilityForSession(session, semester, callback){
         this.dataSource.checkDisponibilityForSession(session, semester, callback);
     }
+    createTitle(title, callback){
+        this.dataSource.createTitle(title, callback);
+    }
+    deleteTitle(title, callback){
+        this.dataSource.deleteTitle(title, callback);
+    }
 }
