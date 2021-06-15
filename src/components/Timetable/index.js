@@ -1,24 +1,10 @@
 import React from 'react';
-import {TimetableGrid, GridTimeElement, GridElement, GridContainer, GridDayElement, WeekDataBlock, WeekPicker, SelectedWeek, GridLinesComponent, GridContainerElement} from './TimetableElements';
+import {TimetableGrid, GridTimeElement, GridContainer, GridDayElement, GridLinesComponent, GridContainerElement} from './TimetableElements';
 import {RepositoryContext} from '../../context/RepositoryContext';
 
 
 
 import {v4 as uuidv4} from 'uuid';
-import { Button } from '../../pages/PagesElements';
-
-function formatDate(d){
-  var month = '' + (d.getMonth() + 1);
-  var day = '' + d.getDate();
-  var year = d.getFullYear();
-
-  if (month.length < 2) 
-    month = '0' + month;
-  if (day.length < 2) 
-    day = '0' + day;
-
-  return [year, month, day].join('-');
-}
 
 
 function sessionToString(session){
@@ -34,30 +20,6 @@ function dragSession(ev, session) {
   ev.dataTransfer.setData("text",JSON.stringify(session));
 }
 
-function sessionIsInWeek(session, config){
-
-  if (session.recurrent){
-    const sessionWeekData = getYearAndWeekNumberFromInputText(session.startFrom);
-    const weekToCheckData = getYearAndWeekNumberFromInputText(config.selectedWeek);
-    return sessionWeekData[0]=== weekToCheckData[0] && ((weekToCheckData[1] -sessionWeekData[1])%session.recurrencePeriod)===0;
-  }else{
-    const sessionDate = new Date(session.executionDate);
-    sessionDate.setHours(0,0,0,0);
-    var n=1;
-    var found=false; 
-    config.week.forEach(day =>{
-      if (sessionDate.getTime() === day.getTime())
-      {
-        session.day=n; 
-
-        found= true;
-      }
-      n++;
-    });
-  }
-  return found;
-}
-
 
 function getTimeBlocksOfSession(session){
   var time = session.startTime.split(":");
@@ -69,21 +31,6 @@ function getTimeBlocksOfSession(session){
   return Array.from(new Array(rowEnd-row), (x, i) => i+row);
 }
 
-function placeSession(session, config, handleSessionClick){
-
-  var time = session.startTime.split(":");
-  var startMinute= parseInt(time[0])*60 + parseInt(time[1]);
-  const row = (((startMinute - config.timeStart)/config.mins_x_block)>>0) + 1;
-
-  var column=session.day+1;
-
-  const rowEnd= Math.ceil(((startMinute+session.length -config.timeStart) /config.mins_x_block))+1;
-  const size = rowEnd-row;
-
-
-  return(<GridElement key={uuidv4()} draggable="true" onDragStart={event=>dragSession(event, session)} row={row+1} column={column} color= {session.color} size={size}  onClick={() => { handleSessionClick(session) }}>{sessionToString(session)}</GridElement>
-      );
-}
 
 function PlaceSessionBlock(block, config, handleSessionClick){
   var exampleSession= block[0];
@@ -110,12 +57,6 @@ function PlaceSessionBlock(block, config, handleSessionClick){
   );
 }
 
-//get week number from string formatted like : YYYY-Wnn (2021-W01)
-function getYearAndWeekNumberFromInputText(text){
-  var splitted = text.split("-W");
-  return splitted;
-}
-
 
 function populateGrid(params, sessions, handleSessionClick) {
     const populated=[];
@@ -131,7 +72,8 @@ function populateGrid(params, sessions, handleSessionClick) {
         // populated.push(placeSession(session, params, handleSessionClick));
     });
     for (const [key, value] of Object.entries(sessionsByTimeblocks)) {
-      populated.push(PlaceSessionBlock(value, params, handleSessionClick));
+      
+      populated.push(PlaceSessionBlock(value, params, handleSessionClick, key));
     }
 
     return populated;
@@ -308,20 +250,12 @@ export default class Timetable extends React.Component {
       ev.preventDefault();
       var data = JSON.parse(ev.dataTransfer.getData("text"));
       
-      var day= config.week[id%8 -1];
-      const date = formatDate(day);
   
       if(data.type === "group"){
         data = FormatGroupData(data);
         data["type"] = "group";
       }
 
-      console.log("DROP");
-      console.log(data);
-      console.log(id);
-      console.log(config);
-
-      var originalSession = generateSessionFromDrop(data);
       var session = generateSessionFromDrop(data);
       var startMinute= (((id/8)>>0)-1) *config.mins_x_block + config.timeStart;
 

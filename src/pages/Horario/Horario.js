@@ -7,11 +7,6 @@ import SessionForm from '../../components/SessionForm';
 import {RepositoryContext} from '../../context/RepositoryContext';
 
 import {MyLoader} from '../PagesElements.js';
-import { EmptySpace, Header } from '../../components/SubjectForm/SubjectFormElements';
-
-
-
-const rooms=["Sala 1", "Sala Grande", "Salón de actos"];
 
 function addElementToCollection(col, elem){
   const index = col.map(r=>(r.name)).indexOf(elem.name);

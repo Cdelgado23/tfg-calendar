@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal from '../../components/Modal';
-import { Button, CentralMenu, MyLoader, PageHeader, SpaceBetweenMenu } from '../PagesElements';
+import { Button, MyLoader, PageHeader, SpaceBetweenMenu } from '../PagesElements';
 
 import {RepositoryContext} from '../../context/RepositoryContext';
 import { FormBody, FormElementGroup, FormGroup, FullBody, Header, StyledInput, StyledLabel } from '../../components/SubjectForm/SubjectFormElements';

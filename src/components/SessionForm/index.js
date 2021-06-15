@@ -1,6 +1,5 @@
 import React from 'react';
-import { Button } from '../../pages/PagesElements';
-import {FlexForm, NotificationsButtonsContainer, FormButton, FormSubmit, SessionInput} from './SessionFormElements'
+import {FlexForm, FormSubmit, SessionInput} from './SessionFormElements'
 
 function showRooms(rooms, handleChange, defaultRoom, field){
 
@@ -148,7 +147,7 @@ export default class SessionForm extends React.Component {
         else if (["room", "teacher"].includes(field)){
             this.setState({[field]: JSON.parse(event.target.value)});
         }else{
-        this.setState({[field]: event.target.value==""? 0:event.target.value}
+        this.setState({[field]: event.target.value ===""? 0:event.target.value}
             ,()=>{
                 if (["length", "startTime"].includes(field)){
                     this.props.checkAvailability(this.state);

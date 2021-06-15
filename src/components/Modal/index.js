@@ -6,11 +6,6 @@ import { ModalBase, ModalContent } from "./ModalElements";
 
 export default class Modal extends React.Component {
 
-  constructor(props) {
-    super(props);
-  }
-
-
   render() {
       if(!this.props.show){
           return null;

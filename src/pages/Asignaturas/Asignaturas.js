@@ -10,16 +10,13 @@ import { ColorButton, EmptySpace, FormBody, FormElementGroup, StyledInput, Style
 import Modal from '../../components/Modal';
 
 
-const rooms=["Sala 1", "Sala Grande", "Salón de actos"];
-
-
 function subjectIsValid(subject){
-  return subject.color.length>6 && subject.color!="#ffffff" && subject.subjectName.length>3; 
+  return subject.color.length>6 && subject.color!=="#ffffff" && subject.subjectName.length>3; 
 }
 
 function groupIsValid(group){
-  return group.groupName.length>3 && group.color.length>6 && group.color!="#ffffff"
-  && group.defaultSessionValues.color.length>6 && group.defaultSessionValues.color!="#ffffff"
+  return group.groupName.length>3 && group.color.length>6 && group.color!=="#ffffff"
+  && group.defaultSessionValues.color.length>6 && group.defaultSessionValues.color!=="#ffffff"
 }
 function sessionIsValid(session){
   return session.length>0;
@@ -527,7 +524,7 @@ export default class Asignaturas extends React.Component {
     console.log(this.state.selectedSubject.semester);
     this.context.deleteSession(session, ()=>{
       this.setState((prevState) =>(
-        {sessions: prevState.sessions.filter((s)=>(s.id!=session.id))}
+        {sessions: prevState.sessions.filter((s)=>(s.id!==session.id))}
       ));
     },this.state.selectedSubject.semester);
   }

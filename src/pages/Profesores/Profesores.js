@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal from '../../components/Modal';
-import { Button, CentralMenu, MyLoader, PageHeader, SpaceBetweenMenu } from '../PagesElements';
+import { Button, MyLoader, PageHeader, SpaceBetweenMenu } from '../PagesElements';
 
 import {RepositoryContext} from '../../context/RepositoryContext';
 import { FormBody, FormElementGroup, FormGroup, FullBody, Header, StyledInput, StyledLabel } from '../../components/SubjectForm/SubjectFormElements';
@@ -10,7 +10,7 @@ function listTeachers(teachers, deleteTeacher, deleteCallback){
   return teachers.map(teacher=>  
     <div style={{display: "flex", flexDirection: "row", width: "100%", justifyContent: "space-between"}}>
       <Button onClick={e=>{e.preventDefault()}}>{teacher.teacherName}</Button>
-      {teacher.checkConcurrency==false? <Button background="#969696" disabled={true}>concurrent</Button>: ""}
+      {teacher.checkConcurrency===false? <Button background="#969696" disabled={true}>concurrent</Button>: ""}
       <Button background="#a83535" onClick={e=>{e.preventDefault();deleteTeacher(teacher, deleteCallback)}}>Delete</Button>
     </div>
     );

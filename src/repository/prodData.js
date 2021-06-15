@@ -133,12 +133,13 @@ export default class prodData{
             var formattedTeachers=[];
             console.log(semester + " - " + day + "- doc -" + timeBlocks);
             if (timeBlocks.length>0  && timeBlocks.every(tb => tb in doc.data())){
-                teachers=(doc.data()[timeBlocks[0]]);
-                
-                var index;
-                for (index=1; index<timeBlocks.length; index++){
-                    teachers = teachers.filter(r=>(doc.data()[timeBlocks[index]].includes(r)));
-                }
+                timeBlocks.forEach(tb=>{
+                    if (!teachers){
+                        teachers= doc.data()[tb];
+                    }else{
+                        teachers = teachers.filter(r=>(doc.data()[tb].includes(r)));
+                    }
+                });
                 teachers.forEach(r=>{formattedTeachers.push({name: r, checkConcurrency: true})})
             }
 
@@ -171,12 +172,13 @@ export default class prodData{
             var formattedRooms=[];
             console.log(semester + " - " + day + "- doc -" + timeBlocks);
             if (timeBlocks.length>0  && timeBlocks.every(tb => tb in doc.data())){
-                rooms=(doc.data()[timeBlocks[0]]);
-                
-                var index;
-                for (index=1; index<timeBlocks.length; index++){
-                    rooms = rooms.filter(r=>(doc.data()[timeBlocks[index]].includes(r)));
-                }
+                timeBlocks.forEach(tb=>{
+                    if (!rooms){
+                        rooms= doc.data()[tb];
+                    }else{
+                        rooms = rooms.filter(r=>(doc.data()[tb].includes(r)));
+                    }
+                });
                 rooms.forEach(r=>{formattedRooms.push({name: r, checkConcurrency: true})})
             }
             doc.data()["concurrents"].forEach(r=>{formattedRooms.push({name: r, checkConcurrency: false})});
@@ -392,21 +394,21 @@ export default class prodData{
             var oldOcupancyRoom={};
             var oldOcupancyTeacher={};
 
-            var updateGeneral= session.day != oldSession.day || session.startTime != oldSession.startTime;
-            var updateRoom = updateGeneral || session.room.name != oldSession.room.name;
-            var updateTeacher = updateGeneral || session.teacher.name != oldSession.teacher.name;
+            var updateGeneral= session.day !== oldSession.day || session.startTime !== oldSession.startTime;
+            var updateRoom = updateGeneral || session.room.name !== oldSession.room.name;
+            var updateTeacher = updateGeneral || session.teacher.name !== oldSession.teacher.name;
 
             var sem = parseInt(semester-1)%2+1;  
-            
+            var oldTimeBlocks;
             if (updateRoom && oldSession.room.checkConcurrency){
-                var oldTimeBlocks= getTimeBlocksOfSession(oldSession);
+                oldTimeBlocks= getTimeBlocksOfSession(oldSession);
                 oldTimeBlocks.forEach(t=>{
                     oldOcupancyRoom[t]= firebase.firestore.FieldValue.arrayUnion(oldSession.room.name);
                 });
                 batch.update(roomOcupancyRef.doc(sem+"-"+oldSession.day), oldOcupancyRoom);
             }
             if (updateTeacher && oldSession.teacher.checkConcurrency){
-                var oldTimeBlocks= getTimeBlocksOfSession(oldSession);
+                oldTimeBlocks= getTimeBlocksOfSession(oldSession);
                 oldTimeBlocks.forEach(t=>{
                     oldOcupancyTeacher[t]= firebase.firestore.FieldValue.arrayUnion(oldSession.teacher.name);
                 });
@@ -415,15 +417,16 @@ export default class prodData{
 
             var ocupancyRoom={};
             var ocupancyTeacher={};
+            var timeBlocks;
             if (updateRoom && session.room.checkConcurrency){
-                var timeBlocks= getTimeBlocksOfSession(session);
+                timeBlocks= getTimeBlocksOfSession(session);
                 timeBlocks.forEach(t=>{
                     ocupancyRoom[t]= firebase.firestore.FieldValue.arrayRemove(session.room.name);
                 });
                 batch.update(roomOcupancyRef.doc(sem+"-"+session.day), ocupancyRoom)
             }
             if (updateTeacher && session.teacher.checkConcurrency){
-                var timeBlocks= getTimeBlocksOfSession(session);
+                timeBlocks= getTimeBlocksOfSession(session);
                 timeBlocks.forEach(t=>{
                     ocupancyTeacher[t]= firebase.firestore.FieldValue.arrayRemove(session.teacher.name);
                 });
@@ -455,17 +458,17 @@ export default class prodData{
         var ocupancyTeacher={};
 
         var sem = parseInt(semester-1)%2+1;  
-
+        var oldTimeBlocks;
 
         if (session.room.checkConcurrency){
-            var oldTimeBlocks= getTimeBlocksOfSession(session);
+            oldTimeBlocks= getTimeBlocksOfSession(session);
             oldTimeBlocks.forEach(t=>{
                 ocupancyRoom[t]= firebase.firestore.FieldValue.arrayRemove(session.room.name);
             });
             batch.update(roomOcupancyRef.doc(sem+"-"+session.day), ocupancyRoom);
         }
         if (session.teacher.checkConcurrency){
-            var oldTimeBlocks= getTimeBlocksOfSession(session);
+            oldTimeBlocks= getTimeBlocksOfSession(session);
             oldTimeBlocks.forEach(t=>{
                 ocupancyTeacher[t]= firebase.firestore.FieldValue.arrayRemove(session.teacher.name);
             });
@@ -510,17 +513,17 @@ export default class prodData{
         var ocupancyTeacher={};
 
         var sem = parseInt(semester-1)%2+1;  
-
+        var oldTimeBlocks;
 
         if (session.room.checkConcurrency){
-            var oldTimeBlocks= getTimeBlocksOfSession(session);
+            oldTimeBlocks= getTimeBlocksOfSession(session);
             oldTimeBlocks.forEach(t=>{
                 ocupancyRoom[t]= firebase.firestore.FieldValue.arrayUnion(session.room.name);
             });
             batch.update(roomOcupancyRef.doc(sem+"-"+session.day), ocupancyRoom);
         }
         if (session.teacher.checkConcurrency){
-            var oldTimeBlocks= getTimeBlocksOfSession(session);
+            oldTimeBlocks= getTimeBlocksOfSession(session);
             oldTimeBlocks.forEach(t=>{
                 ocupancyTeacher[t]= firebase.firestore.FieldValue.arrayUnion(session.teacher.name);
             });
@@ -655,7 +658,7 @@ export default class prodData{
         this.loadingCallback(true);
         var batch = this.db.batch();
 
-        subject.groups= subject.groups.filter(g=>(g.groupName!=group.groupName));
+        subject.groups= subject.groups.filter(g=>(g.groupName!==group.groupName));
 
         console.log("deleting");
         console.log (subject.subjectName + " - " + group.groupName);

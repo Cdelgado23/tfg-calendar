@@ -180,7 +180,7 @@ function TitleInSelectedTitles(title, inSubject, onChangeCheckBox, semester){
                 <p> - Semester: </p>
                 <select name="semesters" defaultValue={semester} onChange={(e)=>{onChangeCheckBox({titleName: title.titleName, semester: parseInt(e.target.value)}, false);}}>
                     {Array.from(new Array(title.semesters), (x, i) => i + 1).map((sem) =>
-                        (parseInt(sem)%2) == parseInt(semester)%2? <option value={parseInt(sem)}>{sem}</option>: ""
+                        (parseInt(sem)%2) === parseInt(semester)%2? <option value={parseInt(sem)}>{sem}</option>: ""
                     )}
                 </select>
                 </React.Fragment>
