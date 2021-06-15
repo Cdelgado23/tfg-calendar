@@ -59,7 +59,7 @@ const Navbar = (props) => {
               </NavBtn>
             </NavMenu>
             <NavBtn style={{width: "15vw"}}>
-              <NavBtnLinkGreen to='/Usuario'>
+              <NavBtnLinkGreen to='/Usuario' style={{width: "15vw", textAlign: "center"}}>
               {props.loggedUser}
 
               </NavBtnLinkGreen>
