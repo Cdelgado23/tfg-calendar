@@ -43,6 +43,9 @@ export default class Repository{
         this.dataSource.setErrorCallback(callback);
     }
 
+    getSubjects(callback){
+        this.dataSource.getSubjects(callback);
+    }
     getTeachers(callback){
         this.dataSource.getTeachers(callback);
     }
@@ -103,7 +106,7 @@ export default class Repository{
     }
 
     createSubject(subject, callback){
-        this.dataSource.createSubject(subject, this.authenticationData.teacher.name, callback);
+        this.dataSource.createSubject(subject, callback);
     
     }
     deleteSubject(subject, callback){

@@ -729,12 +729,30 @@ export default class prodData{
 
     }
 
+    getSubjects(callback){
+        this.loadingCallback(false);
+        this.db.collection("subjects").get().then((querySnapshot) => {
+            this.loadingCallback(false);
+            var data = [];
+            querySnapshot.forEach((doc) => {
+                var group= doc.data();
+                group["id"]= doc.id;
+                data.push(group);
+            });
+            console.log("data");
+            console.log(data);
+            callback(data);
+        }).catch(err=>{
+            console.log("ERROR");
+            console.log(err);
+            this.errorCallback(err);
+        });
+    }
 
-    createSubject(subject, owner, callback){
+    createSubject(subject, callback){
         console.log("creating");
-        subject.owner= owner;
+        subject.owner= this.getUser().email;
         subject.groups=[];
-        subject.teachers=[owner];
         console.log(subject);
         this.db.collection("subjects").doc(subject.subjectName).set(
             subject

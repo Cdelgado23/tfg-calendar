@@ -105,7 +105,7 @@ function createSubjectForm(subject, onChangeField, createSubject, showModal){
         </FormElementGroup>
   
         <div style ={{display: "flex", flexDirection: "row", justifyContent: "center", margin: "auto"}}>
-            <ColorButton disabled={!subjectIsValid(subject)}color = "#2DA283" margin="0 1vw" padding="0.5rem 1rem"   width="fit-content" onClick={(e)=>{e.preventDefault(); createSubject(subject); showModal()}}>Create</ColorButton>
+            <ColorButton disabled={!subjectIsValid(subject)}color = "#2DA283" margin="0 1vw" padding="0.5rem 1rem"   width="fit-content" onClick={(e)=>{console.log("create subject"); e.preventDefault(); createSubject(subject); showModal()}}>Create</ColorButton>
         </div>
       </FormBody>
     </React.Fragment>
@@ -210,8 +210,8 @@ export default class Asignaturas extends React.Component {
       teachers: [],
 
       showModal: false,
-      showError: false,
-      error: "",
+      showError: true,
+      error: "error",
       modalForm: " ",
       newSubject: {titles:[], color: "#ffffff", "subjectName":""},
       newGroup: createEmptyGroup(), 
@@ -302,7 +302,7 @@ export default class Asignaturas extends React.Component {
   }
 
 
-  chooseCreateForm(form,selectedSubject, selectedGroup){
+  chooseCreateForm(form, selectedSubject, selectedGroup){
     switch(form){
       case "subject":
         return createSubjectForm(this.state.newSubject, this.onChangeField, this.createSubject, this.showModal);
@@ -436,13 +436,13 @@ export default class Asignaturas extends React.Component {
   createSubject(subject){
     subject.semester= 1;
     this.context.createSubject(subject, ()=> {
-      this.context.loadSubjectsOfTeacher("teacher Z", this.setSubjects);
-      }
+      this.context.getSubjects(this.setSubjects);
+    }
     );
   }
   deleteSubject(subject){
     var callback= ()=> {
-      this.context.loadSubjectsOfTeacher("teacher Z", this.setSubjects);
+      this.context.getSubjects(this.setSubjects);
       this.setState((prevState) =>(
         {
         selectedSubject: null,
@@ -474,7 +474,7 @@ export default class Asignaturas extends React.Component {
   deleteGroup(subject, group){
 
     var callback= ()=> {
-      this.context.loadSubjectsOfTeacher("teacher Z", this.setSubjects);
+      this.context.getSubjects(this.setSubjects);
       this.setState((prevState) =>(
         {
         selectedGroup: null,
@@ -514,7 +514,7 @@ export default class Asignaturas extends React.Component {
 
   updateSubject(subject){
     var callback= ()=> {
-      this.context.loadSubjectsOfTeacher("teacher Z", this.setSubjects);
+      this.context.getSubjects(this.setSubjects);
       this.setState((prevState) =>(
         {selectedSubject: null,
         selectedGroup: null,
@@ -577,8 +577,7 @@ export default class Asignaturas extends React.Component {
     this.context.setLoadingCallback(this.setLoading);
     this.context.setErrorCallback(this.errorCallback);
     
-    this.context.loadSubjectsOfTeacher("teacher Z", this.setSubjects);
-    this.context.loadSessionsOfTeacher("teacher Z", this.setSessions);
+    this.context.getSubjects(this.setSubjects);
     this.context.loadTitles( (titles)=>{this.setState({titles: titles})});
 
 //    this.context.getRooms((rooms)=>{this.setState({rooms: rooms})});
