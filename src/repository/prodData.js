@@ -75,7 +75,9 @@ export default class prodData{
             this.loadingCallback(false);
             var errorCode = error.code;
             var errorMessage = error.message;
-            callback(errorCode + " - " + errorMessage);
+            if (this.errorCallback){
+                this.errorCallback(errorCode + " - " + errorMessage);
+            }
         });
     }
     getUser(){

@@ -13,15 +13,20 @@ export default class Login extends React.Component {
         this.state={
           email: "",
           password: "",
-          loading: false
+          loading: false, 
+          errorMsg: ""
         };
+        this.setErrorMsg= this.setErrorMsg.bind(this);
         this.setEmail= this.setEmail.bind(this);
         this.setPassword= this.setPassword.bind(this);
+
       }
       setLoading(loading){
         this.setState({loading: loading});
       }
-    
+      setErrorMsg(msg){
+        this.setState({errorMsg: msg});
+      }
     
       setEmail(email){
         this.setState({email: email});
@@ -32,6 +37,7 @@ export default class Login extends React.Component {
 
     componentDidMount(){
         this.context.setLoadingCallback(this.setLoading);
+        this.context.setErrorCallback(this.setErrorMsg);
     }
 
     render(){
@@ -48,6 +54,7 @@ export default class Login extends React.Component {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
+                flexDirection: "column",
                 height: '90vh'
               }}
               >
@@ -69,6 +76,9 @@ export default class Login extends React.Component {
                     </Button>
                 </div>
                 }
+                <div style={{color: "#a83535", marginTop: "1vh"}}>
+                  {this.state.errorMsg}
+                </div>
               </div>
               </MyLoader>
           );
