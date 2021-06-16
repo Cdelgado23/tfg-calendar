@@ -58,11 +58,11 @@ export default class Login extends React.Component {
                   <StyledLabel style={{color: "#2DA283"}}>Email</StyledLabel>
                   <StyledInput margin= "0 0.5vw 0 0.5vw"  type="text" name="email" 
                     value={this.state.email } onChange= {event => {this.setEmail(event.target.value)}}
-                    style={{width: "80%"} }/>
+                    style={{width: "80%", height: "3vh", borderRadius: "5px", borderWidth: "1px"} }/>
                   <StyledLabel style={{color: "#2DA283"}}>Password</StyledLabel>
                   <StyledInput margin= "0 0.5vw 0 0.5vw"  type="password" name="email" 
                     value={this.state.password} onChange= {event => {this.setPassword(event.target.value)}}
-                    style={{width: "80%"}}/>
+                    style={{width: "80%", height: "3vh", borderRadius: "5px", borderWidth: "1px"}}/>
           
                     <Button background={"#F5AB00"} onClick={e=>{this.context.auth(this.state.email, this.state.password, (d)=>{console.log(d)})}}>
                       Login
