@@ -9,6 +9,7 @@ import SubjectForm from '../../components/SubjectForm';
 import { ColorButton, EmptySpace, FormBody, FormElementGroup, StyledInput, StyledLabel } from '../../components/SubjectForm/SubjectFormElements';
 import Modal from '../../components/Modal';
 
+import {spanish} from '../../translations/Spanish'
 
 function subjectIsValid(subject){
   return subject.color.length>6 && subject.color!=="#ffffff" && subject.subjectName.length>3; 
@@ -92,20 +93,20 @@ function ListSubjects(params, onSelectSubject) {
 function createSubjectForm(subject, onChangeField, createSubject, showModal){
   return(
     <React.Fragment>
-      <h2>Create Subject</h2>
+      <h2>{spanish.createSubject}</h2>
       <FormBody>
         <FormElementGroup>
-            <StyledLabel margin= "0 0.5vw 0 0.5vw">Subject Name</StyledLabel>
+            <StyledLabel margin= "0 0.5vw 0 0.5vw">{spanish.name}</StyledLabel>
             <StyledInput margin= "0 0.5vw 0 0.5vw"  type="text" name="subject" value={subject.subjectName} onChange= {event => {onChangeField(event,"subjectName", "newSubject")}}/>
         </FormElementGroup>
   
         <FormElementGroup>
-            <StyledLabel margin= "0 0.5vw 0 0.5vw">color</StyledLabel>
+            <StyledLabel margin= "0 0.5vw 0 0.5vw">{spanish.color}</StyledLabel>
             <StyledInput margin= "0 0.5vw 0 0.5vw" type="color" name="color" value={subject.color} onChange= {event => {onChangeField(event,"color", "newSubject")}}/>
         </FormElementGroup>
   
         <div style ={{display: "flex", flexDirection: "row", justifyContent: "center", margin: "auto"}}>
-            <ColorButton disabled={!subjectIsValid(subject)}color = "#2DA283" margin="0 1vw" padding="0.5rem 1rem"   width="fit-content" onClick={(e)=>{console.log("create subject"); e.preventDefault(); createSubject(subject); showModal()}}>Create</ColorButton>
+            <ColorButton disabled={!subjectIsValid(subject)}color = "#2DA283" margin="0 1vw" padding="0.5rem 1rem"   width="fit-content" onClick={(e)=>{ e.preventDefault(); createSubject(subject); showModal()}}>{spanish.create}</ColorButton>
         </div>
       </FormBody>
     </React.Fragment>
@@ -117,25 +118,25 @@ function createGroupForm(selectedSubject, group, onChangeField,onChangeCheckBox,
   
 return (
   <React.Fragment>
-      <h2>Create Group</h2>
+      <h2>{spanish.createGroup}</h2>
       <FormBody height="36vh" overflowy="auto" style={{    "border": "1px solid #EFEFEF","border-radius": "0 0 10px 10px"}}>
                     <FormElementGroup>
-                        <StyledLabel margin= "0 0.5vw 0 0.5vw">Group Name</StyledLabel>
+                        <StyledLabel margin= "0 0.5vw 0 0.5vw">{spanish.name}</StyledLabel>
                         <StyledInput margin= "0 0.5vw 0 0.5vw" type="text" name="subject" value={group.groupName} onChange= {event => {onChangeField(event,"groupName", "newGroup")}}/>
                     </FormElementGroup>
 
                     <FormElementGroup>
-                        <StyledLabel margin= "0 0.5vw 0 0.5vw">Group color</StyledLabel>
+                        <StyledLabel margin= "0 0.5vw 0 0.5vw">{spanish.color}</StyledLabel>
                         <StyledInput margin= "0 0.5vw 0 0.5vw" type="color" name="color" value={group.color} onChange= {event => {onChangeField(event,"color", "newGroup")}}/>
                     </FormElementGroup>
                     
-                    <StyledLabel margin= "0 0.5vw 0 0.5vw"> <b>Sessions default values</b></StyledLabel>
+                    <StyledLabel margin= "0 0.5vw 0 0.5vw"> <b>{spanish.sessionDefaultValues}</b></StyledLabel>
                     <FormElementGroup>
-                        <StyledLabel margin= "0 0.5vw 0 0.5vw">Session color</StyledLabel>
+                        <StyledLabel margin= "0 0.5vw 0 0.5vw">{spanish.color}</StyledLabel>
                         <StyledInput margin= "0 0.5vw 0 0.5vw" type="color" name="color" value={group.defaultSessionValues.color} onChange= {event => {onChangeField(event,"color", "newGroup", "defaultSessionValues")}}/>
                     </FormElementGroup>
                     <div style ={{display: "flex", flexDirection: "row", justifyContent: "center", margin: "0 0 1vh 0"}}>
-                        <ColorButton disabled={!groupIsValid(selectedSubject, group)} color = "#2DA283" margin="0 1vw" padding="0.5rem 1rem" width="fit-content" onClick={(e)=>{e.preventDefault(); createGroup(selectedSubject, group); showModal()}}>Create</ColorButton>
+                        <ColorButton disabled={!groupIsValid(selectedSubject, group)} color = "#2DA283" margin="0 1vw" padding="0.5rem 1rem" width="fit-content" onClick={(e)=>{e.preventDefault(); createGroup(selectedSubject, group); showModal()}}>{spanish.create}</ColorButton>
                     </div>
                 </FormBody>
   </React.Fragment>
@@ -148,46 +149,46 @@ function createSessionForm( selectedGroup, session, onChangeField, onChangeCheck
     <React.Fragment>
       <FormBody>
         <FormElementGroup>
-        <StyledLabel margin= "0 0.5vw 0 0.5vw">Subject Name</StyledLabel>
+        <StyledLabel margin= "0 0.5vw 0 0.5vw">{spanish.subject}</StyledLabel>
         <StyledInput margin= "0 0.5vw 0 0.5vw"  disabled type="text" name="subject" value={selectedGroup.subjectName}/>
         </FormElementGroup>
         
         <FormElementGroup>
-        <StyledLabel margin= "0 0.5vw 0 0.5vw">Group Name</StyledLabel>
+        <StyledLabel margin= "0 0.5vw 0 0.5vw">{spanish.group}</StyledLabel>
         <StyledInput margin= "0 0.5vw 0 0.5vw"  disabled type="text" name="group" value={selectedGroup.groupName} />
         </FormElementGroup>
 
         <FormElementGroup>
-        <StyledLabel margin= "0 0.5vw 0 0.5vw">color</StyledLabel>
+        <StyledLabel margin= "0 0.5vw 0 0.5vw">{spanish.color}</StyledLabel>
         <StyledInput margin= "0 0.5vw 0 0.5vw"  type="color" name="color" value={session.color} onChange= {event => {onChangeField(event,"color", "newSession")}}/>
         </FormElementGroup>
 
         <FormElementGroup>
-            <StyledLabel margin= "0 0.5vw 0 0.5vw">Start Time</StyledLabel>
+            <StyledLabel margin= "0 0.5vw 0 0.5vw">{spanish.startTime}</StyledLabel>
             <StyledInput margin= "0 0.5vw 0 0.5vw" type="time" name="startTime" value={session.startTime} onChange= {event => {onChangeField(event,"startTime", "newSession", null, checkAvailability)}}/>
         </FormElementGroup>
         <FormElementGroup>
-            <StyledLabel margin= "0 0.5vw 0 0.5vw">Day</StyledLabel>
+            <StyledLabel margin= "0 0.5vw 0 0.5vw">{spanish.day}</StyledLabel>
             {showWeekdays(session.day, onChangeField, checkAvailability)}
         </FormElementGroup>
 
         <FormElementGroup>
-                <StyledLabel margin= "0 0.5vw 0 0.5vw">Duration</StyledLabel>
+                <StyledLabel margin= "0 0.5vw 0 0.5vw">{spanish.length}</StyledLabel>
                 <StyledInput margin= "0 0.5vw 0 0.5vw" type="number" name="length" value={session.length} onChange= {event => {onChangeField(event,"length", "newSession", null, checkAvailability)}}/>
         </FormElementGroup>
         <FormElementGroup>
-            <StyledLabel margin= "0 0.5vw 0 0.5vw">Room</StyledLabel>
+            <StyledLabel margin= "0 0.5vw 0 0.5vw">{spanish.classRoom}</StyledLabel>
             {showRooms(rooms, "room", onChangeField, session.room)}
         </FormElementGroup>
 
         <FormElementGroup>
-            <StyledLabel margin= "0 0.5vw 0 0.5vw">Teacher</StyledLabel>
+            <StyledLabel margin= "0 0.5vw 0 0.5vw">{spanish.teacher}</StyledLabel>
             {showRooms(teachers, "teacher", onChangeField, session.teacher)}
         </FormElementGroup> 
 
 
         <div style ={{display: "flex", flexDirection: "row", justifyContent: "center", margin: "0 0 1vh 0"}}>
-          <ColorButton disabled={!sessionIsValid(session)} color = "#2DA283" margin="0 1vw" padding="0.5rem 1rem" width="fit-content" onClick={(e)=>{e.preventDefault();createSession(session); showModal()}}>Create</ColorButton>
+          <ColorButton disabled={!sessionIsValid(session)} color = "#2DA283" margin="0 1vw" padding="0.5rem 1rem" width="fit-content" onClick={(e)=>{e.preventDefault();createSession(session); showModal()}}>{spanish.create}</ColorButton>
         </div>
       </FormBody>
     </React.Fragment>
@@ -354,14 +355,9 @@ export default class Asignaturas extends React.Component {
 
     this.setState({[object]: o}, ()=>{
       if (checkAvailability){
-        console.log("check av");
-        console.log(this.state.newSession);
         checkAvailability(this.state.newSession);
       }
     });
-
-    console.log("state");
-    console.log(this.state);
   }
 
   onChangeCheckBox(field, object, fieldOfObject){
@@ -414,8 +410,6 @@ export default class Asignaturas extends React.Component {
     this.setState({loading: _loading});
   }
   setSessions(_sessions){
-    console.log("sessions");
-    console.log(_sessions);
     this.setState({sessions: _sessions});
   }
   updateSession(session){
@@ -492,8 +486,6 @@ export default class Asignaturas extends React.Component {
       selectedSession: null});
   }
   setRooms(_rooms){
-    console.log("setRooms");
-    console.log(_rooms);
     if (this.state.selectedSession){
       const index = _rooms.map(r=>(r.name)).indexOf(this.state.selectedSession.room.name);
       if (index < 0) {
@@ -530,8 +522,6 @@ export default class Asignaturas extends React.Component {
   }
 
   deleteSession(session){
-    console.log("subject");
-    console.log(this.state.selectedSubject.semester);
     this.context.deleteSession(session, ()=>{
       this.setState((prevState) =>(
         {sessions: prevState.sessions.filter((s)=>(s.id!==session.id))}
@@ -560,7 +550,6 @@ export default class Asignaturas extends React.Component {
     }else{
       title["semester"] = parseInt(this.state.selectedSubject.semester);
       titles.push(title);
-      console.log(title);
     }
 
     var subject = this.state.selectedSubject;
@@ -588,7 +577,7 @@ export default class Asignaturas extends React.Component {
       <MyLoader
       active={this.state.loading}
       spinner
-      text='Loading your content...'
+      text={spanish.loadingMsg}
       >
       <div 
       style={{
@@ -602,7 +591,7 @@ export default class Asignaturas extends React.Component {
           <SpaceBetweenMenu>
             <LateralMenu>
               <MenuHeader>
-                <h2>Asignaturas</h2>
+                <h2>{spanish.subjects}</h2>
               </MenuHeader>
               <MenuBody>
                 {ListSubjects(this.state.subjects, this.onSelectSubject)}
@@ -635,7 +624,7 @@ export default class Asignaturas extends React.Component {
             </CentralMenu>
             <LateralMenu>
               <MenuHeader>
-                <h2>Sesión</h2>
+                <h2>{spanish.session}</h2>
               </MenuHeader>
               <MenuBody>
                 {

@@ -4,14 +4,15 @@ import { Button, MyLoader, PageHeader, SpaceBetweenMenu } from '../PagesElements
 
 import {RepositoryContext} from '../../context/RepositoryContext';
 import { FormBody, FormElementGroup, FormGroup, FullBody, Header, StyledInput, StyledLabel } from '../../components/SubjectForm/SubjectFormElements';
+import { spanish } from '../../translations/Spanish';
 
 
 function listTeachers(teachers, deleteTeacher, deleteCallback){
   return teachers.map(teacher=>  
     <div style={{display: "flex", flexDirection: "row", width: "100%", justifyContent: "space-between"}}>
       <Button background="#e7e9eb" onClick={e=>{e.preventDefault()}} style={{width: "70%", color: "black"}}>{teacher.teacherName}</Button>
-      {teacher.checkConcurrency===false? <Button background="#969696" disabled={true} style={{width: "20%", padding: "0"}}>concurrent</Button>: <div style={{width: "20%", padding: "0", margin: "0.5em"}}></div>}
-      <Button background="#a83535" onClick={e=>{e.preventDefault();deleteTeacher(teacher, deleteCallback)}} style={{width: "10%"}}>Delete</Button>
+      {teacher.checkConcurrency===false? <Button background="#969696" disabled={true} style={{width: "20%", padding: "0"}}>{spanish.concurrent}</Button>: <div style={{width: "20%", padding: "0", margin: "0.5em"}}></div>}
+      <Button background="#a83535" onClick={e=>{e.preventDefault();deleteTeacher(teacher, deleteCallback)}} style={{width: "10%"}}>{spanish.delete}</Button>
     </div>
     );
 }
@@ -94,7 +95,7 @@ export default class Profesores extends React.Component {
       <MyLoader
       active={this.state.loading}
       spinner
-      text='Loading your content...'
+      text={spanish.loadingMsg}
       >
       <div
       style={{
@@ -110,7 +111,7 @@ export default class Profesores extends React.Component {
             <FullBody>
               <FormGroup>
                 <Header>
-                  <h2>Profesores</h2>
+                  <h2>{spanish.teachers}</h2>
                 </Header>
                 <FormBody height="70vh" width="60vw" overflowy= "auto" style={{"border": "1px solid #EFEFEF","border-radius": "0 0 10px 10px"}}>
                   {listTeachers(this.state.teachers, this.deleteTeacher, this.getTeachers)}
@@ -122,19 +123,26 @@ export default class Profesores extends React.Component {
         </SpaceBetweenMenu>
         <Modal onClose={this.showModal} show={this.state.show}>
 
-          <h2>Create teacher</h2>
-          <StyledInput margin= "0 0.5vw 0 0.5vw"  type="text" name="teacherName" value={this.state.newTeacher.teacherName} onChange= {event => {this.OnChangeTeacherValue(event.target.value, "teacherName")}}/>
+          <h2>{spanish.createTeacher}</h2>
+
+          <FormElementGroup>
+            <StyledLabel margin= "0 0.5vw 0 0.5vw" style={{maxWidth: "90%"}}>
+              {spanish.name} 
+            </StyledLabel>
+            <StyledInput margin= "0 0.5vw 0 0.5vw"  type="text" name="teacherName" value={this.state.newTeacher.teacherName} onChange= {event => {this.OnChangeTeacherValue(event.target.value, "teacherName")}}/>
+          </FormElementGroup>
+
           
           <FormElementGroup style={{flexDirection: "row"}}>
           <StyledInput margin= "0.5vh 0.5vw 0 0"  type="checkbox" checked={this.state.checkConcurrency} value={this.state.checkConcurrency} onChange={event => {this.onChangeConcurrency()}}/>
           <StyledLabel margin= "0 0.5vw 0 0.5vw" style={{maxWidth: "90%"}}>
                 <p style={{overflow: "hidden", textOverflow: "ellipsis"}}>
-                    Check concurrency
+                    {spanish.checkConcurrency}
                 </p> 
           </StyledLabel>
           </FormElementGroup>
 
-          <Button disabled={!teacherIsValid(this.state.newTeacher)}onClick={e=>{this.createTeacher(this.state.newTeacher);}}>Create</Button>
+          <Button disabled={!teacherIsValid(this.state.newTeacher)}onClick={e=>{this.createTeacher(this.state.newTeacher);}}>{spanish.create}</Button>
         </Modal>
       </div>
       </MyLoader>

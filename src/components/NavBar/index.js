@@ -12,6 +12,7 @@ import React from 'react';
 import { useHistory,useLocation } from "react-router-dom";
 
 import logo from '../../logo.png';
+import {spanish} from '../../translations/Spanish'
 
 function handleRouteChange(event, history, location) {
   history.push("/"+event.target.value);
@@ -34,11 +35,11 @@ const Navbar = (props) => {
            props.loggedUser?
           <React.Fragment>
             <SelectRouter name="rooms" id="rooms" onChange={event =>{handleRouteChange(event, history, location)}}>
-            <option value={"Horario"}>Horario</option>
-            <option value={"Asignaturas"}>Asignaturas</option>
-            <option value={"Aulas"}>Aulas</option>
-            <option value={"Profesore"}>Profesores</option>
-            <option value={"Titulaciones"}>Titulaciones</option>
+            <option value={"Horario"}>{spanish.schedule}</option>
+            <option value={"Asignaturas"}>{spanish.subjects}</option>
+            <option value={"Aulas"}>{spanish.classrooms}</option>
+            <option value={"Profesore"}>{spanish.teachers}</option>
+            <option value={"Titulaciones"}>{spanish.titles}</option>
             </SelectRouter>
     
             <NavMenu>

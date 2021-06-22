@@ -8,6 +8,9 @@ import {RepositoryContext} from '../../context/RepositoryContext';
 
 import {MyLoader} from '../PagesElements.js';
 
+import {spanish} from '../../translations/Spanish'
+
+
 function addElementToCollection(col, elem){
   const index = col.map(r=>(r.name)).indexOf(elem.name);
   if (index < 0) {
@@ -28,7 +31,7 @@ function TitlesDropdown(titles, onChange){
   <React.Fragment>
 
     <select name="titles" id="titles" onChange={(e)=>{onChange(e.target.value);}}>
-      <option value={null}>Select a title</option>
+      <option value={null}>{spanish.SelectSemesterPlaceholder}</option>
       {
           titles.map((title) =>
           <option value={JSON.stringify(title)}>{title.titleName}</option>
@@ -45,7 +48,7 @@ function SemesterDropdown(semesters, onChange, defaultValue){
   <React.Fragment>
 
     <select name="semesters" id="semesters" defaultValue={parseInt(defaultValue)} onChange={(e)=>{onChange(e.target.value);}}>
-      <option value={0}>Select a semester</option>
+      <option value={0}>{spanish.SelectSemesterPlaceholder}</option>
       {
           Array.from(new Array(semesters), (x, i) => i + 1).map((sem) =>
           <option value={parseInt(sem)}>{sem}</option>
@@ -168,19 +171,19 @@ export default class Horario extends React.Component {
       console.log(availability);
 
       if(!availability.teacher || !availability.room){
-        footerMsg.header = footerMsg.header + " actualizada con colisiones.";
+        footerMsg.header = footerMsg.header + spanish.updateMsgs.noCollision;
         footerMsg.type= "warning";
 
         if (!availability.room){
-          footerMsg.msgs.push("Aula: " + session.room.name + " -> " + unavailableResource.name + ".");
+          footerMsg.msgs.push(spanish.classRoom + ": " + session.room.name + " -> " + unavailableResource.name + ".");
           session.room = unavailableResource;
         }
         if(!availability.teacher){
-          footerMsg.msgs.push("Profesor: " + session.teacher.name + " -> " + unavailableResource.name + ".");
+          footerMsg.msgs.push(spanish.teacher + ": " + session.teacher.name + " -> " + unavailableResource.name + ".");
           session.teacher= unavailableResource;
         }
       }else{
-        footerMsg.header = footerMsg.header + " actualizada sin colisiones";
+        footerMsg.header = footerMsg.header + spanish.updateMsgs.withCollision;
       }
       this.updateSession(session, this.setFooterMsg(footerMsg));
     });
@@ -220,7 +223,6 @@ export default class Horario extends React.Component {
   }
   selectTitle(_title){
     try {
-      console.log("title " + _title)
       var parsed = JSON.parse(_title);
 
       this.setState(
@@ -281,10 +283,6 @@ export default class Horario extends React.Component {
 
   addRoom(room){
     const index = this.state.rooms.map(r=>(r.name)).indexOf(room.name);
-    
-    console.log("add room " + room.name);
-    console.log(index);
-    console.log(this.state.rooms.map(r=>r.name));
 
     if (index < 0) {
       this.setState((prevState) =>(
@@ -295,9 +293,6 @@ export default class Horario extends React.Component {
   addTeacher(teacher){
     const index = this.state.teachers.map(r=>(r.name)).indexOf(teacher.name);
 
-    console.log("add teacher " + teacher.name);
-    console.log(index);
-
     if (index < 0) {
       this.setState((prevState) =>(
         {teachers: [...prevState.teachers, teacher]}
@@ -307,17 +302,13 @@ export default class Horario extends React.Component {
   }
 
   getTimeBlocksOfSession(session){
-    console.log("getTimeBlocks");
-    console.log(session);
 
     var time = session.startTime.split(":");
     var startMinute= parseInt(time[0])*60 + parseInt(time[1]);
     const row = (((startMinute - 480)/15)>>0) + 1;
     const rowEnd= Math.ceil(((startMinute+ parseInt(session.length) -480) /15))+1;
 
-  
-    console.log( Array.from(new Array(rowEnd-row), (x, i) => i+row));
-    return Array.from(new Array(rowEnd-row), (x, i) => i+row);
+      return Array.from(new Array(rowEnd-row), (x, i) => i+row);
   }
 
 
@@ -334,7 +325,7 @@ export default class Horario extends React.Component {
       <MyLoader
       active={this.state.loading}
       spinner
-      text='Loading your content...'
+      text= {spanish.loadingMsg}
       >
       <div 
       style={{
@@ -350,7 +341,7 @@ export default class Horario extends React.Component {
           <SpaceBetweenMenu>
             <LateralMenu>
               <MenuHeader>
-                <h2>Asignaturas</h2>
+                <h2>{spanish.subjects}</h2>
               </MenuHeader>
               <MenuBody>
                 {ListSubjects(this.state.subjects)}

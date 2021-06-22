@@ -1,6 +1,9 @@
 import React from 'react';
 import {FlexForm, FormSubmit, SessionInput} from './SessionFormElements'
 
+import {spanish} from '../../translations/Spanish'
+
+
 function showRooms(rooms, handleChange, defaultRoom, field){
 
     const listRooms = rooms.map((room) =>
@@ -168,41 +171,41 @@ export default class SessionForm extends React.Component {
             <div>
             <FlexForm onSubmit={this.handleSubmit}>
                 <label>
-                    Subject
+                    {spanish.subject}
                 </label>
                 <SessionInput disabled type="text" name="subject" value={this.state.subjectName} onChange= {event => {this.onChangeField(event,"subjectName")}}/>
                 <label>
-                    Group
+                    {spanish.group}
                 </label>
                 <SessionInput disabled type="text" name="group" value={this.state.groupName}  onChange= {event => {this.onChangeField(event,"groupName")}}/>
                 <label>
-                    Color
+                    {spanish.color}
                 </label>
                 <SessionInput type="color" name="color" value={this.state.color}  onChange= {event => {this.onChangeField(event,"color")}}/>
                 
                 <label>
-                    Day
+                    {spanish.day}
                 </label>
                 {showWeekdays(this.state.day, this.onChangeField)}
                 <label>
-                    Start Time
+                    {spanish.startTime}
                 </label>
                 <SessionInput type="time" name= "start" min="08:00" max="21:00" value={this.state.startTime} onChange= {event => {this.onChangeField(event,"startTime");}}></SessionInput>
                 
                 <label>
-                    Duration
+                    {spanish.length}
                 </label>
                 <SessionInput type="number" name="length"  value={this.state.length}  onChange= {event => {this.onChangeField(event,"length");}}/>
                 <label>
-                    Room
+                    {spanish.classRoom}
                 </label>
                 {showRooms(this.props.rooms, this.onChangeField, this.state.room, "room")}
                 <label>
-                    Teacher
+                    {spanish.teacher}
                 </label>
                 {showRooms(this.props.teachers, this.onChangeField, this.state.teacher, "teacher")}
                 <br/>
-                <FormSubmit color = "#2DA283" type="submit" value="Update"/>
+                <FormSubmit color = "#2DA283" type="submit" value={spanish.update}/>
             </FlexForm>
 
             </div>

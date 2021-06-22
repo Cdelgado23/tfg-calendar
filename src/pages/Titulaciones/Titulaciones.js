@@ -4,14 +4,15 @@ import { Button, MyLoader, PageHeader, SpaceBetweenMenu } from '../PagesElements
 
 import {RepositoryContext} from '../../context/RepositoryContext';
 import { FormBody, FormElementGroup, FormGroup, FullBody, Header, StyledInput, StyledLabel } from '../../components/SubjectForm/SubjectFormElements';
+import { spanish } from '../../translations/Spanish';
 
 
 function listTitles(titles, deleteTitle, deleteCallback){
   return titles.map(title=>
     <div style={{display: "flex", flexDirection: "row", width: "100%", justifyContent: "space-between"}}>
       <Button background="#e7e9eb" onClick={e=>{e.preventDefault()}} style={{width: "70%", color: "black"}}>{title.titleName}</Button>
-      <Button background="#969696" disabled={true} style={{width: "20%"}}>Semesters: {title.semesters}</Button>
-      <Button background="#a83535" onClick={e=>{e.preventDefault();deleteTitle(title, deleteCallback)}} style={{width:"10%"}}>Delete</Button>
+      <Button background="#969696" disabled={true} style={{width: "20%"}}>{spanish.semesters}: {title.semesters}</Button>
+      <Button background="#a83535" onClick={e=>{e.preventDefault();deleteTitle(title, deleteCallback)}} style={{width:"10%"}}>{spanish.delete}</Button>
     </div>
     );
 }
@@ -80,7 +81,6 @@ export default class Profesores extends React.Component {
     this.setState({
       show: !this.state.show
     });
-    console.log(this.state.show);
   }
 
   render(){
@@ -88,7 +88,7 @@ export default class Profesores extends React.Component {
       <MyLoader
       active={this.state.loading}
       spinner
-      text='Loading your content...'
+      text={spanish.loadingMsg}
       >
       <div
       style={{
@@ -104,7 +104,7 @@ export default class Profesores extends React.Component {
             <FullBody>
               <FormGroup>
                 <Header>
-                  <h2>Titulaciones</h2>
+                  <h2>{spanish.titles}</h2>
                 </Header>
                 <FormBody height="70vh" width="60vw" overflowy= "auto" style={{"border": "1px solid #EFEFEF","border-radius": "0 0 10px 10px"}}>
                   {listTitles(this.state.titles, this.deleteTitle, this.getTitles)}
@@ -116,23 +116,23 @@ export default class Profesores extends React.Component {
         </SpaceBetweenMenu>
         <Modal onClose={this.showModal} show={this.state.show}>
 
-          <h2>Create Title</h2>
+          <h2>{spanish.createTitle}</h2>
           
           <FormElementGroup style={{}}>
           <StyledLabel margin= "1 0.5vw 0 0.5vw" style={{maxWidth: "90%"}}>
-            Title name
+            {spanish.name}
           </StyledLabel>
           <StyledInput   type="text" name="titleName" value={this.state.newTitle.titleName} onChange= {event => {this.OnChangeTitleValue(event.target.value, "titleName")}}/>
           
           <StyledLabel margin= "1 0.5vw 0 0.5vw" style={{maxWidth: "90%"}}>
-            Semesters
+            {spanish.semesters}
           </StyledLabel>
           <StyledInput  type="number" name="semesters" value={this.state.newTitle.semesters} onChange= {event => {this.OnChangeTitleValue(event.target.value, "semesters")}}>
 
           </StyledInput>
           </FormElementGroup>
 
-          <Button disabled= {!titleIsValid(this.state.newTitle)} onClick={e=>{this.createTitle(this.state.newTitle);}}>Create</Button>
+          <Button disabled= {!titleIsValid(this.state.newTitle)} onClick={e=>{this.createTitle(this.state.newTitle);}}>{spanish.create}</Button>
         </Modal>
       </div>
       </MyLoader>
