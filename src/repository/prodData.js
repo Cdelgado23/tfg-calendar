@@ -373,7 +373,7 @@ export default class prodData{
         });
     }
     createTitle(title, callback){
-        this.db.collection("titles").doc().set({
+        this.db.collection("titles").doc(title.titleName).set({
             titleName: title.titleName,
             semesters: parseInt(title.semesters)
         })
