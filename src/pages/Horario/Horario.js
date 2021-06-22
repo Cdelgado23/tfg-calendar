@@ -31,7 +31,7 @@ function TitlesDropdown(titles, onChange){
   <React.Fragment>
 
     <select name="titles" id="titles" onChange={(e)=>{onChange(e.target.value);}}>
-      <option value={null}>{spanish.SelectSemesterPlaceholder}</option>
+      <option value={null}>{spanish.SelectTitlePlaceholder}</option>
       {
           titles.map((title) =>
           <option value={JSON.stringify(title)}>{title.titleName}</option>
