@@ -888,4 +888,37 @@ export default class prodData{
         }
         
     }
+
+
+
+    initDB(){
+        var batch = this.db.batch();
+
+        var roomOcupancyRef= this.db.collection('roomsOcupancy');
+        var teachersOcupancyRef= this.db.collection('teachersOcupancy');
+        var ocupancy={};
+
+        var timeBlock;
+
+        ocupancy["concurrents"]=[];
+        for (timeBlock = 1; timeBlock < 53; timeBlock++) {
+            ocupancy[timeBlock]= [];
+        }
+
+
+        var semester;
+        for (semester = 1; semester < 3; semester++) {
+            var day;
+            for (day = 1; day < 8; day++) {
+                batch.set(roomOcupancyRef.doc(semester+"-"+day), ocupancy);
+                batch.set(teachersOcupancyRef.doc(semester+"-"+day), ocupancy);
+            }
+        } 
+        
+        batch.commit().then(() => {
+            console.log("Batch completed, db init completed");
+        }).catch(err=>{
+        });   
+    }
+
 }
