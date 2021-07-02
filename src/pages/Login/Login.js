@@ -73,7 +73,7 @@ export default class Login extends React.Component {
                     value={this.state.password} onChange= {event => {this.setPassword(event.target.value)}}
                     style={{width: "80%", height: "3vh", borderRadius: "5px", borderWidth: "1px"}}/>
           
-                    <Button background={"#F5AB00"} onClick={e=>{this.context.auth(this.state.email, this.state.password, (d)=>{console.log(d)})}}>
+                    <Button background={"#F5AB00"} onClick={e=>{this.context.auth(this.state.email, this.state.password, (d)=>{})}}>
                     {spanish.login}
                     </Button>
                 </div>

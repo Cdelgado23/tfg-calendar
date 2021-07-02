@@ -87,7 +87,6 @@ export default class Profesores extends React.Component {
     this.setState({
       show: !this.state.show
     });
-    console.log(this.state.show);
   }
 
   render(){

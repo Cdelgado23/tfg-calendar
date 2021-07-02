@@ -25,6 +25,7 @@ export const NotificationsButtonsContainer= styled.div`
 
 `;
 
+/*
 export const FormButton = styled.button`
   border-radius: 4px;
   background: ${props => props.color || "#EFEFEF"};
@@ -41,11 +42,11 @@ export const FormButton = styled.button`
     color: #010606;
   }
 `;
-
+*/
 
 export const FormSubmit = styled.input`
 border-radius: 4px;
-background: ${props => props.color || "#EFEFEF"};
+background: ${props => props.color };
 padding: 0.5rem 2rem;
 margin:0;
 color: #FFFF;

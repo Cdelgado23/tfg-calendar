@@ -1,9 +1,9 @@
+import Mock from './Mock';
 import prodData from './prodData';
 import testData from './testData';
 
-
-
 const dataSources={
+    "test": Mock,
     "local": testData,
     "dev": prodData,
     "pro": prodData
@@ -12,9 +12,8 @@ const dataSources={
 
 export default class Repository{
 
-    constructor(loadingCallback, userIsLogged) {
+    constructor(loadingCallback, userIsLogged, env) {
         this.user=null;
-        var env = process.env.REACT_APP_ENVIROMENT.trimEnd();
         this.dataSource = new (this.getDataSource(env))(process.env.REACT_APP_BACKEND_BASE_URL, loadingCallback,  userIsLogged);
     }
 
@@ -141,5 +140,10 @@ export default class Repository{
     }
     deleteTitle(title, callback){
         this.dataSource.deleteTitle(title, callback);
+    }
+
+
+    getSessionById(id, callback){
+        this.dataSource.getSessionById(id, callback);
     }
 }

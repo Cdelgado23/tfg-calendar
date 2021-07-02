@@ -19,7 +19,6 @@ function getTimeBlocksOfSession(session){
 export default class prodData{
 
     constructor(_, loadingCallback, userIsLogged) {
-        console.log("init repo");
         var firebaseConfig = {
             apiKey:             process.env.REACT_APP_FIREBASE_API_KEY.trim(),
             authDomain:         process.env.REACT_APP_FIREBASE_AUTH_DOMAIN.trim(),
@@ -29,7 +28,6 @@ export default class prodData{
             appId:              process.env.REACT_APP_FIREBASE_APP_ID.trim()
           };
 
-        console.log(firebaseConfig)
         if (!firebase.apps.length) {
             try {
                 firebase.initializeApp(firebaseConfig);
@@ -44,7 +42,6 @@ export default class prodData{
 
         firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
-                console.log(user.email);
                 userIsLogged(user.email);
             } else {
                 userIsLogged(false);
@@ -57,7 +54,6 @@ export default class prodData{
         firebase.auth().signOut().then(() => {
             callback();
         }).catch((error) => {
-            console.log(error);
         });
     }
 
@@ -81,7 +77,6 @@ export default class prodData{
         });
     }
     getUser(){
-        console.log(firebase.auth().currentUser);
         return firebase.auth().currentUser;
     }
 
@@ -110,7 +105,6 @@ export default class prodData{
     createTeacher(teacher, callback){
         this.loadingCallback(true);
         
-        console.log(teacher);
         
         // Get a new write batch
         var batch = this.db.batch();
@@ -180,8 +174,6 @@ export default class prodData{
             var session= doc.data();
             session["id"]= doc.id;
             session.teacher={name: "Sin Asignar", checkConcurrency: false};
-            console.log("updating session");
-            console.log(session);
             batch.update(this.db.collection("sessions").doc(session.id), session);
         });
         
@@ -199,7 +191,6 @@ export default class prodData{
         this.db.collection('teachersOcupancy').doc((parseInt(semester-1)%2 + 1) +"-"+day).get().then((doc) => {
             var teachers;
             var formattedTeachers=[];
-            console.log(semester + " - " + day + "- doc -" + timeBlocks);
             if (timeBlocks.length>0  && timeBlocks.every(tb => tb in doc.data())){
                 timeBlocks.forEach(tb=>{
                     if (!teachers){
@@ -213,7 +204,6 @@ export default class prodData{
 
             doc.data()["concurrents"].forEach(r=>{formattedTeachers.push({name: r, checkConcurrency: false})});
 
-            console.log(formattedTeachers);
             this.loadingCallback(false);
             callback(formattedTeachers);
         }).catch(err=>{
@@ -242,7 +232,6 @@ export default class prodData{
         this.db.collection('roomsOcupancy').doc((parseInt(semester-1)%2 + 1) +"-"+day).get().then((doc) => {
             var rooms;
             var formattedRooms=[];
-            console.log(semester + " - " + day + "- doc -" + timeBlocks);
             if (timeBlocks.length>0  && timeBlocks.every(tb => tb in doc.data())){
                 timeBlocks.forEach(tb=>{
                     if (!rooms){
@@ -254,7 +243,6 @@ export default class prodData{
                 rooms.forEach(r=>{formattedRooms.push({name: r, checkConcurrency: true})})
             }
             doc.data()["concurrents"].forEach(r=>{formattedRooms.push({name: r, checkConcurrency: false})});
-            console.log(rooms);
             this.loadingCallback(false);
             callback(formattedRooms);
         }).catch(err=>{
@@ -341,8 +329,6 @@ export default class prodData{
             var session= doc.data();
             session["id"]= doc.id;
             session.room={name: "Sin Asignar", checkConcurrency: false};
-            console.log("updating session");
-            console.log(session);
             batch.update(this.db.collection("sessions").doc(session.id), session);
         });
         
@@ -365,7 +351,6 @@ export default class prodData{
                 session.id= doc.id;
                 data.push(session);
             });
-            console.log(data);
             callback(data);
         })
         .catch(err=>{
@@ -378,7 +363,6 @@ export default class prodData{
             semesters: parseInt(title.semesters)
         })
         .then(() => {
-            console.log("Document successfully written!");
             callback();
         })
         .catch(err=>{
@@ -389,7 +373,6 @@ export default class prodData{
     deleteTitle(title, callback){
         this.db.collection("titles").doc(title.id).delete()
         .then(() => {
-            console.log("Document successfully deleted!");
             callback();
         })
         .catch(err=>{
@@ -468,23 +451,17 @@ export default class prodData{
 
         this.db.collection("sessions").where("room", "==", room).get().then((querySnapshot) => {
             this.loadingCallback(false);
-            console.log(querySnapshot);
 
-            querySnapshot.forEach((doc) => {
-                console.log(`${doc.id} => ${JSON.stringify(doc.data())}`);
-            });
+
         }).catch(err=>{
             this.errorCallback(err);
         });
     }
     updateSession(session, callback, semester) {
-        console.log("update ");
-        console.log(session);
         var loading = this.loadingCallback;
         loading(true);
 
         this.db.collection('sessions').doc(session.id).get().then((doc) => {
-            console.log(doc.data());
 
             var batch = this.db.batch();
             var sessionsRef= this.db.collection('sessions');
@@ -541,7 +518,6 @@ export default class prodData{
             batch.commit().then(() => {
                 this.loadingCallback(false);
                 callback();
-                console.log("Batch completed");
             }).catch(err=>{
                 this.errorCallback(err);
             });
@@ -580,9 +556,6 @@ export default class prodData{
         }
         delete session["id"];
         session["length"]= parseInt(session["length"]);
-
-        console.log("session");
-        console.log(session);
         var sessionRef = this.db.collection('sessions').doc();
         batch.set(sessionRef, session);
 
@@ -605,7 +578,6 @@ export default class prodData{
         batch.commit().then(() => {
             this.loadingCallback(false);
             callback();
-            console.log("Batch completed");
         }).catch(err=>{
             this.errorCallback(err);
         });
@@ -651,8 +623,6 @@ export default class prodData{
                 group["id"]= doc.id;
                 data.push(group);
             });
-            console.log("data");
-            console.log(data);
             callback(data);
         });
     }
@@ -667,28 +637,24 @@ export default class prodData{
             if (updatedSemester && groups.length>0){
                 var rawData = await this.db.collection("sessions").where("subjectName", "==", subject.subjectName).where("groupName", "in", groups).get();
                 rawData=rawData.docs;
-                console.log(subject.subjectName);
-                console.log(groups);
+
                 rawData.forEach((doc) => {
                     var session= doc.data();
                     session["id"]= doc.id;
                     session.room={name: "Sin Asignar", checkConcurrency: false};
                     session.teacher={name: "Sin Asignar", checkConcurrency: false};
-                    console.log("updating session");
-                    console.log(session);
+
                     batch.update(this.db.collection("sessions").doc(session.id), session);
                 });
             }            
             batch.commit().then(() => {
                 this.loadingCallback(false);
                 callback();
-                console.log("Batch completed");
             }).catch(err=>{
                 this.errorCallback(err);
             });   
         }
         catch(err){
-            console.log("error updating subject: " + err);
         };
     }
 
@@ -710,18 +676,15 @@ export default class prodData{
             var subjectRef = this.db.collection("subjects").doc(subject.id);
             batch.set(subjectRef, subject);
 
-            console.log("old: " + oldSubjectName);
 
             querySnapshot.forEach((doc) => {
                 var sRef= this.db.collection("sessions").doc(doc.id);
                 batch.update(sRef, {"subjectName": subject.subjectName});
-                console.log(doc);
             });
 
             batch.commit().then(() => {
                 this.loadingCallback(false);
                 callback();
-                console.log("Batch completed");
             }).catch(err=>{
                 this.errorCallback(err);
             });
@@ -739,8 +702,6 @@ export default class prodData{
                 group["id"]= doc.id;
                 data.push(group);
             });
-            console.log("data");
-            console.log(data);
             callback(data);
         }).catch(err=>{
             console.log("ERROR");
@@ -750,10 +711,8 @@ export default class prodData{
     }
 
     createSubject(subject, callback){
-        console.log("creating");
         subject.owner= this.getUser().email;
         subject.groups=[];
-        console.log(subject);
         this.db.collection("subjects").doc(subject.subjectName).set(
             subject
         )
@@ -782,8 +741,6 @@ export default class prodData{
                     session["id"]= doc.id;
                     sessions.push(session);
                 });
-                console.log("deleting");
-                console.log(sessions);
                 this.deleteSessionsBatch(subject, sessions, batch);    
             }
 
@@ -793,7 +750,6 @@ export default class prodData{
             batch.commit().then(() => {
                 this.loadingCallback(false);
                 callback();
-                console.log("Batch completed");
             }).catch(err=>{
                 this.errorCallback(err);
             });   
@@ -808,8 +764,6 @@ export default class prodData{
 
         subject.groups= subject.groups.filter(g=>(g.groupName!==group.groupName));
 
-        console.log("deleting");
-        console.log (subject.subjectName + " - " + group.groupName);
 
         this.db.collection("sessions").where("subjectName", "==", subject.subjectName).where("groupName", "==", group.groupName).get().then((querySnapshot) => {
             var sessions=[];
@@ -818,8 +772,6 @@ export default class prodData{
                 session["id"]= doc.id;
                 sessions.push(session);
             });
-            console.log("deleting");
-            console.log(sessions);
             this.deleteSessionsBatch(subject, sessions, batch);
             
             batch.update(this.db.collection("subjects").doc(subject.id), subject);
@@ -827,7 +779,6 @@ export default class prodData{
             batch.commit().then(() => {
                 this.loadingCallback(false);
                 callback();
-                console.log("Batch completed");
             }).catch(err=>{
                 this.errorCallback(err);
             });    
@@ -856,15 +807,11 @@ export default class prodData{
             teachers = teachers.data();
 
             if (session.teacher.checkConcurrency){
-                console.log("timeblocks teacher");
-                console.log(timeBlocks);
                 timeBlocks.forEach(tb =>{
                     teacherIsAvailable = teacherIsAvailable && teachers[tb].includes(session.teacher.name);
                 });
             }
             if(session.room.checkConcurrency){
-                console.log("timeblocks room");
-                console.log(timeBlocks);
                 timeBlocks.forEach(tb =>{
                     roomIsAvailable = roomIsAvailable && rooms[tb].includes(session.room.name);
                 });
@@ -873,8 +820,6 @@ export default class prodData{
                 teacher: teacherIsAvailable,
                 room: roomIsAvailable
             };
-            console.log("response");
-            console.log(response);
             callback(response);
             this.loadingCallback(false);
         }
@@ -916,7 +861,6 @@ export default class prodData{
         } 
         
         batch.commit().then(() => {
-            console.log("Batch completed, db init completed");
         }).catch(err=>{
         });   
     }

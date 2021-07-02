@@ -12,7 +12,7 @@ export const SubjectMain= styled.div`
 
 export const SubjectTitle = styled.button`
 
-    background: ${props => props.color || "#FEFEFE"};
+    background: ${props => props.color};
     justify-content: center;
     
     border-radius: ${props => props.ButtonCornersRadius? "4px 4px 4px 4px":"4px 4px 0 0"}; 
@@ -40,7 +40,7 @@ export const SubjectGroupsList= styled.div`
 
 export const GroupElement = styled.button`
 
-    background: ${props => props.group.color || "#FEFEFE"};
+    background: ${props => props.group.color};
     justify-content: center;
     padding: 0.1em;
     outline: none;

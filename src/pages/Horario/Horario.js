@@ -30,7 +30,7 @@ function TitlesDropdown(titles, onChange){
   return(  
   <React.Fragment>
 
-    <select name="titles" id="titles" onChange={(e)=>{onChange(e.target.value);}}>
+    <select data-testid="titleSelector" name="titles" id="titles" onChange={(e)=>{onChange(e.target.value);}}>
       <option value={null}>{spanish.SelectTitlePlaceholder}</option>
       {
           titles.map((title) =>
@@ -47,7 +47,7 @@ function SemesterDropdown(semesters, onChange, defaultValue){
   return(  
   <React.Fragment>
 
-    <select name="semesters" id="semesters" defaultValue={parseInt(defaultValue)} onChange={(e)=>{onChange(e.target.value);}}>
+    <select data-testid="semesterSelector" name="semesters" id="semesters" defaultValue={parseInt(defaultValue)} onChange={(e)=>{onChange(e.target.value);}}>
       <option value={0}>{spanish.SelectSemesterPlaceholder}</option>
       {
           Array.from(new Array(semesters), (x, i) => i + 1).map((sem) =>
@@ -116,11 +116,11 @@ export default class Horario extends React.Component {
     this.addRoom = this.addRoom.bind(this);
     this.addTeacher = this.addTeacher.bind(this);
     this.showError = this.showError.bind(this);
+
+    this.checkAvailability= this.checkAvailability.bind(this);
   }
 
   showError(err){
-    console.log("error");
-    console.log(err);
     this.setLoading(false);
     this.setFooterMsg({
       header: "Ha ocurrido un error",
@@ -132,12 +132,6 @@ export default class Horario extends React.Component {
   compareAvailabilityFactors(session1, session2){
     var timeBlocks1 = this.getTimeBlocksOfSession(session1);
     var timeBlocks2 = this.getTimeBlocksOfSession(session2);
-    console.log("availability factors");
-    console.log(session1.day + " - " + session2.day);
-    console.log(timeBlocks1);
-    console.log(timeBlocks2);
-    console.log(session1.day ===session2.day);
-    console.log(timeBlocks1.some(r=> timeBlocks2.indexOf(r) >= 0));
     return (session1.day ===session2.day &&
             timeBlocks1.some(r=> timeBlocks2.indexOf(r) >= 0));
   }
@@ -147,7 +141,6 @@ export default class Horario extends React.Component {
       selectedSession: clickedSession,
       rooms: [clickedSession.room],
       teachers: [clickedSession.teacher]});
-      console.log(clickedSession);
   }
   
   setLoading(_loading){
@@ -167,8 +160,6 @@ export default class Horario extends React.Component {
         msgs:[],
         type: "success"
       }
-
-      console.log(availability);
 
       if(!availability.teacher || !availability.room){
         footerMsg.header = footerMsg.header + spanish.updateMsgs.noCollision;
@@ -234,7 +225,6 @@ export default class Horario extends React.Component {
   
       var search= {titleName: parsed.titleName, semester: parseInt(this.state.selectedSemester)};
 
-      console.log(search);
       this.context.loadSubjectsOfTitle(search, this.setSubjects);
     } catch(e) {
       this.setState(
@@ -257,7 +247,6 @@ export default class Horario extends React.Component {
       });
 
       var search= {titleName: this.state.selectedTitle.titleName, semester: parseInt(semester)};
-      console.log(search);
       this.context.loadSubjectsOfTitle(search, this.setSubjects);
   }
 
@@ -320,6 +309,25 @@ export default class Horario extends React.Component {
 
   }
 
+  checkAvailability(session){
+    this.context.getAvailableRooms(this.state.selectedSemester,session.day, this.getTimeBlocksOfSession(session), 
+      (rooms) => {
+        if (this.compareAvailabilityFactors(this.state.selectedSession, session))
+        {
+          rooms = addElementToCollection(rooms, session.room);
+        }
+        this.setRooms(rooms);
+      });
+    this.context.getAvailableTeachers(this.state.selectedSemester, session.day, this.getTimeBlocksOfSession(session),
+        (teachers) =>{
+          if (this.compareAvailabilityFactors(this.state.selectedSession, session))
+          {
+            teachers = addElementToCollection(teachers, session.teacher);
+          }
+          this.setTeachers(teachers);
+        });
+  }
+
   render() {
     return (
       <MyLoader
@@ -349,7 +357,7 @@ export default class Horario extends React.Component {
             </LateralMenu>
             <CentralMenu>
               <Timetable timeStart={480} scheduleSize={780} mins_x_block={15} 
-                          sessions= {this.state.sessions} setSessions= {this.setSessions} 
+                          sessions= {this.state.sessions} 
                           handleSessionClick={this.handleSessionClick}
                           updateSession={this.updateDroppedSession}
                           createSession = {this.createSession}>
@@ -361,36 +369,12 @@ export default class Horario extends React.Component {
               </MenuHeader>
               <MenuBody>
                 <SessionForm 
-                              key ={this.state.selectedSession? this.state.selectedSession.id:"-"} 
                               id ={this.state.selectedSession? this.state.selectedSession.id:null} 
                               selectedSession={this.state.selectedSession}
                               updateSession = {this.updateSession}
                               rooms={this.state.rooms}
                               teachers={this.state.teachers}
-                              checkAvailability={(session)=>{this.context.getAvailableRooms(this.state.selectedSemester,
-                                                                                            session.day, 
-                                                                                            this.getTimeBlocksOfSession(session), 
-                                                                                            (rooms) => {
-                                                                                              if (this.compareAvailabilityFactors(this.state.selectedSession, session))
-                                                                                              {
-                                                                                                rooms = addElementToCollection(rooms, session.room);
-                                                                                              }
-                                                                                              console.log("rooms");
-                                                                                              console.log(rooms);
-                                                                                              this.setRooms(rooms);
-                                                                                            });
-                                                            this.context.getAvailableTeachers(this.state.selectedSemester,
-                                                                                            session.day, 
-                                                                                            this.getTimeBlocksOfSession(session),
-                                                                                            (teachers) =>{
-                                                                                              if (this.compareAvailabilityFactors(this.state.selectedSession, session))
-                                                                                              {
-                                                                                                teachers = addElementToCollection(teachers, session.teacher);
-                                                                                              }
-                                                                                              this.setTeachers(teachers);
-                                                                                            } 
-                                                                                            );
-                                                            }}>
+                              checkAvailability={this.checkAvailability}>
                 </SessionForm>
               </MenuBody>
             </LateralMenu>     

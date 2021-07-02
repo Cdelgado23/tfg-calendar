@@ -22,8 +22,8 @@ function SessionButtonList(sessions, onSelectSession, onDelete){
     return Array.from(sessions)
     .map((session) =>
     <div style={{display: "flex", flexDirection: "row", justifyContent: "space-around"}}>
-        <ColorButton color = {session.color} style={{width: "100%"}} padding="0.5vh" margin="1%" onClick={(event)=>{event.preventDefault(); onSelectSession(session)}}>{sessionToString(session)}</ColorButton>
-        <ColorButton color = {"#c94242"} padding="0.5vh" margin="1%" onClick={(event)=>{event.preventDefault(); onDelete(session)}}>{spanish.delete}</ColorButton>
+        <ColorButton data-testid={"session-"+session.id} color = {session.color} style={{width: "100%"}} padding="0.5vh" margin="1%" onClick={(event)=>{event.preventDefault(); onSelectSession(session)}}>{sessionToString(session)}</ColorButton>
+        <ColorButton data-testid={"deleteSession-"+session.id} color = {"#c94242"} padding="0.5vh" margin="1%" onClick={(event)=>{event.preventDefault(); onDelete(session)}}>{spanish.delete}</ColorButton>
     </div>
     
   );
@@ -37,16 +37,16 @@ function SubjectFormGroup(subject, onChangeField, onSelectGroup, updateSubject, 
                     <FormBody height="36vh" overflowy= "auto" style={{"border": "1px solid #EFEFEF","border-radius": "0 0 10px 10px"}}>
                         <FormElementGroup>
                             <StyledLabel margin= "0 0.5vw 0 0.5vw">{spanish.name}</StyledLabel>
-                            <StyledInput disabled margin= "0 0.5vw 0 0.5vw"  type="text" name="subject" value={subject.subjectName} onChange= {event => {onChangeField(event,"subjectName", "selectedSubject")}}/>
+                            <StyledInput disabled margin= "0 0.5vw 0 0.5vw"  type="text" name="subject" data-testid={"subjectInput"} value={subject.subjectName} onChange= {event => {onChangeField(event,"subjectName", "selectedSubject")}}/>
                         </FormElementGroup>
 
                         <FormElementGroup>
                             <StyledLabel margin= "0 0.5vw 0 0.5vw">{spanish.color}</StyledLabel>
-                            <StyledInput margin= "0 0.5vw 0 0.5vw" type="color" name="color" value={subject.color} onChange= {event => {onChangeField(event,"color", "selectedSubject")}}/>
+                            <StyledInput margin= "0 0.5vw 0 0.5vw" type="color" name="color" value={subject.color} data-testid={"colorInput"} onChange= {event => {onChangeField(event,"color", "selectedSubject")}}/>
                         </FormElementGroup>
                         <FormElementGroup>
                             <StyledLabel margin= "0 0.5vw 0 0.5vw">{spanish.semester}</StyledLabel>
-                            <select name="semesters" defaultValue={subject.semester} onChange={(e)=>{onChangeField(e,"semester", "selectedSubject"); onChangeField({target:{value: []}}, "titles", "selectedSubject")}}>
+                            <select name="semesters" defaultValue={subject.semester} data-testid={"semesterSelector"} onChange={(e)=>{onChangeField(e,"semester", "selectedSubject"); onChangeField({target:{value: []}}, "titles", "selectedSubject")}}>
                                     <option value={1}>1</option>
                                     <option value={2}>2</option>
                             </select>
@@ -57,10 +57,10 @@ function SubjectFormGroup(subject, onChangeField, onSelectGroup, updateSubject, 
 
 
                     <div style ={{display: "flex", flexDirection: "row", justifyContent: "center", margin: "1vh 0 0.5vh 0"}}>
-                        <ColorButton color = "#db3f3f" margin="0 1vw" padding="0.5rem 1rem"   width="fit-content"
+                        <ColorButton color = "#db3f3f" margin="0 1vw" padding="0.5rem 1rem"   width="fit-content" data-testid="deleteSubject"
                                             onClick={event=>{event.preventDefault(); deleteSubject(subject);}}>{spanish.delete}</ColorButton>
                         <ColorButton color = "#2DA283" margin="0 1vw" padding="0.5rem 1rem" width="fit-content"
-                                             onClick= {event => {event.preventDefault(); updateSubject(subject)}}>{spanish.update}</ColorButton>
+                                             onClick= {event => {event.preventDefault(); updateSubject(subject)}} data-testid="updateSubject">{spanish.update}</ColorButton>
                     </div>
                     </FormBody>
                     
@@ -69,7 +69,7 @@ function SubjectFormGroup(subject, onChangeField, onSelectGroup, updateSubject, 
                     </Header>
                     <FormBody height="27.5vh" overflow="scroll" overflowy="scroll" margin="0.5vh 0 0 0" border="1px solid #EFEFEF">
                         {GroupButtonList(subject, onSelectGroup)}
-                        <ColorButton disabled={subject.groups.length>9} color = "#2DA283" padding="1vh" margin="2%" onClick={(e)=> {e.preventDefault(); showModal("group")}}>+</ColorButton>
+                        <ColorButton data-testid="addGroupButton" disabled={subject.groups.length>9} color = "#2DA283" padding="1vh" margin="2%" onClick={(e)=> {e.preventDefault(); showModal("group")}}>+</ColorButton>
                     </FormBody>
             </FormGroup>);
 }
@@ -83,23 +83,23 @@ function GroupFormGroup(group, sessions, onChangeField, onSelectSession, onChang
                 <FormBody height="36vh" overflowy="auto" style={{    "border": "1px solid #EFEFEF","border-radius": "0 0 10px 10px"}}>
                     <FormElementGroup>
                         <StyledLabel margin= "0 0.5vw 0 0.5vw">{spanish.name}</StyledLabel>
-                        <StyledInput margin= "0 0.5vw 0 0.5vw" disabled type="text" name="subject" value={group.groupName} onChange= {event => {onChangeField(event,"subjectName", "selectedGroup")}}/>
+                        <StyledInput margin= "0 0.5vw 0 0.5vw" data-testid="groupSubjectInput" disabled type="text" name="subject" value={group.groupName} onChange= {event => {onChangeField(event,"subjectName", "selectedGroup")}}/>
                     </FormElementGroup>
 
                     <FormElementGroup>
                         <StyledLabel margin= "0 0.5vw 0 0.5vw">{spanish.color}</StyledLabel>
-                        <StyledInput margin= "0 0.5vw 0 0.5vw" type="color" name="color" value={group.color} onChange= {event => {onChangeField(event,"color", "selectedGroup")}}/>
+                        <StyledInput margin= "0 0.5vw 0 0.5vw" data-testid="groupColorInput" type="color" name="color" value={group.color} onChange= {event => {onChangeField(event,"color", "selectedGroup")}}/>
                     </FormElementGroup>
                     
                     <StyledLabel margin= "0 0.5vw 0 0.5vw"> <b>{spanish.sessionDefaultValues}</b></StyledLabel>
                     <FormElementGroup>
                         <StyledLabel margin= "0 0.5vw 0 0.5vw">{spanish.color}</StyledLabel>
-                        <StyledInput margin= "0 0.5vw 0 0.5vw" type="color" name="color" value={group.defaultSessionValues.color} onChange= {event => {onChangeField(event,"color", "selectedGroup", "defaultSessionValues")}}/>
+                        <StyledInput margin= "0 0.5vw 0 0.5vw" data-testid="defaultGroupColorInput" type="color" name="color" value={group.defaultSessionValues.color} onChange= {event => {onChangeField(event,"color", "selectedGroup", "defaultSessionValues")}}/>
                     </FormElementGroup>
 
                     <div style ={{display: "flex", flexDirection: "row", justifyContent: "center", margin: "0 0 1vh 0"}}>
-                        <ColorButton color = "#db3f3f" margin="0 1vw" padding="0.5rem 1rem"   width="fit-content" onClick={(e)=>{e.preventDefault(); onDeleteGroup(subject, group)}}>{spanish.delete}</ColorButton>
-                        <ColorButton color = "#2DA283" margin="0 1vw" padding="0.5rem 1rem" width="fit-content">{spanish.update}</ColorButton>
+                        <ColorButton color = "#db3f3f" margin="0 1vw" padding="0.5rem 1rem"   width="fit-content" onClick={(e)=>{e.preventDefault(); onDeleteGroup(subject, group)}} data-testid="groupDelete">{spanish.delete}</ColorButton>
+                        <ColorButton color = "#2DA283" margin="0 1vw" padding="0.5rem 1rem" width="fit-content" data-testid="groupUpdate">{spanish.update}</ColorButton>
                     </div>
                 </FormBody>
                 <Header>
@@ -120,8 +120,8 @@ function TitleInSelectedTitles(title, inSubject, onChangeCheckBox, semester){
     var selectTitle={titleName: title.titleName, semester: parseInt(title.semester)}
 
     return(
-            <FormElementGroup style={{flexDirection: "row"}}>
-                <StyledInput margin= "0.5vh 0.5vw 0 0"  type="checkbox" checked={inSubject} value={inSubject} onChange={event => {onChangeCheckBox(selectTitle, true)}}/>
+            <FormElementGroup data-testid="titleModalContent" style={{flexDirection: "row"}}>
+                <StyledInput data-testid={"checkbox-" + title.titleName} margin= "0.5vh 0.5vw 0 0"  type="checkbox" checked={inSubject} value={inSubject} onChange={event => {onChangeCheckBox(selectTitle, true)}}/>
                 <StyledLabel margin= "0 0.5vw 0 0.5vw" style={{maxWidth: "90%"}}>
                 <p style={{overflow: "hidden", textOverflow: "ellipsis"}}>
                     {title.titleName}
@@ -130,7 +130,7 @@ function TitleInSelectedTitles(title, inSubject, onChangeCheckBox, semester){
                 {inSubject?
                 <React.Fragment>
                 <p> - {spanish.semester}: </p>
-                <select name="semesters" defaultValue={semester} onChange={(e)=>{onChangeCheckBox({titleName: title.titleName, semester: parseInt(e.target.value)}, false);}}>
+                <select data-testid={"semesterSelector-" + title.titleName} name="semesters" defaultValue={semester} onChange={(e)=>{onChangeCheckBox({titleName: title.titleName, semester: parseInt(e.target.value)}, false);}}>
                     {Array.from(new Array(title.semesters), (x, i) => i + 1).map((sem) =>
                         (parseInt(sem)%2) === parseInt(semester)%2? <option value={parseInt(sem)}>{sem}</option>: ""
                     )}
@@ -165,7 +165,7 @@ export default class SubjectForm extends React.Component {
     constructor(props) {
         super(props);
         this.state={
-            showTitles: false
+            showTitles: props.showTitles? props.showTitles: false
         };
 
         this.showTitles= this.showTitles.bind(this);

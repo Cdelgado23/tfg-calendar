@@ -41,7 +41,7 @@ return (
 const week=["", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
 function showWeekdays(selectedDay, handleChange, checkAvailability){
   const listDays = Array.from(new Array(7), (x, i) => i+1).map((day) =>
-                      <option value={parseInt(day)}>{week[day]}</option>
+                      <option  key={week[day]} value={parseInt(day)}>{week[day]}</option>
               );
 return (
   <select name="days" id="days" defaultValue={selectedDay} onChange={(event)=>{handleChange(event,"day", "newSession", null, checkAvailability)}} style={{margin: "0 0.5vw 0 0.5vw"}}>
@@ -97,12 +97,12 @@ function createSubjectForm(subject, onChangeField, createSubject, showModal){
       <FormBody>
         <FormElementGroup>
             <StyledLabel margin= "0 0.5vw 0 0.5vw">{spanish.name}</StyledLabel>
-            <StyledInput margin= "0 0.5vw 0 0.5vw"  type="text" name="subject" value={subject.subjectName} onChange= {event => {onChangeField(event,"subjectName", "newSubject")}}/>
+            <StyledInput data-testid="nameInput" margin= "0 0.5vw 0 0.5vw"  type="text" name="subject" value={subject.subjectName} onChange= {event => {onChangeField(event,"subjectName", "newSubject")}}/>
         </FormElementGroup>
   
         <FormElementGroup>
             <StyledLabel margin= "0 0.5vw 0 0.5vw">{spanish.color}</StyledLabel>
-            <StyledInput margin= "0 0.5vw 0 0.5vw" type="color" name="color" value={subject.color} onChange= {event => {onChangeField(event,"color", "newSubject")}}/>
+            <StyledInput data-testid="colorInput" margin= "0 0.5vw 0 0.5vw" type="color" name="color" value={subject.color} onChange= {event => {onChangeField(event,"color", "newSubject")}}/>
         </FormElementGroup>
   
         <div style ={{display: "flex", flexDirection: "row", justifyContent: "center", margin: "auto"}}>
@@ -266,10 +266,6 @@ export default class Asignaturas extends React.Component {
 
   checkAvailability(session)
   { 
-    console.log("check avai");
-    console.log(session);
-    console.log(this.state.selectedSubject.semester + " - " + session.day + " - " + this.getTimeBlocksOfSession(session));
-
     this.context.getAvailableRooms(this.state.selectedSubject.semester,
                                     session.day, 
                                     this.getTimeBlocksOfSession(session), 
@@ -296,8 +292,6 @@ export default class Asignaturas extends React.Component {
     var startMinute= parseInt(time[0])*60 + parseInt(time[1]);
     const row = (((startMinute - 480)/15)>>0) + 1;
     const rowEnd= Math.ceil(((startMinute+parseInt(session.length) -480) /15))+1;
-
-    console.log("time " + time + " - startMinute" + startMinute + " - row " + row + "- rowend " + rowEnd);
   
     return Array.from(new Array(rowEnd-row), (x, i) => i+row);
   }
@@ -327,10 +321,6 @@ export default class Asignaturas extends React.Component {
   }
 
   onChangeField(event, field, object, rootField, checkAvailability){
-
-    console.log(event.target.value);
-    console.log(this.state);
-    console.log(field + " - " + object + " - " + rootField + " - " + checkAvailability);
     var value= event.target.value;
 
 
@@ -383,7 +373,6 @@ export default class Asignaturas extends React.Component {
 
   
   onSelectGroup(group){
-    console.log(group);
     this.setState({
       selectedGroup: JSON.parse(JSON.stringify(group)),
       selectedSession: null,
@@ -403,7 +392,6 @@ export default class Asignaturas extends React.Component {
   handleSessionClick(clickedSession){
     this.setState({ 
       selectedSession: clickedSession});
-      console.log(clickedSession);
   }
   
   setLoading(_loading){
@@ -420,7 +408,6 @@ export default class Asignaturas extends React.Component {
   );
   }
   createSession(session){
-    console.log(session);
     this.context.createSession(session, ()=> {
       this.context.loadSessionsOfSubjectGroup(this.state.selectedSubject.subjectName, this.state.selectedGroup.groupName, this.setSessions);
       }, this.state.selectedSubject.semester
@@ -453,9 +440,7 @@ export default class Asignaturas extends React.Component {
     group.defaultSessionValues.teacher= {name: "Sin Asignar", checkConcurrency: false};
     group.defaultSessionValues.room= {name: "Sin Asignar", checkConcurrency: false};
     group.defaultSessionValues.length= 45;
-    console.log(subject.groups);
     subject.groups.push(group);
-    console.log(subject.groups);
     this.context.updateSubject(subject, ()=> {
       this.setState((prevState) =>(
         {subjects: [...prevState.subjects.filter(s => s.id!==subject.id), subject],
@@ -536,11 +521,7 @@ export default class Asignaturas extends React.Component {
   SelectTitleOfSubject(title, checkBoxBehaviour){
     var titles= this.state.selectedSubject.titles;
     var titlesNames= titles.map(t=> t.titleName);
-    console.log(titles);
-    console.log(titlesNames);
     const index = titlesNames.indexOf(title.titleName);
-    console.log(title);
-    console.log(index);
     if (index > -1) {
       if (checkBoxBehaviour){
         titles.splice(index, 1);

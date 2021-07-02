@@ -23,17 +23,17 @@ export default class AppWrapper extends React.Component
     super(props);
     this.userIsLogged = this.userIsLogged.bind(this);
     this.setLoading = this.setLoading.bind(this);
+
+    var env =  process.env.REACT_APP_ENVIROMENT.trimEnd();
+
     this.state={
-      repository: new Repository(this.setLoading, this.userIsLogged),
+      repository: new Repository(this.setLoading, this.userIsLogged, env),
       email: "",
       password: "",
       loggedUser: false,
       loading: false
     };
 
-
-    this.setEmail= this.setEmail.bind(this);
-    this.setPassword= this.setPassword.bind(this);
     this.logOut = this.logOut.bind(this);
   }
   setLoading(loading){
@@ -46,12 +46,6 @@ export default class AppWrapper extends React.Component
     this.setState({loggedUser: isLogged});
   }
 
-  setEmail(email){
-    this.setState({email: email});
-  }
-  setPassword(psw){
-    this.setState({password: psw});
-  }
   render(){
   return (
     <RepositoryContext.Provider value= {this.state.repository}>

@@ -10,7 +10,7 @@ function showRooms(rooms, handleChange, defaultRoom, field){
     <option key={room.name} value={JSON.stringify(room)} selected={room.name===defaultRoom.name}>{room.name}</option>
   );
   return (
-    <select name="rooms" id={field} defaultValue={defaultRoom} onChange={e=>{handleChange(e, field)}} style={{marginBottom: "0.5em"}}>
+    <select data-testid={field+"Selector"} name={field+"selector"} id={field} defaultValue={defaultRoom} onChange={e=>{handleChange(e, field)}} style={{marginBottom: "0.5em"}}>
         {listRooms}
     </select>
   );
@@ -181,7 +181,7 @@ export default class SessionForm extends React.Component {
                 <label>
                     {spanish.color}
                 </label>
-                <SessionInput type="color" name="color" value={this.state.color}  onChange= {event => {this.onChangeField(event,"color")}}/>
+                <SessionInput data-testid="colorInput" type="color" name="color" value={this.state.color}  onChange= {event => {this.onChangeField(event,"color")}}/>
                 
                 <label>
                     {spanish.day}
@@ -190,12 +190,12 @@ export default class SessionForm extends React.Component {
                 <label>
                     {spanish.startTime}
                 </label>
-                <SessionInput type="time" name= "start" min="08:00" max="21:00" value={this.state.startTime} onChange= {event => {this.onChangeField(event,"startTime");}}></SessionInput>
+                <SessionInput data-testid="startTimeInput" type="time" name= "start" min="08:00" max="21:00" value={this.state.startTime} onChange= {event => {this.onChangeField(event,"startTime");}}></SessionInput>
                 
                 <label>
                     {spanish.length}
                 </label>
-                <SessionInput type="number" name="length"  value={this.state.length}  onChange= {event => {this.onChangeField(event,"length");}}/>
+                <SessionInput data-testid="lengthInput" type="number" name="length"  value={this.state.length}  onChange= {event => {this.onChangeField(event,"length");}}/>
                 <label>
                     {spanish.classRoom}
                 </label>
@@ -205,13 +205,13 @@ export default class SessionForm extends React.Component {
                 </label>
                 {showRooms(this.props.teachers, this.onChangeField, this.state.teacher, "teacher")}
                 <br/>
-                <FormSubmit color = "#2DA283" type="submit" value={spanish.update}/>
+                <FormSubmit data-testid="submitButton" color = "#2DA283" type="submit" value={spanish.update}/>
             </FlexForm>
 
             </div>
         );
         }else{
-            return <div></div>;
+            return null;
         }
     }
 

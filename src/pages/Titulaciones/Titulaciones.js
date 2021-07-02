@@ -122,7 +122,7 @@ export default class Profesores extends React.Component {
           <StyledLabel margin= "1 0.5vw 0 0.5vw" style={{maxWidth: "90%"}}>
             {spanish.name}
           </StyledLabel>
-          <StyledInput   type="text" name="titleName" value={this.state.newTitle.titleName} onChange= {event => {this.OnChangeTitleValue(event.target.value, "titleName")}}/>
+          <StyledInput type="text" name="titleName" value={this.state.newTitle.titleName} onChange= {event => {this.OnChangeTitleValue(event.target.value, "titleName")}}/>
           
           <StyledLabel margin= "1 0.5vw 0 0.5vw" style={{maxWidth: "90%"}}>
             {spanish.semesters}

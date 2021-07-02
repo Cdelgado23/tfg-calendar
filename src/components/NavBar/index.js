@@ -9,19 +9,19 @@ import {
 } from './NavBarElements';
 
 import React from 'react';
-import { useHistory,useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import logo from '../../logo.png';
 import {spanish} from '../../translations/Spanish'
 
 function handleRouteChange(event, history, location) {
   history.push("/"+event.target.value);
-  location= event.target.value;
+  //location= event.target.value;
 }
 
 const Navbar = (props) => {
   let history = useHistory();
-  let location = useLocation();
+  //let location = useLocation();
   return (
     <>
       <Nav>
@@ -34,7 +34,7 @@ const Navbar = (props) => {
          {
            props.loggedUser?
           <React.Fragment>
-            <SelectRouter name="rooms" id="rooms" onChange={event =>{handleRouteChange(event, history, location)}}>
+            <SelectRouter data-testid= "routeSelector" name="selectRouter" id="selectRouter" onChange={event =>{handleRouteChange(event, history)}}>
             <option value={"Horario"}>{spanish.schedule}</option>
             <option value={"Asignaturas"}>{spanish.subjects}</option>
             <option value={"Aulas"}>{spanish.classrooms}</option>
@@ -44,19 +44,19 @@ const Navbar = (props) => {
     
             <NavMenu>
               <NavBtn>
-                <NavBtnLinkYellow to='/Horario'>Horario</NavBtnLinkYellow>
+                <NavBtnLinkYellow to='/Horario'>{spanish.schedule}</NavBtnLinkYellow>
               </NavBtn>
               <NavBtn>
-                <NavBtnLinkYellow to='/Asignaturas'>Asignaturas</NavBtnLinkYellow>
+                <NavBtnLinkYellow to='/Asignaturas'>{spanish.subjects}</NavBtnLinkYellow>
               </NavBtn>
               <NavBtn>
-                <NavBtnLinkYellow to='/Aulas'>Aulas</NavBtnLinkYellow>
+                <NavBtnLinkYellow to='/Aulas'>{spanish.classrooms}</NavBtnLinkYellow>
               </NavBtn>
               <NavBtn>
-                <NavBtnLinkYellow to='/Profesores'>Profesores</NavBtnLinkYellow>
+                <NavBtnLinkYellow to='/Profesores'>{spanish.teachers}</NavBtnLinkYellow>
               </NavBtn>
               <NavBtn>
-                <NavBtnLinkYellow to='/Titulaciones'>Titulaciones</NavBtnLinkYellow>
+                <NavBtnLinkYellow to='/Titulaciones'>{spanish.titles}</NavBtnLinkYellow>
               </NavBtn>
             </NavMenu>
             <NavBtn style={{width: "15vw"}}>
