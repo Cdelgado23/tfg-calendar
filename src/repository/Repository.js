@@ -17,9 +17,6 @@ export default class Repository{
         this.dataSource = new (this.getDataSource(env))(process.env.REACT_APP_BACKEND_BASE_URL, loadingCallback,  userIsLogged);
     }
 
-    setUser(user){
-        this.user= user;
-    }
     logOut(callback){
         this.dataSource.logOut(callback);
     }
@@ -74,10 +71,6 @@ export default class Repository{
         this.dataSource.getAvailableRooms(semester, day, timeBlocks, callback);
     }
 
-    getSessionOfRoomInDay(room, day, semester, callback){
-        this.dataSource.getSessionOfRoomInDay(room, day, semester, callback);
-    }
-
     loadTitles(callBack){
         this.dataSource.loadTitles(callBack);
     }
@@ -86,11 +79,6 @@ export default class Repository{
     }
     loadSessionsOfSubjects(subjectNames, callback){
         this.dataSource.loadSessionsOfSubjects(subjectNames, callback);
-    }
-
-
-    loadSessionsOfTeacher(teacher, callback){
-        this.dataSource.getSessionsOfTeacher(teacher, callback);
     }
 
     updateSession(session, callback, semester){
@@ -116,10 +104,6 @@ export default class Repository{
         this.dataSource.deleteGroup(subject, group, callback);
     }
 
-    loadSubjectsOfTeacher(teacher, callback){
-        this.dataSource.getSubjectsOfTeacher(teacher, callback);
-    }
-
     updateSubject(subject, callback, updatedSemester){
         this.dataSource.updateSubject(subject, callback, updatedSemester);
     }
@@ -140,10 +124,5 @@ export default class Repository{
     }
     deleteTitle(title, callback){
         this.dataSource.deleteTitle(title, callback);
-    }
-
-
-    getSessionById(id, callback){
-        this.dataSource.getSessionById(id, callback);
     }
 }

@@ -1,6 +1,6 @@
 
-    const subjects= [{"id":"string","subjectName":"Test Subject","color":"string","groups":[{"groupName":"Test Group","subjectName":"string","color":"string","type":"string","defaultSessionValues":{"color":"string","length":0,"room":{"name":"string"},"teacher":{"name":"string"}}}],"titles":[{"semester":1,"titleName":"Test Title"}]}];
-    const sessions=[{"id":"asdasc-123124jp-asdadipkw","startTime":"09:30","length":60,"color":"#EFEFEF","subject":"Subject X","group":"Group N","room":{"name":"Big Room"},"teacher":{"name":"Teacher X"},"day":2},{"id":"asdasc-asdasdacaasdadipkw","startTime":"11:30","length":60,"color":"#EFEFEF","subject":"Subject X","group":"Group N","room":{"name":"Big Room"},"teacher":{"name":"Teacher X"},"day":2}];
+    const subjects= [{"id":"string","subjectName":"Test Subject","color":"string","groups":[{"id": "some id", "groupName":"Test Group","subjectName":"string","color":"string","type":"string","defaultSessionValues":{"color":"string","length":50,"room":{"name":"string"},"teacher":{"name":"string"}}}],"titles":[{"semester":1,"titleName":"Test Title"}]}];
+    const sessions=[{"id":"asdasc-123124jp-asdadipkw","startTime":"09:30","length":60,"color":"#EFEFEF","subject":"Subject X","group":"Group N","room":{"name":"Test Room", "checkConcurrency": true},"teacher":{"name":"Test Teacher", "checkConcurrency": true},"day":2},{"id":"asdasc-asdasdacaasdadipkw","startTime":"11:30","length":60,"color":"#EFEFEF","subject":"Subject X","group":"Group N","room":{"name":"Big Room"},"teacher":{"name":"Teacher X"},"day":2}];
     const titles= [{"id":"string","titleName":"Test Title","semesters":3}]
     const teachers= [{"id":"string","teacherName":"Test Teacher","checkConcurrency":true}];
     const rooms=[{"id":"string","roomName":"Test Room","checkConcurrency":true}];
@@ -83,7 +83,7 @@ export default class Mock{
     }
 
     loadSubjectsOfTitle(title, callback){
-        callback();
+        callback(subjects);
     }
 
     loadSessionsOfSubjects(subjectNames, callback){
@@ -144,7 +144,7 @@ export default class Mock{
         callback();
     }
 
-    async checkDisponibilityForSession(session, semester, callback){
+    checkDisponibilityForSession(session, semester, callback){
         
         callback({
             teacher: true,

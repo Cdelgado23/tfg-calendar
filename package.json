@@ -24,6 +24,14 @@
     "uuid": "^8.3.2",
     "web-vitals": "^1.1.0"
   },
+  "jest":{
+    "collectCoverageFrom":[
+      "src/**/*.js",
+      "!src/index.js",
+      "!src/repository/*.js",
+      "!src/*.js"
+    ]
+  },
   "homepage": ".",
   "scripts": {
     "predeploy": "npm run build",
@@ -34,7 +42,7 @@
     "build": "sh -ac '. ./.env.${REACT_APP_ENV}; react-scripts build'",
     "build:dev": "REACT_APP_ENV=dev npm run build",
     "build:pro": "REACT_APP_ENV=pro npm run build",
-    "test": "react-scripts test",
+    "test": " react-scripts test",
     "testWithEnv": "sh -ac '. ./.env.${REACT_APP_ENV}; react-scripts test --coverage'",
     "test:local": "REACT_APP_ENV=local npm run testWithEnv",
     "eject": "react-scripts eject"

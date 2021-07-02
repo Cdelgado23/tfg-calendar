@@ -87,9 +87,9 @@ export default class Horario extends React.Component {
       rooms:[],
       teachers:[],
       selectedSession:{},
-      footerMsg: {type: "success", msgs: [], header: ""},
-      selectedSemester: 0
-    
+      footerMsg: {type: "success", msgs: [props.msg? props.msg: ""], header: ""},
+      selectedTitle: null,
+      selectedSemester:0
     };
     this.setFooterMsg= this.setFooterMsg.bind(this);
 
@@ -106,18 +106,16 @@ export default class Horario extends React.Component {
     this.selectTitle = this.selectTitle.bind(this);
     this.selectSemester = this.selectSemester.bind(this);
 
-    this.getRooms = this.getRooms.bind(this);
     this.setRooms= this.setRooms.bind(this);
 
     this.setTeachers= this.setTeachers.bind(this);
     this.getTimeBlocksOfSession= this.getTimeBlocksOfSession.bind(this);
 
     this.compareAvailabilityFactors = this.compareAvailabilityFactors.bind(this);
-    this.addRoom = this.addRoom.bind(this);
-    this.addTeacher = this.addTeacher.bind(this);
     this.showError = this.showError.bind(this);
 
     this.checkAvailability= this.checkAvailability.bind(this);
+
   }
 
   showError(err){
@@ -250,14 +248,6 @@ export default class Horario extends React.Component {
       this.context.loadSubjectsOfTitle(search, this.setSubjects);
   }
 
-
-  getRooms(){
-    this.context.getRooms((rooms)=>{
-      this.setState({
-        rooms: rooms
-      });
-    })
-  }
   setFooterMsg(msg){
     this.setState({
       footerMsg: msg
@@ -270,25 +260,6 @@ export default class Horario extends React.Component {
     this.setState({teachers: _teachers});
   }
 
-  addRoom(room){
-    const index = this.state.rooms.map(r=>(r.name)).indexOf(room.name);
-
-    if (index < 0) {
-      this.setState((prevState) =>(
-        {rooms: [...prevState.rooms, room]}
-      ));    
-    }
-  }
-  addTeacher(teacher){
-    const index = this.state.teachers.map(r=>(r.name)).indexOf(teacher.name);
-
-    if (index < 0) {
-      this.setState((prevState) =>(
-        {teachers: [...prevState.teachers, teacher]}
-      ));    
-    }
-
-  }
 
   getTimeBlocksOfSession(session){
 
@@ -306,8 +277,8 @@ export default class Horario extends React.Component {
     this.context.setErrorCallback(this.showError);
 
     this.context.loadTitles(this.setTitles);
-
   }
+
 
   checkAvailability(session){
     this.context.getAvailableRooms(this.state.selectedSemester,session.day, this.getTimeBlocksOfSession(session), 
@@ -368,7 +339,7 @@ export default class Horario extends React.Component {
                 <h2>Sesión</h2>
               </MenuHeader>
               <MenuBody>
-                <SessionForm 
+                <SessionForm key={this.state.selectedSession? this.state.selectedSession.id:null}
                               id ={this.state.selectedSession? this.state.selectedSession.id:null} 
                               selectedSession={this.state.selectedSession}
                               updateSession = {this.updateSession}

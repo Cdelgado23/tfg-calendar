@@ -83,9 +83,6 @@ export default class SessionForm extends React.Component {
         }
 
         if (prevProps.rooms !== this.props.rooms){
-            console.log("rooms");
-            console.log(this.props.rooms);
-            console.log(this.state.room.name);
             if (!this.props.rooms.map(t => t.name).includes(this.state.room.name)){
                 this.setState({
                     room: {
@@ -93,9 +90,6 @@ export default class SessionForm extends React.Component {
                         checkConcurrency: false
                     }
                 });
-                console.log("room unavailable");
-                console.log(this.props.rooms.map(t => t.name));
-                console.log(this.props);
             }
         }
 
@@ -108,8 +102,6 @@ export default class SessionForm extends React.Component {
                         checkConcurrency: false
                     }
                 });
-                console.log("teacher unavailable");
-                console.log(this.props.teachers.map(t => t.name));
 
             }
         }
