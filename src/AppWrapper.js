@@ -24,7 +24,7 @@ export default class AppWrapper extends React.Component
     this.userIsLogged = this.userIsLogged.bind(this);
     this.setLoading = this.setLoading.bind(this);
 
-    var env =  process.env.REACT_APP_ENVIROMENT.trimEnd();
+    var env =  props.env? props.env: process.env.REACT_APP_ENVIROMENT.trimEnd();
 
     this.state={
       repository: new Repository(this.setLoading, this.userIsLogged, env),
