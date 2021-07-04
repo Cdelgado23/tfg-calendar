@@ -1,9 +1,9 @@
 import React from 'react';
 import Modal from '../../components/Modal';
-import { Button, MyLoader, PageHeader, SpaceBetweenMenu } from '../PagesElements';
+import { Button, MyLoader, PageHeader } from '../PagesElements';
 
 import {RepositoryContext} from '../../context/RepositoryContext';
-import { FormBody, FormElementGroup, FormGroup, FullBody, Header, StyledInput, StyledLabel } from '../../components/SubjectForm/SubjectFormElements';
+import {FormElementGroup, FormGroup, FullBody, Header, StyledInput, StyledLabel } from '../../components/SubjectForm/SubjectFormElements';
 import {spanish} from '../../translations/Spanish'
 
 import {ResourceList} from '../../components/Resources/ResourceElements.js'

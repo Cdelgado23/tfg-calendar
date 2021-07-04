@@ -143,7 +143,7 @@ export default class TestData{
                 console.log("success");
                 console.log(result);
                 var format =[];
-                result.map(t=>{format.push({name: t.teacherName, checkConcurrency: t.checkConcurrency})});
+                result.map(t=>(format.push({name: t.teacherName, checkConcurrency: t.checkConcurrency})));
                 this.loadingCallback(false);
                 callback(format); 
             },
@@ -167,7 +167,7 @@ export default class TestData{
                 console.log("success");
                 console.log(result);
                 var format =[];
-                result.map(t=>{format.push({name: t.roomName, checkConcurrency: t.checkConcurrency})});
+                result.map(t=>(format.push({name: t.roomName, checkConcurrency: t.checkConcurrency})));
                 this.loadingCallback(false);
                 callback(format); 
             },
