@@ -34,7 +34,7 @@ function TitlesDropdown(titles, onChange){
       <option value={null}>{spanish.SelectTitlePlaceholder}</option>
       {
           titles.map((title) =>
-          <option value={JSON.stringify(title)}>{title.titleName}</option>
+          <option data-testid="titleOption" value={JSON.stringify(title)}>{title.titleName}</option>
           )
       }
     </select>
@@ -66,10 +66,8 @@ function chooseColor(type){
       return "#bf1e1e";
     case "warning":
       return "#ccb406";
-    case "success":
-      return "#2ca062";
     default:
-      return "#000000";
+      return "#2ca062";
   }
 }
 

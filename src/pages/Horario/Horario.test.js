@@ -35,7 +35,6 @@ describe('<Asignaturas>', ()=>{
     });
 
     test('render', ()=>{
-        fireEvent.change(component.getByTestId("titleSelector"), { target: { value: "{\"id\":\"string\",\"titleName\":\"Test Title\",\"semesters\":3}"} });
         component.getByText("test msg");
         component.debug();
     });
@@ -54,6 +53,14 @@ describe('<Asignaturas>', ()=>{
                 getData: ()=>{return JSON.stringify(subjects[0].groups[0])}
             }            
           })
+    });
+
+    test('click on title dropdowns', ()=>{
+        fireEvent.change(component.getByTestId("titleSelector"), { target: { value: "{\"id\":\"string\",\"titleName\":\"Test Title\",\"semesters\":3}"} });
+        fireEvent.change(component.getByTestId("semesterSelector"), { target: { value: 1} });
+
+        fireEvent.change(component.getByText("Test Subject"));
+        fireEvent.change(component.getByTestId(session.id));
     });
 
 });

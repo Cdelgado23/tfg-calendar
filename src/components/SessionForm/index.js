@@ -22,7 +22,7 @@ function showWeekdays(selectedDay, handleChange){
                         <option value={parseInt(day)}>{week[day]}</option>
                 );
   return (
-    <select name="days" id="days" defaultValue={parseInt(selectedDay)} onChange={e=> {handleChange(e, "day")}} style={{marginBottom: "0.5em"}}>
+    <select data-testid="sessionDayInput" name="days" id="days" defaultValue={parseInt(selectedDay)} onChange={e=> {handleChange(e, "day")}} style={{marginBottom: "0.5em"}}>
         {listDays}
     </select>
   );
@@ -165,11 +165,11 @@ export default class SessionForm extends React.Component {
                 <label>
                     {spanish.subject}
                 </label>
-                <SessionInput disabled type="text" name="subject" value={this.state.subjectName} onChange= {event => {this.onChangeField(event,"subjectName")}}/>
+                <SessionInput data-testid="sessionSubjectInput" disabled type="text" name="subject" value={this.state.subjectName} onChange= {event => {this.onChangeField(event,"subjectName")}}/>
                 <label>
                     {spanish.group}
                 </label>
-                <SessionInput disabled type="text" name="group" value={this.state.groupName}  onChange= {event => {this.onChangeField(event,"groupName")}}/>
+                <SessionInput data-testid="sessionGroupInput" disabled type="text" name="group" value={this.state.groupName}  onChange= {event => {this.onChangeField(event,"groupName")}}/>
                 <label>
                     {spanish.color}
                 </label>

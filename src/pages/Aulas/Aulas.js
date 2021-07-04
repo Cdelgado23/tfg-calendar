@@ -6,14 +6,13 @@ import {RepositoryContext} from '../../context/RepositoryContext';
 import { FormBody, FormElementGroup, FormGroup, FullBody, Header, StyledInput, StyledLabel } from '../../components/SubjectForm/SubjectFormElements';
 import {spanish} from '../../translations/Spanish'
 
+import {ResourceList} from '../../components/Resources/ResourceElements.js'
+import {roomToResource, Resource} from '../../components/Resources/Resource.js'
 
-function listRooms(rooms, deleteRoom, deleteCallback){
+
+function listRooms(rooms, deleteRoom){
   return rooms.map(room=>  
-    <div style={{display: "flex", flexDirection: "row", width: "100%", justifyContent: "space-between"}}>
-      <Button background="#e7e9eb" onClick={e=>{e.preventDefault()}}style={{width: "70%", color: "black"}}>{room.roomName}</Button>
-      {room.checkConcurrency===false? <Button background="#969696" disabled={true} style={{width: "20%", padding: "0"}}>{spanish.concurrent}</Button>: <div style={{width: "20%", padding: "0", margin: "0.5em"}}></div>}
-      <Button background="#a83535" onClick={e=>{e.preventDefault();deleteRoom(room, )}} style={{width: "10%"}}>{spanish.delete}</Button>
-    </div>
+    <Resource resource= {roomToResource(room, ()=>{deleteRoom(room);})}></Resource>
     );
 }
 
@@ -21,6 +20,31 @@ function roomIsValid(room){
   return room.roomName.length>3;
 }
 
+function createRoomForm(newRoom, onChangeRoomValue, checkConcurrency, onChangeConcurrency, createRoom){
+  return(
+    <React.Fragment>
+      <h2>{spanish.createRoom}</h2>
+      <FormElementGroup>
+        <StyledLabel margin= "0 0.5vw 0 0.5vw" style={{maxWidth: "90%"}}>
+          {spanish.name} 
+        </StyledLabel>
+        <StyledInput margin= "0 0.5vw 0 0.5vw"  type="text" name="roomName" value={newRoom.roomName} onChange= {event => {onChangeRoomValue(event.target.value, "roomName")}}/>
+      </FormElementGroup>
+
+
+      <FormElementGroup style={{flexDirection: "row"}}>
+      <StyledInput margin= "0.5vh 0.5vw 0 0"  type="checkbox" checked={checkConcurrency} value={checkConcurrency} onChange={event => {onChangeConcurrency()}}/>
+      <StyledLabel margin= "0 0.5vw 0 0.5vw" style={{maxWidth: "90%"}}>
+            <p style={{overflow: "hidden", textOverflow: "ellipsis"}}>
+                {spanish.checkConcurrency}
+            </p> 
+      </StyledLabel>
+      </FormElementGroup>
+
+      <Button disabled={!roomIsValid(newRoom)} onClick={e=>{createRoom(newRoom);}}>{spanish.create}</Button>
+    </React.Fragment>
+  );
+}
 
 export default class Aulas extends React.Component {
   static contextType = RepositoryContext;
@@ -87,7 +111,6 @@ export default class Aulas extends React.Component {
     this.setState({
       show: !this.state.show
     });
-    console.log(this.state.show);
   }
 
   render(){
@@ -106,42 +129,22 @@ export default class Aulas extends React.Component {
       >
         <PageHeader>
         </PageHeader>
-        <SpaceBetweenMenu style={{marginLeft: "-5%"}}>
+        
+        <FullBody justify="center">
+          <FormGroup>
+            <Header>
+              <h2>{spanish.classrooms}</h2>
+            </Header>
+            <ResourceList height="70vh" width="60vw" overflowy= "auto">
+              {listRooms(this.state.rooms, this.deleteRoom, this.getRooms)}
 
-            <FullBody>
-              <FormGroup>
-                <Header>
-                  <h2>{spanish.classrooms}</h2>
-                </Header>
-                <FormBody height="70vh" width="60vw" overflowy= "auto" style={{"border": "1px solid #EFEFEF","border-radius": "0 0 10px 10px"}}>
-                  {listRooms(this.state.rooms, this.deleteRoom, this.getRooms)}
+              <Button onClick={e=>{e.preventDefault(); this.showModal()}}><b>+</b></Button>
+            </ResourceList>
+          </FormGroup>
+        </FullBody>
 
-                  <Button onClick={e=>{e.preventDefault(); this.showModal()}}><b>+</b></Button>
-                </FormBody>
-              </FormGroup>
-            </FullBody>
-        </SpaceBetweenMenu>
         <Modal onClose={this.showModal} show={this.state.show}>
-
-          <h2>{spanish.createRoom}</h2>
-          <FormElementGroup>
-            <StyledLabel margin= "0 0.5vw 0 0.5vw" style={{maxWidth: "90%"}}>
-              {spanish.name} 
-            </StyledLabel>
-            <StyledInput margin= "0 0.5vw 0 0.5vw"  type="text" name="roomName" value={this.state.newRoom.roomName} onChange= {event => {this.OnChangeRoomValue(event.target.value, "roomName")}}/>
-          </FormElementGroup>
-
-
-          <FormElementGroup style={{flexDirection: "row"}}>
-          <StyledInput margin= "0.5vh 0.5vw 0 0"  type="checkbox" checked={this.state.checkConcurrency} value={this.state.checkConcurrency} onChange={event => {this.onChangeConcurrency()}}/>
-          <StyledLabel margin= "0 0.5vw 0 0.5vw" style={{maxWidth: "90%"}}>
-                <p style={{overflow: "hidden", textOverflow: "ellipsis"}}>
-                    {spanish.checkConcurrency}
-                </p> 
-          </StyledLabel>
-          </FormElementGroup>
-
-          <Button disabled={!roomIsValid(this.state.newRoom)} onClick={e=>{this.createRoom(this.state.newRoom);}}>{spanish.create}</Button>
+          {createRoomForm(this.state.newRoom, this.OnChangeRoomValue, this.state.checkConcurrency, this.onChangeConcurrency, this.createRoom)}
         </Modal>
       </div>
       </MyLoader>

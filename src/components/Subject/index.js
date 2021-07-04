@@ -9,7 +9,7 @@ function drag(ev, group) {
 
 function ListGroups(params) {
     return  params.map((group) =>
-    <GroupElement group={group} draggable="true" onDragStart={event=>drag(event, group)} id={group.id}>{group.groupName}</GroupElement>
+    <GroupElement data-testid={"subjectGroup-"+group.groupName} group={group} draggable="true" onDragStart={event=>drag(event, group)} id={group.id}>{group.groupName}</GroupElement>
   );
 }
 
@@ -33,7 +33,7 @@ export default class Subject extends React.Component {
   render() {
     return (
         <SubjectMain>
-        <SubjectTitle onClick={this.handleSubjectTitleClick} ButtonCornersRadius= {!this.state.showGroups} color = {this.state.subject.color}>
+        <SubjectTitle data-testid={"subject-"+this.state.subject.subjectName} onClick={this.handleSubjectTitleClick} ButtonCornersRadius= {!this.state.showGroups} color = {this.state.subject.color}>
         {this.state.subject.subjectName}
         </SubjectTitle>
         <SubjectGroupsList show={this.state.showGroups}>

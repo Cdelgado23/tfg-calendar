@@ -70,9 +70,14 @@ describe('<SessionForm>', ()=>{
     });
 
     test('input data', ()=>{
+        fireEvent.change(component.getByTestId("sessionSubjectInput"), { target: { value: "smthing" } })
+        fireEvent.change(component.getByTestId("sessionGroupInput"), { target: { value: "smthing" } })
+
         fireEvent.change(component.getByTestId("lengthInput"), { target: { value: 50 } })
         fireEvent.change(component.getByTestId("colorInput"), { target: { value: "#FFFFFF" } })
         fireEvent.change(component.getByTestId("startTimeInput"), { target: { value: "10:00" } })
+
+        fireEvent.change(component.getByTestId("sessionDayInput"), { target: { value: 1 } })
     });
 
     test('empty session', ()=>{

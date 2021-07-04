@@ -24,8 +24,8 @@
     "uuid": "^8.3.2",
     "web-vitals": "^1.1.0"
   },
-  "jest":{
-    "collectCoverageFrom":[
+  "jest": {
+    "collectCoverageFrom": [
       "src/**/*.js",
       "!src/index.js",
       "!src/repository/*.js",
@@ -45,6 +45,7 @@
     "test": " react-scripts test",
     "testWithEnv": "sh -ac '. ./.env.${REACT_APP_ENV}; react-scripts test --coverage'",
     "test:local": "REACT_APP_ENV=local npm run testWithEnv",
+    "cypress:open": "cypress open",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -64,5 +65,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "cypress": "^7.6.0"
   }
 }

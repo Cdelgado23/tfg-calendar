@@ -8,7 +8,7 @@ export const FullBody = styled.div`
     
 
     white-space: nowrap;
-    justify-content: stretch; 
+    justify-content: ${props => props.justify? props.justify: "stretch"}; 
 
 `;
 

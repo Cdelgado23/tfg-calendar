@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import Navbar from './components/NavBar';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 
 import Horario from './pages/Horario/Horario';
 import Asignaturas from './pages/Asignaturas/Asignaturas';

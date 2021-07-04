@@ -44,23 +44,23 @@ const Navbar = (props) => {
     
             <NavMenu>
               <NavBtn>
-                <NavBtnLinkYellow to='/Horario'>{spanish.schedule}</NavBtnLinkYellow>
+                <NavBtnLinkYellow data-testid="scheduleNavButton" to='/Horario'>{spanish.schedule}</NavBtnLinkYellow>
               </NavBtn>
               <NavBtn>
-                <NavBtnLinkYellow to='/Asignaturas'>{spanish.subjects}</NavBtnLinkYellow>
+                <NavBtnLinkYellow data-testid="subjectsNavButton" to='/Asignaturas'>{spanish.subjects}</NavBtnLinkYellow>
               </NavBtn>
               <NavBtn>
-                <NavBtnLinkYellow to='/Aulas'>{spanish.classrooms}</NavBtnLinkYellow>
+                <NavBtnLinkYellow data-testid="classroomsNavButton" to='/Aulas'>{spanish.classrooms}</NavBtnLinkYellow>
               </NavBtn>
               <NavBtn>
-                <NavBtnLinkYellow to='/Profesores'>{spanish.teachers}</NavBtnLinkYellow>
+                <NavBtnLinkYellow data-testid="teachersNavButton" to='/Profesores'>{spanish.teachers}</NavBtnLinkYellow>
               </NavBtn>
               <NavBtn>
-                <NavBtnLinkYellow to='/Titulaciones'>{spanish.titles}</NavBtnLinkYellow>
+                <NavBtnLinkYellow data-testid="titlesNavButton" to='/Titulaciones'>{spanish.titles}</NavBtnLinkYellow>
               </NavBtn>
             </NavMenu>
             <NavBtn style={{width: "15vw"}}>
-              <NavBtnLinkGreen to='/Usuario' style={{width: "15vw", textAlign: "center"}}>
+              <NavBtnLinkGreen data-testid="userNavButton" to='/Usuario' style={{width: "15vw", textAlign: "center"}}>
               {props.loggedUser}
 
               </NavBtnLinkGreen>

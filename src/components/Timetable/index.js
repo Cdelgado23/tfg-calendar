@@ -192,7 +192,10 @@ export default class Timetable extends React.Component {
 
     drop(ev, id, config) {
       ev.preventDefault();
+      console.log("data");
+
       var data = JSON.parse(ev.dataTransfer.getData("text"));
+      console.log(data);
       
   
       if(data.type === "group"){
